@@ -17,6 +17,15 @@ export async function fetchCard(userId: string, date: string): Promise<DrawnCard
   return data ? { card: data.card as number, reversed: data.reversed as boolean } : null;
 }
 
+/** Çekilmiş tüm kartlar: gün anahtarı → kart numarası. */
+export async function fetchCardMap(userId: string): Promise<Record<string, number>> {
+  const { data, error } = await supabase.from('daily_tarot').select('date, card').eq('user_id', userId);
+  if (error) throw error;
+  const map: Record<string, number> = {};
+  for (const r of (data ?? []) as { date: string; card: number }[]) map[r.date] = r.card;
+  return map;
+}
+
 /** Günün kartını çeker ve kaydeder; o gün zaten çekilmişse kayıtlı olanı döndürür. */
 export async function drawCard(userId: string, date: string): Promise<DrawnCard> {
   const pick: DrawnCard = {
@@ -76,4 +85,20 @@ export function useDailyTarot(userId: string | undefined, date: string): TarotSt
   }, [userId, date]);
 
   return { loading, drawn, error, draw };
+}
+
+/** Çekilmiş tüm kartlar (gün anahtarı → kart numarası); Günlük özetleri için. */
+export function useCardMap(userId: string | undefined, enabled: boolean): Record<string, number> {
+  const [map, setMap] = useState<Record<string, number>>({});
+  useEffect(() => {
+    if (!userId || !enabled) return;
+    let alive = true;
+    fetchCardMap(userId)
+      .then((m) => alive && setMap(m))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [userId, enabled]);
+  return map;
 }

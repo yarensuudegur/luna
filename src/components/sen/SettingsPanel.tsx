@@ -6,6 +6,7 @@ import { Sheet } from '@/components/Sheet';
 import { HOUSE_INFO, HOUSE_SYSTEMS } from '@/lib/astro';
 import { useAuth } from '@/lib/auth';
 import { AVATARS } from '@/lib/avatars';
+import { EVENING_OPTIONS } from '@/lib/bottle';
 import { useSettings } from '@/lib/settings';
 import { supabase } from '@/lib/supabase';
 import { colors, fonts, layout } from '@/theme';
@@ -42,9 +43,10 @@ function formatBirth(date: string | null, time: string | null, known: boolean, p
 
 export function SettingsPanel() {
   const { session, profile, refreshProfile, signOut } = useAuth();
-  const { houseSystem, classicOnly, update } = useSettings();
+  const { houseSystem, classicOnly, eveningTime, update } = useSettings();
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [houseOpen, setHouseOpen] = useState(false);
+  const [eveningOpen, setEveningOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const currentAvatar = AVATARS.find((a) => a.key === profile?.avatar) ?? AVATARS[0];
@@ -92,6 +94,15 @@ export function SettingsPanel() {
         </Row>
       </View>
 
+      <View style={styles.section}>
+        <Text style={styles.lbl}>GÜNLÜK</Text>
+        <Pressable style={styles.row} onPress={() => setEveningOpen(true)} accessibilityRole="button">
+          <Text style={styles.rowLabel}>AKŞAM DUYGULARI</Text>
+          <Text style={styles.value}>{eveningTime} ›</Text>
+        </Pressable>
+        <Text style={styles.note}>Duygu kaydı her akşam bu saatten sonra açılır.</Text>
+      </View>
+
       <View style={[styles.section, styles.last]}>
         <Button variant="ghost" onPress={signOut}>
           Çıkış yap
@@ -137,6 +148,25 @@ export function SettingsPanel() {
             >
               <Text style={[styles.rowLabel, s === houseSystem && styles.underline]}>{s.toLocaleUpperCase('tr')}</Text>
               {s === houseSystem && <Text style={styles.mono}>✓</Text>}
+            </Pressable>
+          ))}
+        </View>
+      </Sheet>
+      <Sheet visible={eveningOpen} title="Akşam saati" onClose={() => setEveningOpen(false)}>
+        <View style={styles.houseList}>
+          {EVENING_OPTIONS.map((t) => (
+            <Pressable
+              key={t}
+              style={styles.houseOpt}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: t === eveningTime }}
+              onPress={() => {
+                update({ eveningTime: t });
+                setEveningOpen(false);
+              }}
+            >
+              <Text style={[styles.rowLabel, t === eveningTime && styles.underline]}>{t}</Text>
+              {t === eveningTime && <Text style={styles.mono}>✓</Text>}
             </Pressable>
           ))}
         </View>

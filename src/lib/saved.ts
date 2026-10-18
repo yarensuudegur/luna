@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 
 export type SavedReading = { key: string; h: string };
@@ -13,6 +14,22 @@ async function read(userId: string): Promise<SavedReading[]> {
   } catch {
     return [];
   }
+}
+
+/** Kaydedilen yorumlar, yeniden eskiye; sekme her odaklandığında yenilenir. */
+export function useSavedList(userId: string | undefined): SavedReading[] {
+  const [list, setList] = useState<SavedReading[]>([]);
+  useFocusEffect(
+    useCallback(() => {
+      if (!userId) return;
+      let alive = true;
+      read(userId).then((l) => alive && setList([...l].sort((a, b) => b.key.localeCompare(a.key))));
+      return () => {
+        alive = false;
+      };
+    }, [userId]),
+  );
+  return list;
 }
 
 /** Günün yorumunu kaydetme durumu; liste cihazda tutulur. */
