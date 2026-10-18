@@ -7,4 +7,13 @@ export const colors = {
   soft: '#f5f5f5',
   black: '#0b0b0b',
   white: '#ffffff',
+  /** Profil büstünün arkasındaki açık gri zemin. */
+  tint: '#ececec',
+  /** Tablo ve kart kenarları. */
+  border: '#cfcfcf',
+  borderSoft: '#d6d6d6',
+  /** Koyu gri metin tonları. */
+  ink: '#2a2a2a',
+  inkSoft: '#555555',
+  subtle: '#8a8a8a',
 } as const;

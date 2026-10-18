@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider, isProfileComplete, useAuth } from '@/lib/auth';
+import { SettingsProvider } from '@/lib/settings';
 import { fontAssets } from '@/theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -44,7 +45,9 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <StatusBar style="dark" />
       <AuthProvider>
-        <Routes />
+        <SettingsProvider>
+          <Routes />
+        </SettingsProvider>
       </AuthProvider>
     </SafeAreaProvider>
   );
