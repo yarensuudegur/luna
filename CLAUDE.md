@@ -35,7 +35,7 @@ Yeni özellik kodu `src/` altında, ilgili ekranın yanında veya `components/` 
 - Tüm arayüz metinleri **Türkçe**. Büyük harfe çevirirken Türkçe harfleri koru (İ, Ş, Ğ, Ü, Ö, Ç).
 - **Renkli UI yok**: yalnızca siyah `#0b0b0b`, beyaz ve gri tonlar (`src/theme/colors.ts`). Renk, font ve boşluk değerlerini bileşenlerde sabit yazma; `@/theme` kullan.
 - Başlıklar Bodoni Moda, etiketler Space Mono, gövde metni sistem sans.
-- **Bodoni Moda satır yüksekliği**: serif metinlerde `lineHeight` en az `fontSize × 1.3` olmalı (ör. 19 → 26, 34 → 44). Daha sıkı verilirse iOS harflerin üstünü/altını keser.
+- **Bodoni Moda satır yüksekliği**: serif metinlerde `lineHeight` en az `fontSize × 1.3` olmalı (ör. 19 → 26, 34 → 44). Daha sıkı verilirse iOS harflerin üstünü/altını keser. Çok satırlı Bodoni paragraflarına ayrıca `paddingBottom: 8-10` ver; iOS son satırın yüksekliğini eksik ölçüp kesebiliyor.
 - **Gizli bilgiler** (Supabase anahtarı, Gemini anahtarı) `.env` dosyasında tutulur; `.env*` asla commitlenmez (`.env.example` hariç). İstemciye açılacak değerler `EXPO_PUBLIC_` önekiyle başlar; gerçekten gizli anahtarlar uygulama paketine konmaz.
 - Yeni bağımlılıkları `npx expo install <paket>` ile ekle (SDK uyumlu sürüm için).
 - Commit öncesi `npm run typecheck` temiz olmalı.

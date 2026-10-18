@@ -16,4 +16,12 @@ export const colors = {
   ink: '#2a2a2a',
   inkSoft: '#555555',
   subtle: '#8a8a8a',
+  /** Void ekranı: yıldızlı siyah zemin ve üstündeki gri tonlar. */
+  space: '#000000',
+  spaceLine: 'rgba(255,255,255,0.14)',
+  spaceText: '#e8e8e8',
+  spaceSoft: '#bdbdbd',
+  spaceMute: '#9a9a9a',
+  spaceFaint: '#6f6f6f',
+  spaceButton: '#2a2a2a',
 } as const;
