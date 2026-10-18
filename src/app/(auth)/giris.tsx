@@ -4,7 +4,8 @@ import { Pressable, StyleSheet, Text } from 'react-native';
 import { Button } from '@/components/Button';
 import { Field } from '@/components/Field';
 import { FormScreen } from '@/components/FormScreen';
-import { trAuthError } from '@/lib/auth-errors';
+import { isUnconfirmed, trAuthError } from '@/lib/auth-errors';
+import { useResendConfirmation } from '@/lib/resend';
 import { supabase } from '@/lib/supabase';
 import { colors, fonts } from '@/theme';
 
@@ -14,17 +15,23 @@ export default function GirisScreen() {
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [unconfirmed, setUnconfirmed] = useState(false);
+  const resend = useResendConfirmation(email.trim());
 
   const canSubmit = email.trim().length > 0 && password.length > 0;
 
   async function submit() {
     setBusy(true);
     setError(null);
+    setUnconfirmed(false);
     const { error: err } = await supabase.auth.signInWithPassword({
       email: email.trim(),
       password,
     });
-    if (err) setError(trAuthError(err.message));
+    if (err) {
+      setError(trAuthError(err.message));
+      setUnconfirmed(isUnconfirmed(err.message));
+    }
     setBusy(false);
   }
 
@@ -63,6 +70,14 @@ export default function GirisScreen() {
         onSubmitEditing={canSubmit ? submit : undefined}
         note={error ?? undefined}
       />
+      {unconfirmed && (
+        <Pressable onPress={resend.resend} disabled={resend.busy || resend.cooldown > 0} style={styles.switch}>
+          <Text style={styles.switchText}>
+            {resend.message ??
+              (resend.cooldown > 0 ? `TEKRAR GÖNDER (${resend.cooldown})` : 'DOĞRULAMA E-POSTASINI TEKRAR GÖNDER')}
+          </Text>
+        </Pressable>
+      )}
     </FormScreen>
   );
 }

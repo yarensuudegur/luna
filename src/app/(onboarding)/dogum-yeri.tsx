@@ -4,69 +4,37 @@ import { FlatList, Pressable, StyleSheet, Text } from 'react-native';
 import { Button } from '@/components/Button';
 import { Field } from '@/components/Field';
 import { FormScreen } from '@/components/FormScreen';
-import { useAuth } from '@/lib/auth';
-import { cityLabel, searchCities } from '@/lib/cities';
+import { searchCities } from '@/lib/cities';
 import type { City } from '@/lib/cities';
 import { useOnboarding } from '@/lib/onboarding';
-import { supabase } from '@/lib/supabase';
 import { colors, fonts } from '@/theme';
-
-const UNIQUE_VIOLATION = '23505';
 
 export default function DogumYeriScreen() {
   const router = useRouter();
-  const { session, refreshProfile } = useAuth();
   const { draft, update } = useOnboarding();
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<City | null>(draft.place);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const results = useMemo(() => searchCities(query), [query]);
 
-  async function finish() {
-    if (!selected || !session) return;
-    setBusy(true);
-    setError(null);
+  function next() {
+    if (!selected) return;
     update({ place: selected });
-    const { error: err } = await supabase.from('profiles').upsert({
-      id: session.user.id,
-      name: draft.name,
-      handle: draft.handle,
-      birth_date: draft.birthDate,
-      birth_time: draft.birthTime,
-      birth_time_known: draft.birthTime !== null,
-      birth_place: cityLabel(selected),
-      lat: selected.lat,
-      lon: selected.lon,
-      timezone: selected.tz,
-    });
-    if (err) {
-      setError(
-        err.code === UNIQUE_VIOLATION
-          ? 'Bu kullanıcı adı az önce başkası tarafından alındı. Geri dönüp yenisini seç.'
-          : 'Kaydedilemedi. Bağlantını kontrol edip tekrar dene.',
-      );
-      setBusy(false);
-      return;
-    }
-    // Profil tamamlanınca kök düzen seni otomatik olarak sekmelere taşır.
-    await refreshProfile();
-    setBusy(false);
+    router.push('/bildirim');
   }
 
   return (
     <FormScreen
       scroll={false}
-      eyebrow="Adım 5 / 5"
+      eyebrow="Adım 5 / 6"
       title="Nerede doğdun?"
       subtitle="Gökyüzünü doğduğun şehre göre hesaplarız."
       footer={
         <>
-          <Button onPress={finish} disabled={!selected} loading={busy}>
-            Bitir
+          <Button onPress={next} disabled={!selected}>
+            Devam
           </Button>
-          <Button variant="ghost" onPress={() => router.back()} disabled={busy}>
+          <Button variant="ghost" onPress={() => router.back()}>
             Geri
           </Button>
         </>
@@ -78,7 +46,6 @@ export default function DogumYeriScreen() {
         onChangeText={setQuery}
         placeholder="İstanbul, Londra…"
         autoCorrect={false}
-        note={error ?? undefined}
       />
       <FlatList
         style={styles.list}

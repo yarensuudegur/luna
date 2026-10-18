@@ -53,7 +53,7 @@ export default function KullaniciAdiScreen() {
 
   return (
     <FormScreen
-      eyebrow="Adım 2 / 5"
+      eyebrow="Adım 2 / 6"
       title="Bir kullanıcı adı seç."
       subtitle="Arkadaşların seni bununla bulur."
       footer={

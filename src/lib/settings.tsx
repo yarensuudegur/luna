@@ -3,7 +3,12 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import type { ReactNode } from 'react';
 import { HOUSE_SYSTEMS } from '@/lib/astro';
 import { DEFAULT_EVENING, EVENING_OPTIONS } from '@/lib/bottle';
+import { TONES } from '@/lib/daily';
+import type { Tone } from '@/lib/daily';
 import type { HouseSystem } from '@/lib/astro';
+
+export const RELATIONSHIP_OPTIONS = ['Belirtmek istemiyorum', 'Bekâr', 'Flört ediyor', 'İlişkide', 'Evli'] as const;
+export const LIFE_OPTIONS = ['Belirtmek istemiyorum', 'Öğrenci', 'Çalışan', 'Ebeveyn', 'Emekli'] as const;
 
 export type Settings = {
   houseSystem: HouseSystem;
@@ -11,9 +16,26 @@ export type Settings = {
   classicOnly: boolean;
   /** Duygu kaydının açıldığı akşam saati, "21:00". */
   eveningTime: string;
+  /** Günlük metinlerin ve Void'in tonu. */
+  tone: Tone;
+  /** Açıkken Void kapalıdır; yalnızca insan yazımı metinler gösterilir. */
+  noAI: boolean;
+  relationship: (typeof RELATIONSHIP_OPTIONS)[number];
+  lifeStage: (typeof LIFE_OPTIONS)[number];
+  /** Her gece 00:00'da "Yeni kartın hazır." bildirimi. */
+  cardReminder: boolean;
 };
 
-const DEFAULTS: Settings = { houseSystem: 'Placidus', classicOnly: false, eveningTime: DEFAULT_EVENING };
+const DEFAULTS: Settings = {
+  houseSystem: 'Placidus',
+  classicOnly: false,
+  eveningTime: DEFAULT_EVENING,
+  tone: 'Dengeli',
+  noAI: false,
+  relationship: 'Belirtmek istemiyorum',
+  lifeStage: 'Belirtmek istemiyorum',
+  cardReminder: false,
+};
 const KEY = 'luna.settings.v1';
 
 type SettingsState = Settings & {
@@ -22,18 +44,23 @@ type SettingsState = Settings & {
 
 const SettingsContext = createContext<SettingsState | null>(null);
 
+function oneOf<T extends string>(list: readonly T[], v: unknown, fallback: T): T {
+  return list.includes(v as T) ? (v as T) : fallback;
+}
+
 function parse(raw: string | null): Settings {
   if (!raw) return DEFAULTS;
   try {
     const v = JSON.parse(raw) as Partial<Settings>;
     return {
-      houseSystem: HOUSE_SYSTEMS.includes(v.houseSystem as HouseSystem)
-        ? (v.houseSystem as HouseSystem)
-        : DEFAULTS.houseSystem,
+      houseSystem: oneOf(HOUSE_SYSTEMS, v.houseSystem, DEFAULTS.houseSystem),
       classicOnly: typeof v.classicOnly === 'boolean' ? v.classicOnly : DEFAULTS.classicOnly,
-      eveningTime: EVENING_OPTIONS.includes(v.eveningTime as (typeof EVENING_OPTIONS)[number])
-        ? (v.eveningTime as string)
-        : DEFAULTS.eveningTime,
+      eveningTime: oneOf(EVENING_OPTIONS, v.eveningTime, DEFAULTS.eveningTime),
+      tone: oneOf(TONES, v.tone, DEFAULTS.tone),
+      noAI: typeof v.noAI === 'boolean' ? v.noAI : DEFAULTS.noAI,
+      relationship: oneOf(RELATIONSHIP_OPTIONS, v.relationship, DEFAULTS.relationship),
+      lifeStage: oneOf(LIFE_OPTIONS, v.lifeStage, DEFAULTS.lifeStage),
+      cardReminder: typeof v.cardReminder === 'boolean' ? v.cardReminder : DEFAULTS.cardReminder,
     };
   } catch {
     return DEFAULTS;

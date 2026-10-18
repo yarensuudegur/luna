@@ -2,12 +2,14 @@ import { Tabs } from 'expo-router/js-tabs';
 import { TabBar } from '@/components/TabBar';
 import { TopBar } from '@/components/TopBar';
 import { NotificationsProvider } from '@/lib/notifications';
+import { RemindersProvider } from '@/lib/reminders';
 import { TodayProvider } from '@/lib/today';
 
 export default function TabsLayout() {
   return (
     <NotificationsProvider>
     <TodayProvider>
+    <RemindersProvider>
       <Tabs
         tabBar={(props) => <TabBar {...props} />}
         screenOptions={{ header: ({ route }) => <TopBar routeName={route.name} /> }}
@@ -18,6 +20,7 @@ export default function TabsLayout() {
         <Tabs.Screen name="gunluk" options={{ title: 'GÜNLÜK' }} />
         <Tabs.Screen name="sen" options={{ title: 'SEN' }} />
       </Tabs>
+    </RemindersProvider>
     </TodayProvider>
     </NotificationsProvider>
   );

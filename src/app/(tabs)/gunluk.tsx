@@ -27,6 +27,7 @@ import {
 import type { MoodEntry, WeekData } from '@/lib/bottle';
 import { formatTopDate, fromDateKey } from '@/lib/date';
 import { moonSignOf, useBottleArchive, useMoods, useOpenedWeeks } from '@/lib/moods';
+import { useReminders } from '@/lib/reminders';
 import { useSavedList } from '@/lib/saved';
 import { useSettings } from '@/lib/settings';
 import { useCardMap } from '@/lib/tarot';
@@ -62,6 +63,7 @@ export default function GunlukScreen() {
   const archive = useBottleArchive(userId);
   const openedWeeks = useOpenedWeeks(userId);
   const saved = useSavedList(userId);
+  const { noteMoodSaved } = useReminders();
 
   const [now, setNow] = useState(() => new Date());
   const [demoEve, setDemoEve] = useState(false);
@@ -132,6 +134,7 @@ export default function GunlukScreen() {
       bottle.current?.disarm();
       return false;
     }
+    noteMoodSaved();
     busy.current = true;
     // Form kalkıp yerine "Bugün şişende." gelince şişenin yeri değişir.
     await wait(120);

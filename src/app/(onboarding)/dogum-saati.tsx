@@ -33,7 +33,7 @@ export default function DogumSaatiScreen() {
 
   return (
     <FormScreen
-      eyebrow="Adım 4 / 5"
+      eyebrow="Adım 4 / 6"
       title="Kaçta doğdun?"
       subtitle="Yükselen burcun ve evlerin saate bağlı. Bilmiyorsan sorun değil."
       footer={

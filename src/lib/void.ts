@@ -64,7 +64,10 @@ type Row = { id: string; role: 'user' | 'assistant'; body: string; created_at: s
 
 const fromRow = (r: Row): VoidMessage => ({ id: r.id, role: r.role, body: r.body, createdAt: r.created_at });
 
-export function useVoid(userId: string | undefined) {
+/** Cevabın tonunu ve bağlamını belirleyen ayarlar. */
+export type VoidPrefs = { tone: string; relationship: string; lifeStage: string };
+
+export function useVoid(userId: string | undefined, prefs: VoidPrefs) {
   const [messages, setMessages] = useState<VoidMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
@@ -133,7 +136,7 @@ export function useVoid(userId: string | undefined) {
         ]);
       try {
         const { data, error } = await supabase.functions.invoke<{ answer?: string }>('void', {
-          body: { question: q, since },
+          body: { question: q, since, ...prefs },
         });
         if (error) {
           const status = error instanceof FunctionsHttpError ? error.context.status : 0;
@@ -156,7 +159,7 @@ export function useVoid(userId: string | undefined) {
         setAsking(false);
       }
     },
-    [asking, since],
+    [asking, since, prefs.tone, prefs.relationship, prefs.lifeStage],
   );
 
   const newChat = useCallback(() => setSince(new Date().toISOString()), []);
