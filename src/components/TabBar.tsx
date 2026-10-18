@@ -1,16 +1,18 @@
 import type { BottomTabBarProps } from 'expo-router/js-tabs';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from '@/i18n';
 import { useNotifications } from '@/lib/notifications';
 import { colors, fonts, layout } from '@/theme';
 
 export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarProps) {
   const { badge } = useNotifications();
+  const { t } = useTranslation();
   const dark = state.routes[state.index]?.name === 'void';
   return (
     <View style={[styles.bar, dark && styles.barDark, { paddingBottom: insets.bottom }]} accessibilityRole="tablist">
       {state.routes.map((route, index) => {
         const focused = state.index === index;
-        const label = descriptors[route.key].options.title ?? route.name;
+        const label = t(`tabs.${route.name}`, { defaultValue: descriptors[route.key].options.title ?? route.name });
         const onPress = () => {
           const event = navigation.emit({
             type: 'tabPress',
@@ -37,7 +39,7 @@ export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarP
               <Text style={[styles.label, dark && styles.labelDark, focused && (dark ? styles.labelActiveDark : styles.labelActive)]} numberOfLines={1}>
                 {label}
               </Text>
-              {route.name === 'arkadaslar' && badge && <View style={styles.badge} accessibilityLabel="Yeni bildirim" />}
+              {route.name === 'arkadaslar' && badge && <View style={styles.badge} accessibilityLabel={t('top.newNotice')} />}
             </View>
             {focused && <View style={[styles.dot, dark && styles.dotDark]} />}
           </Pressable>
@@ -61,13 +63,13 @@ const styles = StyleSheet.create({
   labelDark: { color: colors.spaceFaint },
   dotDark: { backgroundColor: colors.white },
   labelActiveDark: { color: colors.white },
-  badge: { position: 'absolute', top: -2, right: -7, width: 5, height: 5, borderRadius: 3, backgroundColor: colors.fg },
+  badge: { position: 'absolute', top: -2, right: -7, width: 5, height: 5, borderRadius: 3, backgroundColor: colors.black },
   dot: {
     position: 'absolute',
     bottom: 12,
     width: 4,
     height: 4,
     borderRadius: 2,
-    backgroundColor: colors.fg,
+    backgroundColor: colors.black,
   },
 });

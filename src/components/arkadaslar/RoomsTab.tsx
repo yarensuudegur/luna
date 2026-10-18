@@ -1,7 +1,9 @@
+import { locale } from '@/i18n/lang';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { MoonIcon } from '@/components/bugun/MoonIcon';
 import { Label, Section } from '@/components/Section';
-import { BURC_DA } from '@/lib/astro';
+import { useTranslation } from '@/i18n';
+import { moonEvent } from '@/i18n/names';
 import type { MoonEvent } from '@/lib/astro';
 import { formatDayMonth } from '@/lib/date';
 import type { Group } from '@/lib/rooms';
@@ -40,11 +42,12 @@ export function RoomsTab({
   onOpenGroup,
   onNewGroup,
 }: Props) {
+  const { t } = useTranslation();
   const days = event ? Math.round((event.date.getTime() - now.getTime()) / 86400000) : 0;
 
   return (
     <Section last>
-      <Label>KOZMİK OLAY ODASI</Label>
+      <Label>{t('friends.rooms.cosmic')}</Label>
       {event && (
         <Pressable
           onPress={eventOpen ? onOpenEvent : onLockedEvent}
@@ -54,35 +57,35 @@ export function RoomsTab({
         >
           <View style={styles.row}>
             <Text style={styles.monoLight}>
-              {eventOpen ? 'AÇIK' : `${days} GÜN SONRA AÇILIR`}
+              {eventOpen ? t('friends.rooms.open') : t('friends.rooms.opensIn', { n: days })}
             </Text>
             <MoonIcon elongation={event.name === 'Dolunay' ? 180 : 0} size={26} inverse />
           </View>
-          <Text style={styles.eventTitle}>{event.name} odası</Text>
+          <Text style={styles.eventTitle}>{t('friends.rooms.roomName', { name: moonEvent(event.name) })}</Text>
           <Text style={styles.eventSub}>
-            {formatDayMonth(event.date)} · Ay {BURC_DA[event.sign]}. Olay boyunca açık kalır.
+            {t('friends.rooms.sub', { date: formatDayMonth(event.date), sign: t(`signs.in.${event.sign}`) })}
           </Text>
         </Pressable>
       )}
 
       <View style={[styles.row, styles.groupHead]}>
-        <Label style={styles.noMargin}>GRUPLAR</Label>
+        <Label style={styles.noMargin}>{t('friends.rooms.groups')}</Label>
         <Pressable onPress={onNewGroup} accessibilityRole="button" hitSlop={10}>
-          <Text style={styles.monoS}>YENİ GRUP +</Text>
+          <Text style={styles.monoS}>{t('friends.rooms.newGroup')}</Text>
         </Pressable>
       </View>
 
       {error ? (
         <>
-          <Text style={styles.body}>Gruplar yüklenemedi.</Text>
+          <Text style={styles.body}>{t('friends.rooms.loadError')}</Text>
           <Pressable onPress={onRetry} accessibilityRole="button" style={styles.retry}>
-            <Text style={styles.retryText}>TEKRAR DENE</Text>
+            <Text style={styles.retryText}>{t('common.retry').toLocaleUpperCase(locale())}</Text>
           </Pressable>
         </>
       ) : loading ? (
-        <Text style={styles.body}>Yükleniyor…</Text>
+        <Text style={styles.body}>{t('common.loading')}</Text>
       ) : groups.length === 0 ? (
-        <Text style={styles.body}>Henüz grubun yok.</Text>
+        <Text style={styles.body}>{t('friends.rooms.none')}</Text>
       ) : (
         groups.map((g) => (
           <Pressable
@@ -91,13 +94,13 @@ export function RoomsTab({
             accessibilityRole="button"
             style={[styles.room, styles.light]}
           >
-            <Text style={[styles.monoS, styles.mute]}>GRUP · {g.memberIds.length} KİŞİ</Text>
+            <Text style={[styles.monoS, styles.mute]}>{t('friends.rooms.groupMeta', { n: g.memberIds.length })}</Text>
             <View style={styles.titleRow}>
               <Text style={[styles.groupTitle, styles.flex]}>{g.name}</Text>
-              {unread.has(g.id) && <View style={styles.dot} accessibilityLabel="Okunmamış mesaj" />}
+              {unread.has(g.id) && <View style={styles.dot} accessibilityLabel={t('friends.rooms.unread')} />}
             </View>
             <Text style={styles.preview} numberOfLines={1}>
-              {last[g.id] ?? 'Henüz mesaj yok'}
+              {last[g.id] ?? t('friends.rooms.noMessages')}
             </Text>
           </Pressable>
         ))
@@ -108,7 +111,7 @@ export function RoomsTab({
 
 const styles = StyleSheet.create({
   room: { padding: 16, gap: 8, borderWidth: 1, marginBottom: 12 },
-  dark: { backgroundColor: colors.fg, borderColor: colors.fg },
+  dark: { backgroundColor: colors.black, borderColor: colors.black },
   light: { borderColor: colors.line },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
   groupHead: { marginTop: 12, marginBottom: 14 },
@@ -120,10 +123,10 @@ const styles = StyleSheet.create({
   eventSub: { fontSize: 12.5, lineHeight: 18, color: colors.white, opacity: 0.75 },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   flex: { flex: 1 },
-  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.fg },
+  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.black },
   groupTitle: { fontFamily: fonts.serif, fontSize: 20, lineHeight: 26, color: colors.fg },
-  preview: { fontSize: 12.5, color: colors.mute },
-  body: { fontSize: 14, lineHeight: 22, color: colors.mute },
+  preview: { fontSize: 12.5, color: colors.body },
+  body: { fontSize: 14, lineHeight: 22, color: colors.body },
   retry: { marginTop: 14 },
   retryText: {
     fontFamily: fonts.mono,

@@ -3,6 +3,8 @@ import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { Button } from '@/components/Button';
 import { MoodSlider } from '@/components/gunluk/MoodSlider';
 import { Label, Section } from '@/components/Section';
+import { useTranslation } from '@/i18n';
+import { moodName } from '@/i18n/names';
 import { MOODS } from '@/lib/bottle';
 import type { MoodEntry, MoodValues } from '@/lib/bottle';
 import { colors, fonts } from '@/theme';
@@ -17,6 +19,7 @@ type Props = {
 
 /** Akşam duygu kaydı: 6 duygu için 0–10 puan ve kısa not. */
 export function MoodForm({ dateLabel, onSave }: Props) {
+  const { t } = useTranslation();
   const [values, setValues] = useState<MoodValues>(initial);
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
@@ -35,15 +38,15 @@ export function MoodForm({ dateLabel, onSave }: Props) {
 
   return (
     <Section>
-      <Label>{`Bugün · ${dateLabel}`}</Label>
-      <Text style={styles.h1}>Bugün nasıl hissettin?</Text>
+      <Label>{t('gunluk.mood.label', { date: dateLabel })}</Label>
+      <Text style={styles.h1}>{t('gunluk.mood.title')}</Text>
       <View style={styles.rows}>
-        {MOODS.map(([f, label]) => (
+        {MOODS.map(([f]) => (
           <View key={f} style={styles.row}>
             <View style={styles.dot} />
-            <Text style={styles.label}>{label}</Text>
+            <Text style={styles.label}>{moodName(f)}</Text>
             <View style={styles.slider}>
-              <MoodSlider label={label} value={values[f]} onChange={(v) => setValues((s) => ({ ...s, [f]: v }))} />
+              <MoodSlider label={moodName(f)} value={values[f]} onChange={(v) => setValues((s) => ({ ...s, [f]: v }))} />
             </View>
             <Text style={styles.value}>{values[f]}</Text>
           </View>
@@ -52,17 +55,17 @@ export function MoodForm({ dateLabel, onSave }: Props) {
       <TextInput
         value={note}
         onChangeText={setNote}
-        placeholder="Bugün ne oldu?"
+        placeholder={t('gunluk.mood.placeholder')}
         placeholderTextColor={colors.faint}
-        selectionColor={colors.fg}
+        selectionColor={colors.black}
         maxLength={280}
         multiline
         style={styles.note}
       />
-      {failed && <Text style={styles.error}>Kaydedilemedi. Bağlantını kontrol edip tekrar dene.</Text>}
+      {failed && <Text style={styles.error}>{t('gunluk.mood.error')}</Text>}
       <View style={styles.save}>
         <Button onPress={submit} loading={saving}>
-          Şişeye koy
+          {t('gunluk.mood.put')}
         </Button>
       </View>
     </Section>
@@ -73,7 +76,7 @@ const styles = StyleSheet.create({
   h1: { fontFamily: fonts.serif, fontSize: 34, lineHeight: 44, letterSpacing: -0.34, color: colors.fg, marginBottom: 12 },
   rows: { marginTop: 4 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 4 },
-  dot: { width: 9, height: 9, borderRadius: 4.5, backgroundColor: colors.fg, marginHorizontal: 6.5 },
+  dot: { width: 9, height: 9, borderRadius: 4.5, backgroundColor: colors.black, marginHorizontal: 6.5 },
   label: { width: 92, fontFamily: fonts.serif, fontSize: 16, lineHeight: 24, color: colors.fg },
   slider: { flex: 1 },
   value: { width: 24, fontFamily: fonts.mono, fontSize: 12, textAlign: 'right', color: colors.fg },
@@ -85,7 +88,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.fg,
     borderBottomWidth: 1,
-    borderBottomColor: colors.fg,
+    borderBottomColor: colors.black,
   },
   error: { fontSize: 13, color: colors.fg, marginTop: 14 },
   save: { marginTop: 18, alignSelf: 'flex-start' },

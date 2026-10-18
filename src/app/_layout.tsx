@@ -2,8 +2,10 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Intro } from '@/components/Intro';
+import { loadLanguage } from '@/i18n';
 import { AuthProvider, isProfileComplete, useAuth } from '@/lib/auth';
 import { SettingsProvider } from '@/lib/settings';
 import { fontAssets } from '@/theme';
@@ -14,10 +16,6 @@ SplashScreen.preventAutoHideAsync();
 function Routes() {
   const { session, profile, loading } = useAuth();
   const complete = isProfileComplete(profile);
-
-  useEffect(() => {
-    if (!loading) SplashScreen.hideAsync();
-  }, [loading]);
 
   if (loading) return null;
 
@@ -31,22 +29,44 @@ function Routes() {
       </Stack.Protected>
       <Stack.Protected guard={!!session && complete}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="dogum-duzenle" />
       </Stack.Protected>
     </Stack>
+  );
+}
+
+/** Yükleme sürerken giriş animasyonu ekranı kaplar; her şey hazır olunca ana ekran belirir. */
+function Shell({ fontsReady }: { fontsReady: boolean }) {
+  const { loading } = useAuth();
+  const [langReady, setLangReady] = useState(false);
+
+  useEffect(() => {
+    void loadLanguage().finally(() => setLangReady(true));
+  }, []);
+
+  const hideSplash = useCallback(() => {
+    void SplashScreen.hideAsync();
+  }, []);
+
+  const ready = fontsReady && langReady && !loading;
+
+  return (
+    <>
+      {fontsReady && <Routes />}
+      <Intro ready={ready} onShown={hideSplash} />
+    </>
   );
 }
 
 export default function RootLayout() {
   const [loaded, error] = useFonts(fontAssets);
 
-  if (!loaded && !error) return null;
-
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" />
       <AuthProvider>
         <SettingsProvider>
-          <Routes />
+          <Shell fontsReady={loaded || !!error} />
         </SettingsProvider>
       </AuthProvider>
     </SafeAreaProvider>

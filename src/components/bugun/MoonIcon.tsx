@@ -15,8 +15,8 @@ export function MoonIcon({ elongation, size, inverse }: Props) {
   const r = size / 2;
   const waxing = elongation < 180;
   const rx = Math.abs(k) * r;
-  const dark = inverse ? colors.white : colors.fg;
-  const lit = inverse ? colors.fg : colors.white;
+  const dark = inverse ? colors.white : colors.black;
+  const lit = inverse ? colors.black : colors.bg;
   const outer = r - 0.5;
   const d =
     `M ${r} 0.5 A ${outer} ${outer} 0 0 ${waxing ? 1 : 0} ${r} ${size - 0.5} ` +

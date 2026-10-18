@@ -1,7 +1,9 @@
+import { locale } from '@/i18n/lang';
 import { useEffect, useRef, useState } from 'react';
 import { Keyboard, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Initial } from '@/components/arkadaslar/Initial';
+import { useTranslation } from '@/i18n';
 import { useRoom } from '@/lib/rooms';
 import type { RoomMessage } from '@/lib/rooms';
 import { MAX_MESSAGE, cleanMessage } from '@/lib/room-utils';
@@ -32,6 +34,7 @@ const hhmm = (iso: string) => {
 /** Sohbet odası: Realtime ile anlık mesajlar, sistem mesajları ve yazı alanı. */
 export function RoomView({ roomId, title, right, group, userId, showMembers, intro, onMembersChanged, onBack }: Props) {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const { messages, members, loading, send } = useRoom(roomId, group);
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
@@ -63,14 +66,14 @@ export function RoomView({ roomId, title, right, group, userId, showMembers, int
   }, [messages, onMembersChanged]);
 
   const memberLine = [
-    'Sen',
+    t('common.you'),
     ...[...members.values()].filter((m) => m.id !== userId).map((m) => m.name),
   ].join(' · ');
 
   function nameOf(m: RoomMessage): string {
-    if (m.sender === userId) return 'Sen';
-    if (!group) return 'Üye';
-    return members.get(m.sender ?? '')?.name ?? 'Biri';
+    if (m.sender === userId) return t('common.you');
+    if (!group) return t('common.member');
+    return members.get(m.sender ?? '')?.name ?? t('common.someone');
   }
 
   async function submit() {
@@ -88,22 +91,22 @@ export function RoomView({ roomId, title, right, group, userId, showMembers, int
     <View style={[styles.root, { paddingBottom: keyboard }]}>
       <View style={styles.top}>
         <Pressable onPress={onBack} accessibilityRole="button" hitSlop={10}>
-          <Text style={styles.link}>← GERİ</Text>
+          <Text style={styles.link}>{t('friends.room.back')}</Text>
         </Pressable>
         <Text style={styles.title} numberOfLines={1}>
-          {title.toLocaleUpperCase('tr')}
+          {title.toLocaleUpperCase(locale())}
         </Text>
         {right.kind === 'edit' ? (
           <Pressable onPress={right.onPress} accessibilityRole="button" hitSlop={10}>
-            <Text style={styles.monoS}>DÜZENLE</Text>
+            <Text style={styles.monoS}>{t('friends.room.edit')}</Text>
           </Pressable>
         ) : (
-          <Text style={[styles.monoS, styles.mute]}>{right.text.toLocaleUpperCase('tr')}</Text>
+          <Text style={[styles.monoS, styles.mute]}>{right.text.toLocaleUpperCase(locale())}</Text>
         )}
       </View>
       {showMembers ? (
         <View style={styles.members}>
-          <Text style={[styles.monoS, styles.mute]}>{memberLine.toLocaleUpperCase('tr')}</Text>
+          <Text style={[styles.monoS, styles.mute]}>{memberLine.toLocaleUpperCase(locale())}</Text>
         </View>
       ) : null}
 
@@ -114,19 +117,19 @@ export function RoomView({ roomId, title, right, group, userId, showMembers, int
         keyboardShouldPersistTaps="handled"
         onContentSizeChange={() => scroll.current?.scrollToEnd({ animated: false })}
       >
-        {intro ? <Text style={styles.sys}>{intro.toLocaleUpperCase('tr')}</Text> : null}
-        {loading && messages.length === 0 && <Text style={styles.sys}>YÜKLENİYOR</Text>}
+        {intro ? <Text style={styles.sys}>{intro.toLocaleUpperCase(locale())}</Text> : null}
+        {loading && messages.length === 0 && <Text style={styles.sys}>{t('friends.room.loading')}</Text>}
         {messages.map((m) =>
           m.sender === null ? (
             <Text key={m.id} style={styles.sys}>
-              {m.body.toLocaleUpperCase('tr')}
+              {m.body.toLocaleUpperCase(locale())}
             </Text>
           ) : (
             <View key={m.id} style={styles.msg}>
               <Initial name={nameOf(m)} size={30} outline={m.sender === userId} />
               <View style={styles.flex}>
                 <View style={styles.meta}>
-                  <Text style={styles.metaText}>{nameOf(m).toLocaleUpperCase('tr')}</Text>
+                  <Text style={styles.metaText}>{nameOf(m).toLocaleUpperCase(locale())}</Text>
                   <Text style={styles.metaText}>{hhmm(m.createdAt)}</Text>
                 </View>
                 <Text style={styles.txt}>{m.body}</Text>
@@ -137,17 +140,17 @@ export function RoomView({ roomId, title, right, group, userId, showMembers, int
       </ScrollView>
 
       <View style={styles.composer}>
-        {failed && <Text style={styles.error}>Gönderilemedi, tekrar dene.</Text>}
+        {failed && <Text style={styles.error}>{t('friends.room.sendFailed')}</Text>}
         <View style={styles.form}>
           <TextInput
             value={text}
             onChangeText={setText}
-            placeholder="Mesaj yaz"
+            placeholder={t('friends.room.placeholder')}
             placeholderTextColor={colors.faint}
-            selectionColor={colors.fg}
+            selectionColor={colors.black}
             maxLength={MAX_MESSAGE}
             multiline
-            accessibilityLabel="Mesaj"
+            accessibilityLabel={t('friends.room.message')}
             style={styles.input}
           />
           <Pressable
@@ -156,7 +159,7 @@ export function RoomView({ roomId, title, right, group, userId, showMembers, int
             accessibilityRole="button"
             style={[styles.send, (sending || cleanMessage(text) === null) && styles.sendOff]}
           >
-            <Text style={styles.sendText}>GÖNDER</Text>
+            <Text style={styles.sendText}>{t('friends.room.send')}</Text>
           </Pressable>
         </View>
       </View>
@@ -225,9 +228,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.fg,
     borderBottomWidth: 1,
-    borderBottomColor: colors.fg,
+    borderBottomColor: colors.black,
   },
-  send: { backgroundColor: colors.fg, paddingVertical: 11, paddingHorizontal: 12 },
+  send: { backgroundColor: colors.black, paddingVertical: 11, paddingHorizontal: 12 },
   sendOff: { opacity: 0.35 },
   sendText: { fontFamily: fonts.mono, fontSize: 9.5, letterSpacing: 1.4, color: colors.white },
 });

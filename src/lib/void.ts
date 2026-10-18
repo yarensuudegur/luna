@@ -1,5 +1,7 @@
 import { FunctionsHttpError } from '@supabase/supabase-js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { t } from '@/i18n/core';
+import type { Lang } from '@/i18n/lang';
 import { supabase } from '@/lib/supabase';
 
 export const VOID_LIMIT = 5;
@@ -18,36 +20,13 @@ export type VoidMessage = {
 
 export type VoidCategory = 'Ben' | 'Aşk' | 'İş' | 'Sosyal';
 
-/** Prototipteki VCATS: kategori başına hazır sorular. */
-export const VOID_CATS: Record<VoidCategory, string[]> = {
-  Ben: [
-    'Bu ay neye odaklanmalıyım?',
-    'Neden son günlerde yorgun hissediyorum?',
-    'Kendimi neden bu kadar sorguluyorum?',
-    'Yalnız kalmayı nasıl öğrenirim?',
-    'Nelere daha az takılmalıyım?',
-  ],
-  Aşk: [
-    'Flörtümle bu hafta nasıl ilerlerim?',
-    'Neden hep aynı tip insanlara çekiliyorum?',
-    'İlişkimde neyi daha açık konuşmalıyım?',
-    'Kalbimi kırılmaktan nasıl korurum?',
-  ],
-  İş: [
-    'Sınav haftasında en verimli günlerim hangileri?',
-    'Yeni bir projeye başlamak için iyi bir zaman mı?',
-    'İş arkadaşımla gerginliği nasıl çözerim?',
-    'Hangi işte daha mutlu olurum?',
-  ],
-  Sosyal: [
-    'Arkadaş grubumda nasıl bir rolüm var?',
-    'Yeni insanlarla tanışmak için iyi bir dönem mi?',
-    'Uzun süredir konuşmadığım birine yazmalı mıyım?',
-    'Hayır demeyi nasıl öğrenirim?',
-  ],
-};
+/** Kategori anahtarları (iç adlar Türkçe); görünen ad ve hazır sorular sözlüktedir. */
+export const VOID_CAT_NAMES = ['Ben', 'Aşk', 'İş', 'Sosyal'] as const satisfies readonly VoidCategory[];
 
-export const VOID_CAT_NAMES = Object.keys(VOID_CATS) as VoidCategory[];
+/** Prototipteki VCATS: kategori başına hazır sorular, seçili dilde. */
+export function voidQuestions(cat: VoidCategory): string[] {
+  return t(`void.cats.${cat}`, { returnObjects: true }) as unknown as string[];
+}
 
 const HOUR = 3_600_000;
 const DAY = 24 * HOUR;
@@ -57,15 +36,12 @@ export function istanbulDayStart(now: number): number {
   return Math.floor((now + 3 * HOUR) / DAY) * DAY - 3 * HOUR;
 }
 
-const MSG_FAILED = 'Bir sorun oldu, hakkın düşmedi. Biraz sonra tekrar dene.';
-const MSG_LIMIT = 'Bugünkü soruların bitti. Yeni sorular 00:00’da.';
-
 type Row = { id: string; role: 'user' | 'assistant'; body: string; created_at: string };
 
 const fromRow = (r: Row): VoidMessage => ({ id: r.id, role: r.role, body: r.body, createdAt: r.created_at });
 
-/** Cevabın tonunu ve bağlamını belirleyen ayarlar. */
-export type VoidPrefs = { tone: string; relationship: string; lifeStage: string };
+/** Cevabın dilini ve bağlamını belirleyen ayarlar. */
+export type VoidPrefs = { lang: Lang; relationship: string; lifeStage: string };
 
 export function useVoid(userId: string | undefined, prefs: VoidPrefs) {
   const [messages, setMessages] = useState<VoidMessage[]>([]);
@@ -120,7 +96,7 @@ export function useVoid(userId: string | undefined, prefs: VoidPrefs) {
     [messages, since],
   );
 
-  /** Soruyu gönderir; başarısız olursa soru "failed" işaretlenir ve Türkçe hata balonu eklenir. */
+  /** Soruyu gönderir; başarısız olursa soru "failed" işaretlenir ve hata balonu eklenir. */
   const ask = useCallback(
     async (question: string): Promise<void> => {
       const q = question.trim().slice(0, MAX_QUESTION);
@@ -141,12 +117,12 @@ export function useVoid(userId: string | undefined, prefs: VoidPrefs) {
         if (error) {
           const status = error instanceof FunctionsHttpError ? error.context.status : 0;
           if (status === 429) setLimitDay(istanbulDayStart(Date.now()));
-          fail(status === 429 ? MSG_LIMIT : MSG_FAILED);
+          fail(t(status === 429 ? 'void.limit' : 'void.failed'));
           return;
         }
         const answer = data?.answer;
         if (!answer) {
-          fail(MSG_FAILED);
+          fail(t('void.failed'));
           return;
         }
         setMessages((m) => [
@@ -154,12 +130,12 @@ export function useVoid(userId: string | undefined, prefs: VoidPrefs) {
           { id: `local-a-${sentAt}`, role: 'assistant', body: answer, createdAt: new Date().toISOString() },
         ]);
       } catch {
-        fail(MSG_FAILED);
+        fail(t('void.failed'));
       } finally {
         setAsking(false);
       }
     },
-    [asking, since, prefs.tone, prefs.relationship, prefs.lifeStage],
+    [asking, since, prefs.lang, prefs.relationship, prefs.lifeStage],
   );
 
   const newChat = useCallback(() => setSince(new Date().toISOString()), []);

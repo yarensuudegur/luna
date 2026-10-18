@@ -3,14 +3,6 @@ import { deg, norm, rad } from './zodiac';
 export const HOUSE_SYSTEMS = ['Placidus', 'Whole Sign', 'Koch', 'Equal', 'Porphyry'] as const;
 export type HouseSystem = (typeof HOUSE_SYSTEMS)[number];
 
-export const HOUSE_INFO: Record<HouseSystem, string> = {
-  Placidus: 'En yaygın sistem. Evleri doğum saatine ve enleme göre farklı genişlikte böler.',
-  'Whole Sign': 'Antik sistem. Yükselen burcun tamamı 1. ev sayılır, her burç bir evdir.',
-  Koch: 'Placidus’a benzer, doğum yerinin enlemine daha duyarlıdır.',
-  Equal: 'Yükselen dereceden başlayıp her evi 30 derece eşit böler.',
-  Porphyry: 'Dört köşe arasını eşit üçe böler. Bazı popüler uygulamaların varsayılanıdır.',
-};
-
 /** Ortalama ekliptik eğikliği (derece), T = J2000'den beri Jülyen yüzyıl. */
 export function obliquity(T: number): number {
   return 23.439291 - 0.0130042 * T;

@@ -1,4 +1,6 @@
+import { locale } from '@/i18n/lang';
 import Svg, { Circle, G, Line, Text as SvgText } from 'react-native-svg';
+import { signName } from '@/i18n/names';
 import { BURCLAR, norm } from '@/lib/astro';
 import { colors, fonts } from '@/theme';
 
@@ -43,14 +45,14 @@ export function ChartWheel({
 
   return (
     <Svg width={width} height={(width * SIZE) / (SIZE + 20)} viewBox={`-20 0 ${SIZE + 20} ${SIZE}`}>
-      <Circle cx={C} cy={C} r={R1} fill="none" stroke={colors.fg} />
-      <Circle cx={C} cy={C} r={R2} fill="none" stroke={colors.fg} />
+      <Circle cx={C} cy={C} r={R1} fill="none" stroke={colors.black} />
+      <Circle cx={C} cy={C} r={R2} fill="none" stroke={colors.black} />
       <Circle cx={C} cy={C} r={R3} fill="none" stroke={colors.line} />
 
       {BURCLAR.map((burc, i) => {
         const [x1, y1] = point(R1, i * 30);
         const [x2, y2] = point(R2, i * 30);
-        return <Line key={burc} x1={x1} y1={y1} x2={x2} y2={y2} stroke={colors.fg} />;
+        return <Line key={burc} x1={x1} y1={y1} x2={x2} y2={y2} stroke={colors.black} />;
       })}
       {BURCLAR.map((burc, i) => {
         const [tx, ty] = point((R1 + R2) / 2, i * 30 + 15);
@@ -64,14 +66,14 @@ export function ChartWheel({
             letterSpacing={1}
             textAnchor="middle"
             alignmentBaseline="central"
-            fill={colors.fg}
+            fill={colors.black}
           >
-            {burc.toLocaleUpperCase('tr')}
+            {signName(i).toLocaleUpperCase(locale())}
           </SvgText>
         );
       })}
 
-      <Line x1={a1[0]} y1={a1[1]} x2={a2[0]} y2={a2[1]} stroke={colors.fg} />
+      <Line x1={a1[0]} y1={a1[1]} x2={a2[0]} y2={a2[1]} stroke={colors.black} />
 
       {aspects.map(({ a, b, solid }) => {
         const [x1, y1] = point(R3 - 4, planets[a].lon);
@@ -83,7 +85,7 @@ export function ChartWheel({
             y1={y1}
             x2={x2}
             y2={y2}
-            stroke={colors.fg}
+            stroke={colors.black}
             strokeWidth={0.6}
             strokeDasharray={solid ? undefined : '2 2'}
           />
@@ -101,11 +103,11 @@ export function ChartWheel({
               fontSize={14}
               textAnchor="middle"
               alignmentBaseline="central"
-              fill={colors.fg}
+              fill={colors.black}
             >
               {`${p.glyph}︎`}
             </SvgText>
-            <Circle cx={dx} cy={dy} r={1.6} fill={colors.fg} />
+            <Circle cx={dx} cy={dy} r={1.6} fill={colors.black} />
           </G>
         );
       })}
@@ -117,7 +119,7 @@ export function ChartWheel({
         fontSize={8}
         textAnchor="end"
         alignmentBaseline="central"
-        fill={colors.fg}
+        fill={colors.black}
       >
         ASC
       </SvgText>

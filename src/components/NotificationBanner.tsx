@@ -1,3 +1,4 @@
+import { locale } from '@/i18n/lang';
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, Pressable, StyleSheet, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -56,7 +57,7 @@ export function NotificationBanner({ text, onPress, onDone }: Props) {
         style={[styles.band, { paddingTop: insets.top + 12 }]}
       >
         <Text style={styles.text} numberOfLines={3}>
-          {text.toLocaleUpperCase('tr')}
+          {text.toLocaleUpperCase(locale())}
         </Text>
       </Pressable>
     </Animated.View>
@@ -66,7 +67,7 @@ export function NotificationBanner({ text, onPress, onDone }: Props) {
 const styles = StyleSheet.create({
   wrap: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100 },
   band: {
-    backgroundColor: colors.fg,
+    backgroundColor: colors.black,
     paddingBottom: 14,
     paddingHorizontal: layout.screenPadding,
   },

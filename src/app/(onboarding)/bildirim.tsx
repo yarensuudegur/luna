@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { Button } from '@/components/Button';
 import { FormScreen } from '@/components/FormScreen';
+import { useTranslation } from '@/i18n';
 import { useAuth } from '@/lib/auth';
 import { cityLabel } from '@/lib/cities';
 import { useOnboarding } from '@/lib/onboarding';
@@ -14,6 +15,7 @@ const UNIQUE_VIOLATION = '23505';
 
 export default function BildirimScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { session, refreshProfile } = useAuth();
   const { draft } = useOnboarding();
   const [busy, setBusy] = useState(false);
@@ -41,8 +43,8 @@ export default function BildirimScreen() {
     if (err) {
       setError(
         err.code === UNIQUE_VIOLATION
-          ? 'Bu kullanıcı adı az önce başkası tarafından alındı. Geri dönüp yenisini seç.'
-          : 'Kaydedilemedi. Bağlantını kontrol edip tekrar dene.',
+          ? t('onboarding.handleTaken')
+          : t('onboarding.saveError'),
       );
       setBusy(false);
       return;
@@ -54,19 +56,19 @@ export default function BildirimScreen() {
 
   return (
     <FormScreen
-      eyebrow="Adım 6 / 6"
-      title="Sana nazikçe hatırlatalım mı?"
-      subtitle="Akşamları duygularını şişene eklemeni, istersen yeni kartın hazır olduğunu haber verebiliriz. Başka bildirim göndermeyiz. İstediğin zaman Ayarlar'dan değiştirebilirsin."
+      eyebrow={t('onboarding.step', { n: 6, total: 6 })}
+      title={t('onboarding.notifTitle')}
+      subtitle={t('onboarding.notifSubtitle')}
       footer={
         <>
           <Button onPress={() => finish(true)} loading={busy}>
-            İzin ver ve bitir
+            {t('onboarding.allowFinish')}
           </Button>
           <Button variant="ghost" onPress={() => finish(false)} disabled={busy}>
-            Şimdi değil
+            {t('onboarding.notNow')}
           </Button>
           <Button variant="ghost" onPress={() => router.back()} disabled={busy}>
-            Geri
+            {t('common.back')}
           </Button>
         </>
       }

@@ -1,3 +1,4 @@
+import { locale } from '@/i18n/lang';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import type { TextInputProps } from 'react-native';
 import { colors, fonts } from '@/theme';
@@ -11,10 +12,10 @@ type Props = TextInputProps & {
 export function Field({ label, note, style, ...input }: Props) {
   return (
     <View style={styles.wrap}>
-      <Text style={styles.label}>{label.toLocaleUpperCase('tr')}</Text>
+      <Text style={styles.label}>{label.toLocaleUpperCase(locale())}</Text>
       <TextInput
         placeholderTextColor={colors.faint}
-        selectionColor={colors.fg}
+        selectionColor={colors.black}
         style={[styles.input, style]}
         {...input}
       />
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 0,
     borderBottomWidth: 1,
-    borderBottomColor: colors.fg,
+    borderBottomColor: colors.black,
   },
-  note: { marginTop: 8, fontSize: 13, lineHeight: 18, color: colors.mute },
+  note: { marginTop: 8, fontSize: 13, lineHeight: 18, color: colors.body },
 });

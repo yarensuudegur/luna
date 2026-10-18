@@ -1,3 +1,4 @@
+import { locale } from '@/i18n/lang';
 import { StyleSheet, Text, View } from 'react-native';
 import { colors, fonts } from '@/theme';
 
@@ -10,7 +11,7 @@ type Props = {
 
 /** Prototipteki .avatar: siyah daire, içinde adın baş harfi. Yüz ya da emoji yok. */
 export function Initial({ name, size = 34, outline }: Props) {
-  const letter = (name.trim()[0] ?? '?').toLocaleUpperCase('tr');
+  const letter = (name.trim()[0] ?? '?').toLocaleUpperCase(locale());
   const fontSize = Math.round(size * 0.44);
   return (
     <View
@@ -26,8 +27,8 @@ export function Initial({ name, size = 34, outline }: Props) {
 }
 
 const styles = StyleSheet.create({
-  dot: { backgroundColor: colors.fg, alignItems: 'center', justifyContent: 'center' },
-  outline: { backgroundColor: colors.bg, borderWidth: 1, borderColor: colors.fg },
+  dot: { backgroundColor: colors.black, alignItems: 'center', justifyContent: 'center' },
+  outline: { backgroundColor: colors.bg, borderWidth: 1, borderColor: colors.black },
   letter: { fontFamily: fonts.serif, color: colors.bg },
   letterOutline: { color: colors.fg },
 });

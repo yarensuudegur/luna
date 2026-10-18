@@ -1,8 +1,10 @@
+import { locale } from '@/i18n/lang';
 import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/components/Button';
 import { Initial } from '@/components/arkadaslar/Initial';
+import { useTranslation } from '@/i18n';
 import { MAX_GROUP_NAME } from '@/lib/room-utils';
 import { colors, fonts, layout } from '@/theme';
 
@@ -23,6 +25,7 @@ type Props = {
 /** Yeni grup ya da DÜZENLE: ad, üye ekleme/çıkarma ve grubu silme. */
 export function GroupEditor({ visible, group, people, onClose, onSave, onDelete }: Props) {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
@@ -50,13 +53,13 @@ export function GroupEditor({ visible, group, people, onClose, onSave, onDelete 
 
   async function save() {
     const n = name.trim();
-    if (!n) return setError('Gruba bir ad ver');
+    if (!n) return setError(t('friends.group.needName'));
     const ids = people.filter((p) => selected.has(p.id)).map((p) => p.id);
-    if (ids.length === 0) return setError('En az bir kişi seç');
+    if (ids.length === 0) return setError(t('friends.group.needPerson'));
     setBusy(true);
     const ok = await onSave(n, ids);
     setBusy(false);
-    if (!ok) setError('Kaydedilemedi, tekrar dene');
+    if (!ok) setError(t('friends.group.saveFailed'));
   }
 
   async function remove() {
@@ -64,23 +67,23 @@ export function GroupEditor({ visible, group, people, onClose, onSave, onDelete 
     setBusy(true);
     const ok = await onDelete();
     setBusy(false);
-    if (!ok) setError('Silinemedi, tekrar dene');
+    if (!ok) setError(t('friends.group.deleteFailed'));
   }
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <Pressable style={styles.backdrop} onPress={onClose} accessibilityLabel="Kapat" />
+      <Pressable style={styles.backdrop} onPress={onClose} accessibilityLabel={t('common.close')} />
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={[styles.panel, { paddingBottom: insets.bottom + 26 }]}>
           <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
             <View style={styles.row}>
-              <Text style={styles.title}>{group ? 'Grubu düzenle' : 'Yeni grup'}</Text>
+              <Text style={styles.title}>{group ? t('friends.group.editTitle') : t('friends.group.newTitle')}</Text>
               <Pressable onPress={onClose} accessibilityRole="button" hitSlop={10}>
-                <Text style={styles.close}>KAPAT</Text>
+                <Text style={styles.close}>{t('common.close').toLocaleUpperCase(locale())}</Text>
               </Pressable>
             </View>
 
-            <Text style={[styles.lbl, styles.first]}>GRUP ADI</Text>
+            <Text style={[styles.lbl, styles.first]}>{t('friends.group.nameLabel')}</Text>
             <TextInput
               value={name}
               onChangeText={(t) => {
@@ -88,16 +91,16 @@ export function GroupEditor({ visible, group, people, onClose, onSave, onDelete 
                 setError(null);
               }}
               maxLength={MAX_GROUP_NAME}
-              placeholder="Örn. Ev arkadaşları"
+              placeholder={t('friends.group.namePlaceholder')}
               placeholderTextColor={colors.faint}
-              selectionColor={colors.fg}
-              accessibilityLabel="Grup adı"
+              selectionColor={colors.black}
+              accessibilityLabel={t('friends.group.nameA11y')}
               style={styles.input}
             />
 
-            <Text style={[styles.lbl, styles.second]}>KİŞİLER</Text>
+            <Text style={[styles.lbl, styles.second]}>{t('friends.group.people')}</Text>
             {people.length === 0 ? (
-              <Text style={styles.empty}>Önce arkadaş eklemelisin.</Text>
+              <Text style={styles.empty}>{t('friends.group.needFriends')}</Text>
             ) : (
               people.map((p) => {
                 const on = selected.has(p.id);
@@ -122,13 +125,13 @@ export function GroupEditor({ visible, group, people, onClose, onSave, onDelete 
             <View style={styles.buttons}>
               <View style={styles.cell}>
                 <Button onPress={save} loading={busy}>
-                  Kaydet
+                  {t('common.save')}
                 </Button>
               </View>
               {group?.canDelete && (
                 <View style={styles.cell}>
                   <Button variant="ghost" onPress={remove} disabled={busy}>
-                    {confirmDelete ? 'Emin misin? Sil' : 'Grubu sil'}
+                    {confirmDelete ? t('friends.group.confirmDelete') : t('friends.group.delete')}
                   </Button>
                 </View>
               )}
@@ -141,12 +144,12 @@ export function GroupEditor({ visible, group, people, onClose, onSave, onDelete 
 }
 
 const styles = StyleSheet.create({
-  backdrop: { flex: 1, backgroundColor: 'rgba(11,11,11,0.45)' },
+  backdrop: { flex: 1, backgroundColor: colors.backdropStrong },
   panel: {
     maxHeight: '92%',
     backgroundColor: colors.bg,
     borderTopWidth: 1,
-    borderTopColor: colors.fg,
+    borderTopColor: colors.black,
     paddingTop: 22,
     paddingHorizontal: layout.screenPadding,
   },
@@ -164,9 +167,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 0,
     borderBottomWidth: 1,
-    borderBottomColor: colors.fg,
+    borderBottomColor: colors.black,
   },
-  empty: { fontSize: 14, color: colors.mute, paddingVertical: 8 },
+  empty: { fontSize: 14, color: colors.body, paddingVertical: 8 },
   li: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -176,8 +179,8 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.line,
   },
   liName: { flex: 1, fontFamily: fonts.serif, fontSize: 16, lineHeight: 21, color: colors.fg },
-  chk: { width: 18, height: 18, borderWidth: 1, borderColor: colors.fg, padding: 2 },
-  chkFill: { flex: 1, backgroundColor: colors.fg },
+  chk: { width: 18, height: 18, borderWidth: 1, borderColor: colors.black, padding: 2 },
+  chkFill: { flex: 1, backgroundColor: colors.black },
   error: { fontSize: 13, color: colors.fg, marginTop: 16 },
   buttons: { flexDirection: 'row', gap: 8, marginTop: 22 },
   cell: { minWidth: 120 },

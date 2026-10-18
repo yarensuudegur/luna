@@ -1,5 +1,8 @@
+import { locale } from '@/i18n/lang';
 import { StyleSheet, Text, View } from 'react-native';
-import { BURCLAR, norm, signIndex } from '@/lib/astro';
+import { useTranslation } from '@/i18n';
+import { planetName, signName } from '@/i18n/names';
+import { norm, signIndex } from '@/lib/astro';
 import { colors, fonts } from '@/theme';
 
 export type TableRow = {
@@ -42,6 +45,7 @@ function Vertical({ text, style }: { text: string; style: object }) {
  * sıralanır, aksi halde Koç'tan.
  */
 export function ChartTable({ rows: rows0, asc }: { rows: TableRow[]; asc: number | null }) {
+  const { t } = useTranslation();
   const rows = [...rows0].sort((a, b) => norm(a.lon - (asc ?? 0)) - norm(b.lon - (asc ?? 0)));
   const showHouses = rows.every((r) => r.house !== null);
   const signGroups = groupBy(rows, (r) => signIndex(r.lon));
@@ -49,12 +53,12 @@ export function ChartTable({ rows: rows0, asc }: { rows: TableRow[]; asc: number
 
   return (
     <View style={styles.wrap}>
-      <Vertical text="BURÇLAR" style={styles.top} />
+      <Vertical text={t('sen.signsCol')} style={styles.top} />
       <View style={styles.table}>
         <View style={styles.colSign}>
           {signGroups.map((g) => (
             <View key={g.start} style={[styles.signCell, { height: g.count * ROW_H }]}>
-              <Text style={styles.signText}>{BURCLAR[g.value]}</Text>
+              <Text style={styles.signText}>{signName(g.value)}</Text>
             </View>
           ))}
         </View>
@@ -62,7 +66,7 @@ export function ChartTable({ rows: rows0, asc }: { rows: TableRow[]; asc: number
           {rows.map((r) => (
             <View key={r.key} style={styles.planetCell}>
               <Text style={styles.glyph}>{r.glyph}︎</Text>
-              <Text style={styles.planetText}>{r.key.toLocaleUpperCase('tr')}</Text>
+              <Text style={styles.planetText}>{planetName(r.key).toLocaleUpperCase(locale())}</Text>
             </View>
           ))}
         </View>
@@ -76,7 +80,7 @@ export function ChartTable({ rows: rows0, asc }: { rows: TableRow[]; asc: number
           </View>
         )}
       </View>
-      {showHouses ? <Vertical text="EVLER" style={styles.bottom} /> : <View style={styles.vt} />}
+      {showHouses ? <Vertical text={t('sen.housesCol')} style={styles.bottom} /> : <View style={styles.vt} />}
     </View>
   );
 }

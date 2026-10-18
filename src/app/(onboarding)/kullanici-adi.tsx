@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/Button';
 import { Field } from '@/components/Field';
 import { FormScreen } from '@/components/FormScreen';
+import { useTranslation } from '@/i18n';
 import { useOnboarding } from '@/lib/onboarding';
 import { supabase } from '@/lib/supabase';
 
@@ -15,17 +16,9 @@ function cleanHandle(raw: string): string {
 
 type Durum = 'bos' | 'gecersiz' | 'kontrol' | 'musait' | 'dolu' | 'hata';
 
-const NOTLAR: Record<Durum, string> = {
-  bos: '3–20 karakter: harf, rakam, nokta, alt çizgi.',
-  gecersiz: 'En az 3 karakter olmalı.',
-  kontrol: 'Kontrol ediliyor…',
-  musait: 'Müsait.',
-  dolu: 'Bu kullanıcı adı alınmış.',
-  hata: 'Kontrol edilemedi. Bağlantını kontrol et.',
-};
-
 export default function KullaniciAdiScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { draft, update } = useOnboarding();
   const [handle, setHandle] = useState(draft.handle);
   const [durum, setDurum] = useState<Durum>(draft.handle ? 'kontrol' : 'bos');
@@ -53,30 +46,30 @@ export default function KullaniciAdiScreen() {
 
   return (
     <FormScreen
-      eyebrow="Adım 2 / 6"
-      title="Bir kullanıcı adı seç."
-      subtitle="Arkadaşların seni bununla bulur."
+      eyebrow={t('onboarding.step', { n: 2, total: 6 })}
+      title={t('onboarding.handleTitle')}
+      subtitle={t('onboarding.handleSubtitle')}
       footer={
         <>
           <Button onPress={next} disabled={durum !== 'musait'}>
-            Devam
+            {t('common.continue')}
           </Button>
           <Button variant="ghost" onPress={() => router.back()}>
-            Geri
+            {t('common.back')}
           </Button>
         </>
       }
     >
       <Field
-        label="Kullanıcı adı"
+        label={t('onboarding.handleLabel')}
         value={handle ? `@${handle}` : ''}
         onChangeText={(t) => setHandle(cleanHandle(t))}
-        placeholder="@kullanici"
+        placeholder={t('onboarding.handlePlaceholder')}
         autoFocus
         autoCapitalize="none"
         autoCorrect={false}
         maxLength={21}
-        note={NOTLAR[durum]}
+        note={t(`onboarding.handle.${durum}`)}
         onSubmitEditing={durum === 'musait' ? next : undefined}
       />
     </FormScreen>

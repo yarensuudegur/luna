@@ -4,7 +4,8 @@ import { Pressable, StyleSheet, Text } from 'react-native';
 import { Button } from '@/components/Button';
 import { Field } from '@/components/Field';
 import { FormScreen } from '@/components/FormScreen';
-import { trAuthError } from '@/lib/auth-errors';
+import { useTranslation } from '@/i18n';
+import { authErrorText } from '@/lib/auth-errors';
 import { supabase } from '@/lib/supabase';
 import { colors, fonts } from '@/theme';
 
@@ -12,6 +13,7 @@ const MIN_SIFRE = 6;
 
 export default function KayitScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
@@ -23,7 +25,7 @@ export default function KayitScreen() {
     setBusy(true);
     setError(null);
     const { data, error: err } = await supabase.auth.signUp({ email: email.trim(), password });
-    if (err) setError(trAuthError(err.message));
+    if (err) setError(authErrorText(err.message));
     // Oturum geldiyse yönlendirme otomatik; gelmediyse e-posta doğrulaması bekleniyor demektir.
     else if (!data.session) router.replace({ pathname: '/dogrula', params: { email: email.trim() } });
     setBusy(false);
@@ -31,21 +33,21 @@ export default function KayitScreen() {
 
   return (
     <FormScreen
-      title="Haritanı birlikte çıkaralım."
-      subtitle="Önce bir hesap aç; sonra doğum bilgilerini soracağız."
+      title={t('auth.signupTitle')}
+      subtitle={t('auth.signupSubtitle')}
       footer={
         <>
           <Button onPress={submit} disabled={!canSubmit} loading={busy}>
-            Kayıt ol
+            {t('auth.signUp')}
           </Button>
           <Pressable onPress={() => router.replace('/giris')} style={styles.switch}>
-            <Text style={styles.switchText}>ZATEN HESABIN VAR MI? GİRİŞ YAP</Text>
+            <Text style={styles.switchText}>{t('auth.haveAccount')}</Text>
           </Pressable>
         </>
       }
     >
       <Field
-        label="E-posta"
+        label={t('auth.email')}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -54,7 +56,7 @@ export default function KayitScreen() {
         textContentType="emailAddress"
       />
       <Field
-        label="Şifre"
+        label={t('auth.password')}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -62,7 +64,7 @@ export default function KayitScreen() {
         autoComplete="new-password"
         textContentType="newPassword"
         onSubmitEditing={canSubmit ? submit : undefined}
-        note={error ?? `En az ${MIN_SIFRE} karakter.`}
+        note={error ?? t('auth.minChars', { n: MIN_SIFRE })}
       />
     </FormScreen>
   );

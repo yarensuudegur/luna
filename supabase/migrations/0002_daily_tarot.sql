@@ -4,7 +4,7 @@
 create table public.daily_tarot (
   user_id uuid not null references auth.users (id) on delete cascade,
   date date not null,
-  -- 0..21: Deli'den Dünya'ya, src/lib/daily/content.ts içindeki TAROT sırası.
+  -- 0..21: Deli'den Dünya'ya. 0008 ile 0..77'ye genişletildi (src/i18n/tr.json içindeki tarot sırası).
   card smallint not null check (card between 0 and 21),
   reversed boolean not null default false,
   created_at timestamptz not null default now(),

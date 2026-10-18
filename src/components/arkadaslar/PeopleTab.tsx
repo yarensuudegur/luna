@@ -1,8 +1,11 @@
+import { locale } from '@/i18n/lang';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Button } from '@/components/Button';
 import { Initial } from '@/components/arkadaslar/Initial';
 import { signsLine } from '@/components/arkadaslar/FriendSheet';
 import { Label, Section } from '@/components/Section';
+import { useTranslation } from '@/i18n';
+import { relName } from '@/i18n/names';
 import type { Friend } from '@/lib/friends';
 import { colors, fonts, layout } from '@/theme';
 
@@ -17,39 +20,40 @@ type Props = {
 
 /** Kişiler alt sekmesi: "Ekle +" ve arkadaş listesi. */
 export function PeopleTab({ friends, loading, error, onRetry, onAdd, onOpen }: Props) {
+  const { t } = useTranslation();
   return (
     <>
       <Section style={styles.intro}>
         <View style={styles.introText}>
-          <Label style={styles.noMargin}>YAKININDAKİLER</Label>
-          <Text style={styles.h2}>Haritalarınızı yan yana koyun.</Text>
+          <Label style={styles.noMargin}>{t('friends.nearby')}</Label>
+          <Text style={styles.h2}>{t('friends.sideBySide')}</Text>
         </View>
         <View style={styles.add}>
-          <Button onPress={onAdd}>Ekle +</Button>
+          <Button onPress={onAdd}>{t('friends.addButton')}</Button>
         </View>
       </Section>
 
       <Section last>
         {error ? (
           <>
-            <Text style={styles.body}>Arkadaşların yüklenemedi.</Text>
+            <Text style={styles.body}>{t('friends.loadError')}</Text>
             <Pressable onPress={onRetry} accessibilityRole="button" style={styles.retry}>
-              <Text style={styles.retryText}>TEKRAR DENE</Text>
+              <Text style={styles.retryText}>{t('common.retry').toLocaleUpperCase(locale())}</Text>
             </Pressable>
           </>
         ) : loading ? (
-          <Label style={styles.noMargin}>YÜKLENİYOR</Label>
+          <Label style={styles.noMargin}>{t('common.loading')}</Label>
         ) : friends.length === 0 ? (
-          <Text style={styles.body}>Henüz kimse yok. “Ekle +” ile ilk arkadaşını ekle.</Text>
+          <Text style={styles.body}>{t('friends.empty')}</Text>
         ) : (
           <>
-            <Label>{friends.length} KİŞİ</Label>
+            <Label>{t('common.peopleCount', { n: friends.length })}</Label>
             {friends.map((f, i) => (
               <Pressable
                 key={f.id}
                 onPress={() => onOpen(f)}
                 accessibilityRole="button"
-                accessibilityLabel={`${f.name}, ${f.rel}`}
+                accessibilityLabel={`${f.name}, ${relName(f.rel)}`}
                 style={[styles.li, i === friends.length - 1 && styles.liLast]}
               >
                 <Initial name={f.name} />
@@ -58,7 +62,7 @@ export function PeopleTab({ friends, loading, error, onRetry, onAdd, onOpen }: P
                   {signsLine(f) !== '' && <Text style={styles.signs}>{signsLine(f)}</Text>}
                 </View>
                 <View style={styles.chip}>
-                  <Text style={styles.chipText}>{f.rel.toLocaleUpperCase('tr')}</Text>
+                  <Text style={styles.chipText}>{relName(f.rel).toLocaleUpperCase(locale())}</Text>
                 </View>
               </Pressable>
             ))}
@@ -75,7 +79,7 @@ const styles = StyleSheet.create({
   add: { flexShrink: 0 },
   noMargin: { marginBottom: 0 },
   h2: { fontFamily: fonts.serif, fontSize: 24, lineHeight: 32, color: colors.fg, marginTop: 14 },
-  body: { fontSize: 14, lineHeight: 22, color: colors.mute },
+  body: { fontSize: 14, lineHeight: 22, color: colors.body },
   retry: { marginTop: 14 },
   retryText: {
     fontFamily: fonts.mono,
@@ -96,6 +100,6 @@ const styles = StyleSheet.create({
   grow: { flex: 1 },
   name: { fontFamily: fonts.serif, fontSize: 18, lineHeight: 24, color: colors.fg },
   signs: { fontFamily: fonts.mono, fontSize: 10, letterSpacing: 0.8, color: colors.mute, marginTop: 3 },
-  chip: { borderWidth: 1, borderColor: colors.fg, paddingVertical: 5, paddingHorizontal: 8 },
+  chip: { borderWidth: 1, borderColor: colors.black, paddingVertical: 5, paddingHorizontal: 8 },
   chipText: { fontFamily: fonts.mono, fontSize: 9.5, letterSpacing: 1.1, color: colors.fg },
 });

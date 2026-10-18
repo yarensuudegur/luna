@@ -1,18 +1,20 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
-import { AccessibilityInfo, Animated, Easing, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { AccessibilityInfo, Animated, Easing, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
+import { useTranslation } from '@/i18n';
 import { rng } from '@/lib/daily';
-import { colors, fonts, layout } from '@/theme';
+import { colors, fonts } from '@/theme';
 
 /** Prototipteki theEnd ile aynı çizim uzayı; SVG "xMidYMax slice" ile ekrana oturur. */
 const W = 400;
-const H = 330;
+const H = 290;
 const CX = 200;
+/** Eski genişlikteki yay: kenarları ekranın iki yanına değer. Alt kısmı H ile kırpılır. */
 const R0 = 250;
 const TOP = 150;
 const CY = TOP + R0;
-/** Siyah alan tab bar'ın hemen üstüne kadar uzar, tepeden bu kadar aşağıda biter. */
-const TAIL = layout.navHeight + 24;
+/** Siyah alanın tab bar'a doğru uzanan kısa payı. */
+const TAIL = 16;
 const MOTE_COUNT = 34;
 const STAR_COUNT = 55;
 
@@ -135,11 +137,14 @@ type Props = {
   seed: string;
   /** Sekme görünür değilken animasyon durur. */
   active: boolean;
+  /** "Gelecekteki kendine bir mesaj gönder" bağlantısına basılınca. */
+  onFuture: () => void;
 };
 
 /** "Bugünlük bu kadar." tepesi: dalgalı siyah yarım daire, yıldızlar ve yükselen parçacıklar. */
-export function TheEnd({ seed, active }: Props) {
+export function TheEnd({ seed, active, onFuture }: Props) {
   const { width } = useWindowDimensions();
+  const { t } = useTranslation();
   const scene = useMemo(() => buildScene(seed), [seed]);
   const [reduceMotion, setReduceMotion] = useState(false);
 
@@ -161,17 +166,20 @@ export function TheEnd({ seed, active }: Props) {
         style={styles.svg}
       >
         {scene.stars.map((s, i) => (
-          <Circle key={i} cx={s.x} cy={s.y} r={s.r} fill={colors.fg} opacity={s.o} />
+          <Circle key={i} cx={s.x} cy={s.y} r={s.r} fill={colors.black} opacity={s.o} />
         ))}
-        <Path d={scene.hill} fill={colors.fg} />
+        <Path d={scene.hill} fill={colors.black} />
       </Svg>
       <View style={styles.fill} />
       {!reduceMotion &&
         scene.motes.map((m, i) => (
           <Mote key={i} spec={m} left={toScreenX(m.x)} top={toScreenY(m.y)} active={active} />
         ))}
-      <View style={styles.txt} pointerEvents="none">
-        <Text style={styles.line}>Bugünlük bu kadar.</Text>
+      <View style={styles.txt} pointerEvents="box-none">
+        <Text style={styles.line}>{t('today.end')}</Text>
+        <Pressable onPress={onFuture} accessibilityRole="button" hitSlop={12} style={styles.future}>
+          <Text style={styles.futureText}>{t('future.link')}</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -180,8 +188,17 @@ export function TheEnd({ seed, active }: Props) {
 const styles = StyleSheet.create({
   end: { height: H + TAIL, overflow: 'hidden', backgroundColor: colors.bg },
   svg: { position: 'absolute', top: 0, left: 0 },
-  fill: { position: 'absolute', left: 0, right: 0, top: H - 2, bottom: 0, backgroundColor: colors.fg },
-  mote: { position: 'absolute', backgroundColor: colors.fg },
-  txt: { position: 'absolute', left: 0, right: 0, top: 196, alignItems: 'center' },
-  line: { fontFamily: fonts.serif, fontSize: 28, color: colors.white },
+  fill: { position: 'absolute', left: 0, right: 0, top: H - 2, bottom: 0, backgroundColor: colors.black },
+  mote: { position: 'absolute', backgroundColor: colors.black },
+  txt: { position: 'absolute', left: 0, right: 0, top: TOP + 40, alignItems: 'center' },
+  line: { fontFamily: fonts.serif, fontSize: 28, lineHeight: 38, paddingBottom: 6, color: colors.white },
+  future: { marginTop: 22, paddingHorizontal: 20 },
+  futureText: {
+    fontFamily: fonts.mono,
+    fontSize: 9.5,
+    letterSpacing: 1.2,
+    textAlign: 'center',
+    color: colors.white,
+    textDecorationLine: 'underline',
+  },
 });

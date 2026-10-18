@@ -67,6 +67,6 @@ export function Spray({ x, y }: { x: number; y: number }) {
 }
 
 const styles = StyleSheet.create({
-  drop: { position: 'absolute', backgroundColor: colors.fg, zIndex: 6, pointerEvents: 'none' },
-  foam: { backgroundColor: colors.bg, borderWidth: 1, borderColor: colors.fg },
+  drop: { position: 'absolute', backgroundColor: colors.black, zIndex: 6, pointerEvents: 'none' },
+  foam: { backgroundColor: colors.bg, borderWidth: 1, borderColor: colors.black },
 });

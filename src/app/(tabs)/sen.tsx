@@ -1,3 +1,4 @@
+import { locale } from '@/i18n/lang';
 import { useState } from 'react';
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
@@ -7,7 +8,9 @@ import { ChartWheel } from '@/components/sen/ChartWheel';
 import { PlanetCards } from '@/components/sen/PlanetCards';
 import type { CardItem } from '@/components/sen/PlanetCards';
 import { SettingsPanel } from '@/components/sen/SettingsPanel';
-import { BURCLAR, signIndex } from '@/lib/astro';
+import { useTranslation } from '@/i18n';
+import { signName } from '@/i18n/names';
+import { signIndex } from '@/lib/astro';
 import { useAuth } from '@/lib/auth';
 import { useSettings } from '@/lib/settings';
 import { useProfileChart } from '@/lib/use-chart';
@@ -15,9 +18,8 @@ import { colors, fonts, layout } from '@/theme';
 
 type Sub = 'harita' | 'ayar';
 
-const NO_TIME_NOTE = 'Doğum saatini eklersen yükselenin ve evlerin hesaplanır';
-
 export default function SenScreen() {
+  const { t } = useTranslation();
   const { profile } = useAuth();
   const { houseSystem } = useSettings();
   const data = useProfileChart(profile);
@@ -26,9 +28,9 @@ export default function SenScreen() {
   const sun = data?.chart.planets.find((p) => p.key === 'Güneş');
   const moon = data?.chart.planets.find((p) => p.key === 'Ay');
   const signs = [
-    sun && `☉︎ ${BURCLAR[signIndex(sun.lon)]}`,
-    moon && `☽︎ ${BURCLAR[signIndex(moon.lon)]}`,
-    data?.chart.asc != null && `↑ ${BURCLAR[signIndex(data.chart.asc)]}`,
+    sun && `☉︎ ${signName(signIndex(sun.lon))}`,
+    moon && `☽︎ ${signName(signIndex(moon.lon))}`,
+    data?.chart.asc != null && `↑ ${signName(signIndex(data.chart.asc))}`,
   ]
     .filter(Boolean)
     .join('  ');
@@ -39,14 +41,14 @@ export default function SenScreen() {
         <Avatar avatar={profile?.avatar} size={104} />
         <Text style={styles.name}>{profile?.name ?? ''}</Text>
         <Text style={styles.handle}>{profile?.handle ? `@${profile.handle}` : ''}</Text>
-        {signs !== '' && <Text style={styles.signs}>{signs.toLocaleUpperCase('tr')}</Text>}
+        {signs !== '' && <Text style={styles.signs}>{signs.toLocaleUpperCase(locale())}</Text>}
       </View>
 
       <View style={styles.tabs} accessibilityRole="tablist">
         {(
           [
-            ['harita', 'Harita'],
-            ['ayar', 'Ayarlar'],
+            ['harita', t('sen.chart')],
+            ['ayar', t('sen.settings')],
           ] as const
         ).map(([key, label]) => (
           <Pressable
@@ -56,7 +58,7 @@ export default function SenScreen() {
             accessibilityState={{ selected: sub === key }}
             style={styles.tab}
           >
-            <Text style={[styles.tabText, sub === key && styles.tabTextOn]}>{label.toLocaleUpperCase('tr')}</Text>
+            <Text style={[styles.tabText, sub === key && styles.tabTextOn]}>{label.toLocaleUpperCase(locale())}</Text>
             {sub === key && <View style={styles.tabLine} />}
           </Pressable>
         ))}
@@ -67,7 +69,7 @@ export default function SenScreen() {
       ) : data ? (
         <HaritaSekmesi data={data} houseSystem={houseSystem} />
       ) : (
-        <Text style={styles.empty}>Doğum bilgilerin eksik olduğu için harita hesaplanamadı.</Text>
+        <Text style={styles.empty}>{t('sen.noBirth')}</Text>
       )}
     </ScrollView>
   );
@@ -80,6 +82,7 @@ function HaritaSekmesi({
   data: NonNullable<ReturnType<typeof useProfileChart>>;
   houseSystem: string;
 }) {
+  const { t } = useTranslation();
   const { width } = useWindowDimensions();
   const [page, setPage] = useState(0);
   const { chart, rows } = data;
@@ -109,17 +112,17 @@ function HaritaSekmesi({
       >
         <View style={{ width }}>
           <ChartTable rows={tableRows} asc={asc} />
-          {asc === null && <Text style={styles.note}>{NO_TIME_NOTE}</Text>}
+          {asc === null && <Text style={styles.note}>{t('sen.noTime')}</Text>}
         </View>
         <View style={[styles.wheelSlide, { width }]}>
           <View style={styles.wheelHead}>
-            <Text style={styles.lbl}>DOĞUM HARİTASI</Text>
-            <Text style={styles.mono}>{houseSystem.toLocaleUpperCase('tr')}</Text>
+            <Text style={styles.lbl}>{t('sen.birthChart')}</Text>
+            <Text style={styles.mono}>{houseSystem.toLocaleUpperCase(locale())}</Text>
           </View>
           {asc !== null ? (
             <ChartWheel planets={rows} asc={asc} width={width - 40} />
           ) : (
-            <Text style={styles.note}>{NO_TIME_NOTE}</Text>
+            <Text style={styles.note}>{t('sen.noTime')}</Text>
           )}
         </View>
       </ScrollView>
@@ -150,12 +153,12 @@ const styles = StyleSheet.create({
   tab: { paddingTop: 10, paddingBottom: 11 },
   tabText: { fontFamily: fonts.mono, fontSize: 10, letterSpacing: 1.4, color: colors.faint },
   tabTextOn: { color: colors.fg },
-  tabLine: { position: 'absolute', left: 0, right: 0, bottom: -1, height: 1, backgroundColor: colors.fg },
-  empty: { padding: layout.screenPadding, paddingTop: 28, fontSize: 15, color: colors.mute },
+  tabLine: { position: 'absolute', left: 0, right: 0, bottom: -1, height: 1, backgroundColor: colors.black },
+  empty: { padding: layout.screenPadding, paddingTop: 28, fontSize: 15, color: colors.body },
   note: {
     fontSize: 14,
     lineHeight: 21,
-    color: colors.mute,
+    color: colors.body,
     paddingHorizontal: layout.screenPadding,
     paddingVertical: 16,
     textAlign: 'center',
@@ -165,6 +168,6 @@ const styles = StyleSheet.create({
   lbl: { fontFamily: fonts.mono, fontSize: 10, letterSpacing: 1.4, color: colors.mute },
   mono: { fontFamily: fonts.mono, fontSize: 9.5, letterSpacing: 1.3, color: colors.fg },
   dots: { flexDirection: 'row', justifyContent: 'center', gap: 7, paddingTop: 10, paddingBottom: 4 },
-  dot: { width: 6, height: 6, borderRadius: 3, borderWidth: 1, borderColor: colors.fg },
-  dotOn: { backgroundColor: colors.fg },
+  dot: { width: 6, height: 6, borderRadius: 3, borderWidth: 1, borderColor: colors.black },
+  dotOn: { backgroundColor: colors.black },
 });

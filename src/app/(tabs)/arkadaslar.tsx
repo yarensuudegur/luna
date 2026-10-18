@@ -1,3 +1,4 @@
+import { locale } from '@/i18n/lang';
 import { useFocusEffect, useIsFocused } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -11,6 +12,7 @@ import { RoomView } from '@/components/arkadaslar/RoomView';
 import { RoomsTab } from '@/components/arkadaslar/RoomsTab';
 import { useToast } from '@/components/arkadaslar/Toast';
 import { TransitionCard } from '@/components/arkadaslar/TransitionCard';
+import { useTranslation } from '@/i18n';
 import { nextMoonEvent, signIndex } from '@/lib/astro';
 import { useAuth } from '@/lib/auth';
 import { useFriends } from '@/lib/friends';
@@ -28,17 +30,14 @@ import { colors, fonts, layout } from '@/theme';
 
 type Sub = 'kisiler' | 'odalar' | 'grup';
 
-const SUBS: readonly (readonly [Sub, string])[] = [
-  ['kisiler', 'Kişiler'],
-  ['odalar', 'Sohbet & odalar'],
-  ['grup', 'Grup haritası'],
-];
+const SUBS: readonly Sub[] = ['kisiler', 'odalar', 'grup'];
 
 type Editor = { mode: 'new' } | { mode: 'edit'; groupId: string; others: MemberInfo[] };
 type Room = { kind: 'group'; groupId: string } | { kind: 'event' };
 type Transition = { friend: Friend; from: RelType; to: RelType };
 
 export default function ArkadaslarScreen() {
+  const { t } = useTranslation();
   const { profile } = useAuth();
   const userId = profile?.id;
   const { today } = useToday();
@@ -96,11 +95,11 @@ export default function ArkadaslarScreen() {
     if (room?.kind === 'group' && !exists(room.groupId)) {
       setRoom(null);
       setEditor(null);
-      showToast('Bu gruptan çıkarıldın');
+      showToast(t('friends.removedFromGroup'));
     } else if (editor?.mode === 'edit' && !exists(editor.groupId)) {
       setEditor(null);
     }
-  }, [room, editor, groups.groups, groups.loading, showToast]);
+  }, [room, editor, groups.groups, groups.loading, showToast, t]);
 
   // Biri kodumu okutup arkadaş olunca ekleme ekranı bunu gösterir.
   const [arrived, setArrived] = useState<string | null>(null);
@@ -161,7 +160,7 @@ export default function ArkadaslarScreen() {
     const ok = await friends.remove(friend.id);
     if (ok) {
       setOpenFriendId(null);
-      toast.show(`${friend.name} arkadaşlıktan çıkarıldı`);
+      toast.show(t('friends.friendRemoved', { name: friend.name }));
     }
     return ok;
   }
@@ -188,14 +187,14 @@ export default function ArkadaslarScreen() {
       const ok = await groups.update(editing, name, [userId, ...ids]);
       if (ok) {
         setEditor(null);
-        toast.show('Grup güncellendi');
+        toast.show(t('friends.groupUpdated'));
       }
       return ok;
     }
     const id = await groups.create(name, ids);
     if (!id) return false;
     setEditor(null);
-    toast.show('Grup oluşturuldu');
+    toast.show(t('friends.groupCreated'));
     return true;
   }
 
@@ -207,17 +206,17 @@ export default function ArkadaslarScreen() {
       setEditor(null);
       setRoom(null);
       setSub('odalar');
-      toast.show('Grup silindi');
+      toast.show(t('friends.groupDeleted'));
     }
     return ok;
   }
 
   const groupMap = useMemo(
     () => [
-      { id: 'me', name: 'Sen', sun: mySun, me: true },
+      { id: 'me', name: t('common.you'), sun: mySun, me: true },
       ...friends.friends.map((f) => ({ id: f.id, name: f.name, sun: f.sun })),
     ],
-    [mySun, friends.friends],
+    [mySun, friends.friends, t],
   );
 
   const roomNode =
@@ -226,11 +225,11 @@ export default function ArkadaslarScreen() {
         <RoomView
           key="event"
           roomId={eventRoomId(event.date)}
-          title="Olay odası"
-          right={{ kind: 'text', text: 'Herkese açık' }}
+          title={t('friends.eventRoom')}
+          right={{ kind: 'text', text: t('friends.publicRoom') }}
           group={false}
           userId={userId}
-          intro="Oda açıldı. Bu ay neyi bırakmak istiyorsun?"
+          intro={t('friends.eventIntro')}
           onBack={() => setRoom(null)}
         />
       ) : group ? (
@@ -257,10 +256,10 @@ export default function ArkadaslarScreen() {
         <ScrollView
           style={styles.flex}
           contentContainerStyle={styles.content}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.fg} colors={[colors.fg]} />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.black} colors={[colors.black]} />}
         >
           <View style={styles.tabs} accessibilityRole="tablist">
-            {SUBS.map(([key, label]) => (
+            {SUBS.map((key) => (
               <Pressable
                 key={key}
                 onPress={() => setSub(key)}
@@ -268,7 +267,7 @@ export default function ArkadaslarScreen() {
                 accessibilityState={{ selected: sub === key }}
                 style={styles.tab}
               >
-                <Text style={[styles.tabText, sub === key && styles.tabTextOn]}>{label.toLocaleUpperCase('tr')}</Text>
+                <Text style={[styles.tabText, sub === key && styles.tabTextOn]}>{t(`friends.tabs.${key}`).toLocaleUpperCase(locale())}</Text>
                 {sub === key && <View style={styles.tabLine} />}
               </Pressable>
             ))}
@@ -299,7 +298,7 @@ export default function ArkadaslarScreen() {
               error={groups.error}
               onRetry={groups.reload}
               onOpenEvent={() => setRoom({ kind: 'event' })}
-              onLockedEvent={() => toast.show('Oda olay günü açılır')}
+              onLockedEvent={() => toast.show(t('friends.roomLocked'))}
               onOpenGroup={(g) => setRoom({ kind: 'group', groupId: g.id })}
               onNewGroup={() => void openEditor(null)}
             />
@@ -374,5 +373,5 @@ const styles = StyleSheet.create({
   tab: { paddingTop: 10, paddingBottom: 11 },
   tabText: { fontFamily: fonts.mono, fontSize: 10, letterSpacing: 1.4, color: colors.faint },
   tabTextOn: { color: colors.fg },
-  tabLine: { position: 'absolute', left: 0, right: 0, bottom: -1, height: 1, backgroundColor: colors.fg },
+  tabLine: { position: 'absolute', left: 0, right: 0, bottom: -1, height: 1, backgroundColor: colors.black },
 });

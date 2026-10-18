@@ -1,9 +1,13 @@
+import { locale } from '@/i18n/lang';
 import { Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { DeepDot } from '@/components/bugun/Dot';
 import { Label, LinkText, Section } from '@/components/Section';
-import { BURCLAR, degreeInSign } from '@/lib/astro';
-import { STATES, TAROT } from '@/lib/daily';
+import { useLang, useTranslation } from '@/i18n';
+import { decimal } from '@/i18n/lang';
+import { catName, moonPhase, planetName, signName } from '@/i18n/names';
+import { degreeInSign } from '@/lib/astro';
+import { contentFor } from '@/lib/daily';
 import type { Reading, Transits } from '@/lib/daily';
 import { formatDayMonth, fromDateKey } from '@/lib/date';
 import { useSavedReading } from '@/lib/saved';
@@ -28,7 +32,7 @@ type Props = {
 function Bookmark({ on }: { on: boolean }) {
   return (
     <Svg width={11} height={14} viewBox="0 0 11 14">
-      <Path d="M1 1h9v12l-4.5-3.2L1 13z" fill={on ? colors.fg : 'none'} stroke={colors.fg} />
+      <Path d="M1 1h9v12l-4.5-3.2L1 13z" fill={on ? colors.black : 'none'} stroke={colors.black} />
     </Svg>
   );
 }
@@ -37,36 +41,44 @@ function TransitRow({ glyph, name, right, last }: { glyph: string; name: string;
   return (
     <View style={[styles.transit, last && styles.transitLast]}>
       <Text style={styles.transitText}>{glyph}</Text>
-      <Text style={[styles.transitText, styles.transitName]}>{name.toLocaleUpperCase('tr')}</Text>
+      <Text style={[styles.transitText, styles.transitName]}>{name.toLocaleUpperCase(locale())}</Text>
       <Text style={styles.transitText}>{right}</Text>
     </View>
   );
 }
 
-const signAndDegree = (lon: number) => `${BURCLAR[Math.floor(lon / 30) % 12]} ${degreeInSign(lon)}°`;
+const signAndDegree = (lon: number) => `${signName(Math.floor(lon / 30) % 12)} ${degreeInSign(lon)}°`;
 
 export function DeepDive({ userId, dateKey, reading, transits, tarot, tab, onTab, onBack }: Props) {
+  const { t } = useTranslation();
+  const cards = contentFor(useLang()).tarot;
   const date = fromDateKey(dateKey);
   const { saved, toggle } = useSavedReading(userId, dateKey, reading.h);
   const { moon, sun, aspects, phase } = transits;
   const list = reading.deep.filter((d) => tab === 'Tümü' || d.k === tab);
-  const card = tarot ? TAROT[tarot.card] : null;
+  const card = tarot ? cards[tarot.card] : null;
 
   const share = () =>
     Share.share({
-      message: `${reading.h}\n\n${reading.body}\n\nYap: ${reading.dos.join(', ')}\nYapma: ${reading.donts.join(', ')}\n\nLuna · ${formatDayMonth(date)}`,
+      message: t('reading.shareMessage', {
+        h: reading.h,
+        body: reading.body,
+        dos: reading.dos.join(', '),
+        donts: reading.donts.join(', '),
+        date: formatDayMonth(date),
+      }),
     }).catch(() => {});
 
   return (
     <View>
       <Section style={styles.back}>
         <Pressable onPress={onBack} accessibilityRole="button" hitSlop={10}>
-          <LinkText>← Bugün</LinkText>
+          <LinkText>{t('deep.back')}</LinkText>
         </Pressable>
       </Section>
 
       <Section>
-        <Label>{`Derine in · ${formatDayMonth(date)}`}</Label>
+        <Label>{t('deep.label', { date: formatDayMonth(date) })}</Label>
         <Text style={styles.h1}>{reading.h}</Text>
         {reading.long.map((p, i) => (
           <Text key={i} style={[styles.body, { marginTop: i === 0 ? 18 : 12 }]}>
@@ -75,33 +87,36 @@ export function DeepDive({ userId, dateKey, reading, transits, tarot, tab, onTab
         ))}
         {card && tarot && (
           <Text style={[styles.body, { marginTop: 12 }]}>
-            Günün kartı {card[1]}
-            {tarot.reversed ? ', ters' : ''}. {card[4]}
+            {t('tarotUi.dayCard', {
+              name: card[1],
+              rev: tarot.reversed ? t('tarotUi.reversedSuffix') : '',
+              advice: card[4],
+            })}
           </Text>
         )}
       </Section>
 
       <Section>
-        <Label>Gökyüzünde bugün</Label>
+        <Label>{t('deep.sky')}</Label>
         <TransitRow
           glyph="☽︎"
-          name={`Ay · ${signAndDegree(moon.lon)}`}
-          right={moon.house ? `${moon.house}. EV` : ''}
+          name={`${planetName('Ay')} · ${signAndDegree(moon.lon)}`}
+          right={moon.house ? t('house', { n: moon.house }) : ''}
         />
         <TransitRow
           glyph="☉︎"
-          name={`Güneş · ${signAndDegree(sun.lon)}`}
-          right={sun.house ? `${sun.house}. EV` : ''}
+          name={`${planetName('Güneş')} · ${signAndDegree(sun.lon)}`}
+          right={sun.house ? t('house', { n: sun.house }) : ''}
         />
         {aspects.map((a) => (
           <TransitRow
             key={`${a.transit}-${a.natal}-${a.kind}`}
             glyph={a.glyph}
-            name={`${a.transit} ${a.aspectGlyph} ${a.natal}`}
-            right={`${a.orb.toFixed(1).replace('.', ',')}°`}
+            name={`${planetName(a.transit)} ${a.aspectGlyph} ${planetName(a.natal)}`}
+            right={`${decimal(a.orb, 1)}°`}
           />
         ))}
-        <TransitRow glyph="◐" name={phase} right="" last />
+        <TransitRow glyph="◐" name={moonPhase(phase)} right="" last />
       </Section>
 
       <Section>
@@ -112,25 +127,25 @@ export function DeepDive({ userId, dateKey, reading, transits, tarot, tab, onTab
           contentContainerStyle={styles.tabsContent}
           accessibilityRole="tablist"
         >
-          {TABS.map((t) => (
+          {TABS.map((k) => (
             <Pressable
-              key={t}
-              onPress={() => onTab(t)}
+              key={k}
+              onPress={() => onTab(k)}
               accessibilityRole="tab"
-              accessibilityState={{ selected: tab === t }}
+              accessibilityState={{ selected: tab === k }}
               style={styles.tab}
             >
-              <Text style={[styles.tabText, tab === t && styles.tabTextOn]}>{t.toLocaleUpperCase('tr')}</Text>
-              {tab === t && <View style={styles.tabLine} />}
+              <Text style={[styles.tabText, tab === k && styles.tabTextOn]}>{catName(k).toLocaleUpperCase(locale())}</Text>
+              {tab === k && <View style={styles.tabLine} />}
             </Pressable>
           ))}
         </ScrollView>
         {list.map((d, i) => (
           <View key={d.k} style={[styles.item, i === list.length - 1 && styles.itemLast]}>
-            <Text style={styles.itemTitle}>{d.k}</Text>
+            <Text style={styles.itemTitle}>{catName(d.k)}</Text>
             <View style={styles.state}>
               <DeepDot state={d.st} />
-              <Text style={styles.stateText}>{STATES[d.st].toLocaleUpperCase('tr')}</Text>
+              <Text style={styles.stateText}>{t(`states.${d.st}`).toLocaleUpperCase(locale())}</Text>
             </View>
             <Text style={styles.itemText}>{d.txt}</Text>
           </View>
@@ -141,10 +156,10 @@ export function DeepDive({ userId, dateKey, reading, transits, tarot, tab, onTab
         <View style={styles.actions}>
           <Pressable onPress={toggle} accessibilityRole="button" style={styles.action}>
             <Bookmark on={saved} />
-            <Text style={styles.actionText}>{saved ? 'KAYDEDİLDİ' : 'KAYDET'}</Text>
+            <Text style={styles.actionText}>{saved ? t('deep.savedBtn') : t('deep.save')}</Text>
           </Pressable>
           <Pressable onPress={share} accessibilityRole="button" style={styles.action}>
-            <Text style={styles.actionText}>PAYLAŞ ↗</Text>
+            <Text style={styles.actionText}>{t('deep.share')}</Text>
           </Pressable>
         </View>
       </Section>
@@ -155,7 +170,7 @@ export function DeepDive({ userId, dateKey, reading, transits, tarot, tab, onTab
 const styles = StyleSheet.create({
   back: { paddingTop: 16, paddingBottom: 16, alignItems: 'flex-start' },
   h1: { fontFamily: fonts.serif, fontSize: 34, lineHeight: 44, letterSpacing: -0.34, color: colors.fg },
-  body: { fontSize: 14, lineHeight: 22.7, color: colors.fg },
+  body: { fontSize: 14, lineHeight: 22.7, color: colors.body },
   transit: {
     flexDirection: 'row',
     gap: 10,
@@ -171,7 +186,7 @@ const styles = StyleSheet.create({
   tab: { paddingTop: 10, paddingBottom: 11 },
   tabText: { fontFamily: fonts.mono, fontSize: 10, letterSpacing: 1.4, color: colors.faint },
   tabTextOn: { color: colors.fg },
-  tabLine: { position: 'absolute', left: 0, right: 0, bottom: 0, height: layout.hairline, backgroundColor: colors.fg },
+  tabLine: { position: 'absolute', left: 0, right: 0, bottom: 0, height: layout.hairline, backgroundColor: colors.black },
   item: {
     paddingVertical: 16,
     flexDirection: 'row',
@@ -186,7 +201,7 @@ const styles = StyleSheet.create({
   itemTitle: { fontFamily: fonts.serif, fontSize: 17, color: colors.fg },
   state: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   stateText: { fontFamily: fonts.mono, fontSize: 9.5, letterSpacing: 1.3, color: colors.fg },
-  itemText: { width: '100%', fontSize: 13.5, lineHeight: 21.6, color: colors.mute },
+  itemText: { width: '100%', fontSize: 13.5, lineHeight: 21.6, color: colors.body },
   actions: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 6 },
   action: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 6 },
   actionText: { fontFamily: fonts.mono, fontSize: 9.5, letterSpacing: 1.2, color: colors.fg },

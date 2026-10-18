@@ -1,3 +1,4 @@
+import { locale } from '@/i18n/lang';
 import { StyleSheet, Text, View } from 'react-native';
 import type { StyleProp, TextProps, ViewStyle } from 'react-native';
 import { colors, fonts, layout } from '@/theme';
@@ -20,7 +21,7 @@ export function Section({
 export function Label({ children, style, ...rest }: TextProps) {
   return (
     <Text {...rest} style={[styles.lbl, style]}>
-      {typeof children === 'string' ? children.toLocaleUpperCase('tr') : children}
+      {typeof children === 'string' ? children.toLocaleUpperCase(locale()) : children}
     </Text>
   );
 }
@@ -29,7 +30,7 @@ export function Label({ children, style, ...rest }: TextProps) {
 export function LinkText({ children, style, ...rest }: TextProps) {
   return (
     <Text {...rest} style={[styles.link, style]}>
-      {typeof children === 'string' ? children.toLocaleUpperCase('tr') : children}
+      {typeof children === 'string' ? children.toLocaleUpperCase(locale()) : children}
     </Text>
   );
 }

@@ -1,8 +1,10 @@
 import slotsData from '../../assets/bottle/slots.json';
-import { BURC_DA } from '@/lib/astro';
-import { TAROT } from '@/lib/daily';
+import { t } from '@/i18n/core';
+import { currentLang, decimal, locale } from '@/i18n/lang';
+import { moodName } from '@/i18n/names';
+import { contentFor } from '@/lib/daily/content';
 import { rng } from '@/lib/daily/rng';
-import { addDays, dateKey, fromDateKey } from '@/lib/date';
+import { addDays, dateKey, dayName, formatDayMonth, fromDateKey, monthName } from '@/lib/date';
 
 export const MOODS = [
   ['mutluluk', 'Mutluluk'],
@@ -31,16 +33,16 @@ export const BOTTLE = {
 export const DEFAULT_EVENING = '21:00';
 export const EVENING_OPTIONS = ['20:00', '21:00', '22:00', '23:00'] as const;
 
-const AY_ADLARI = [
-  'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-  'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
-] as const;
-const GUN_ADLARI = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'] as const;
-const ELEMENTLER = ['Ateş', 'Toprak', 'Hava', 'Su'] as const;
+export const low = (s: string) => s.toLocaleLowerCase(locale());
+export const up = (s: string) => s.toLocaleUpperCase(locale());
 
-export const low = (s: string) => s.toLocaleLowerCase('tr');
-export const up = (s: string) => s.toLocaleUpperCase('tr');
+/** Duygunun görünen adı. `WeekData.best` arşivde Türkçe adıyla durur; bu da onu seçili dile çevirir. */
+export function moodLabel(trLabel: string): string {
+  const found = MOODS.find(([, label]) => label === trLabel);
+  return found ? moodName(found[0]) : trLabel;
+}
 
+export { monthName };
 /** Haftanın pazartesisinin anahtarı. */
 export function weekStartKey(today: string): string {
   const d = fromDateKey(today);
@@ -54,16 +56,17 @@ export function weekKeys(today: string): string[] {
   return Array.from({ length: n + 1 }, (_, i) => dateKey(addDays(start, i)));
 }
 
-/** Örn. "12–18 Ekim" veya "28 Eylül–4 Ekim". */
+/** Örn. "12–18 Ekim" veya "28 Eylül–4 Ekim" / "October 12–18". */
 export function weekLabel(weekStart: string): string {
   const m = fromDateKey(weekStart);
   const e = addDays(m, 6);
-  const head = m.getMonth() === e.getMonth() ? `${m.getDate()}` : `${m.getDate()} ${AY_ADLARI[m.getMonth()]}`;
-  return `${head}–${e.getDate()} ${AY_ADLARI[e.getMonth()]}`;
+  if (m.getMonth() === e.getMonth()) {
+    return t('date.weekSame', { a: m.getDate(), b: e.getDate(), month: monthName(e) });
+  }
+  return t('date.weekSpan', { a: m.getDate(), month1: monthName(m), b: e.getDate(), month2: monthName(e) });
 }
 
-export const monthName = (d: Date) => AY_ADLARI[d.getMonth()];
-export const weekdayName = (key: string) => GUN_ADLARI[fromDateKey(key).getDay()];
+export const weekdayName = (key: string) => dayName(fromDateKey(key));
 export const isSunday = (key: string) => fromDateKey(key).getDay() === 0;
 
 /** "21:00" gibi ayardan saat; geçersizse 21. */
@@ -89,7 +92,7 @@ export function avgOf(keys: readonly string[], moods: MoodMap, field: MoodField)
   return xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null;
 }
 
-const fmtAvg = (n: number | null) => (n == null ? '-' : n.toFixed(1).replace('.', ','));
+const fmtAvg = (n: number | null) => (n == null ? '-' : decimal(n, 1));
 
 /** Kaygı dışındaki en yüksek ortalamalı duygu (prototipteki "haftanın duygusu"). */
 export function bestMood(keys: readonly string[], moods: MoodMap): { label: string; value: number } {
@@ -187,7 +190,7 @@ export function weekInsights(
       bE = i;
     }
   });
-  if (bE >= 0) out.push(`Ay ${low(ELEMENTLER[bE])} burçlarındayken huzurun en yüksek.`);
+  if (bE >= 0) out.push(t('gunluk.insights.element', { element: low(t(`elements.${bE}`)) }));
 
   let mx = -1;
   let mk: string | null = null;
@@ -198,13 +201,15 @@ export function weekInsights(
       mk = k;
     }
   }
-  if (mk) out.push(`En enerjik günün ${low(weekdayName(mk))}. O gün Ay ${BURC_DA[moonSignOf(mk)]}.`);
+  if (mk) {
+    out.push(t('gunluk.insights.energy', { day: low(weekdayName(mk)), sign: t(`signs.in.${moonSignOf(mk)}`) }));
+  }
 
   const tk = filledKeys.filter((k) => tarot[k] != null);
   if (tk.length) {
     let bk = tk[0];
     for (const k of tk) if (moods[k].values.mutluluk > moods[bk].values.mutluluk) bk = k;
-    out.push(`En mutlu olduğun gün ${TAROT[tarot[bk]][1]} kartını çekmiştin.`);
+    out.push(t('gunluk.insights.card', { card: contentFor(currentLang()).tarot[tarot[bk]][1] }));
   }
   return out;
 }
@@ -240,15 +245,23 @@ export function monthSlides(
   for (const [k, card] of Object.entries(tarot)) if (inMonth(k)) cnt[card] = (cnt[card] ?? 0) + 1;
   const top = Object.entries(cnt).sort((a, b) => b[1] - a[1])[0];
 
-  const dayMonth = (k: string) => `${fromDateKey(k).getDate()} ${AY_ADLARI[mo]}`;
+  const cards = contentFor(currentLang()).tarot;
   return [
-    ['AYIN DUYGUSU', best.value < 0 ? '-' : `${best.label}.`, best.value < 0 ? '' : `Ortalama ${fmtAvg(best.value)} / 10`],
-    ['EN ENERJİK GÜNÜN', mk ? `${dayMonth(mk)}.` : '-', mk ? `Ay ${BURC_DA[moonSignOf(mk)]}.` : ''],
     [
-      'EN ÇOK ÇEKTİĞİN KART',
-      top ? `${TAROT[+top[0]][1]}.` : '-',
-      top ? `${top[1]} kez. ${TAROT[+top[0]][2]}` : '',
+      t('gunluk.month.mood'),
+      best.value < 0 ? '-' : `${moodLabel(best.label)}.`,
+      best.value < 0 ? '' : t('gunluk.month.avg', { v: fmtAvg(best.value) }),
     ],
-    [`${up(AY_ADLARI[mo])} BİTİYOR`, 'Gelecek ay görüşürüz.', `${name} · ${month.getFullYear()}`],
+    [
+      t('gunluk.month.energy'),
+      mk ? `${formatDayMonth(fromDateKey(mk))}.` : '-',
+      mk ? t('gunluk.month.moonIn', { sign: t(`signs.in.${moonSignOf(mk)}`) }) : '',
+    ],
+    [
+      t('gunluk.month.card'),
+      top ? `${cards[+top[0]][1]}.` : '-',
+      top ? t('gunluk.month.times', { n: top[1], text: cards[+top[0]][2] }) : '',
+    ],
+    [t('gunluk.month.ending', { month: up(monthName(month)) }), t('gunluk.month.seeYou'), `${name} · ${month.getFullYear()}`],
   ];
 }

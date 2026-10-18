@@ -1,7 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Section } from '@/components/Section';
 import { LuckDot } from '@/components/bugun/Dot';
-import { LUCK_ORDER, LUCK_PRE, LUCK_TXT, LUCK_WORD } from '@/lib/daily';
+import { useLang, useTranslation } from '@/i18n';
+import { LUCK_ORDER, contentFor } from '@/lib/daily';
 import type { DeepEntry, LuckCategory } from '@/lib/daily';
 import { colors, fonts, layout } from '@/theme';
 
@@ -12,6 +13,8 @@ type Props = {
 
 /** Ev & aile, Arkadaşlar, İş & para, Aşk: o günün durumu ve kısa yorumu. */
 export function LuckList({ deep, onOpen }: Props) {
+  const { t } = useTranslation();
+  const text = contentFor(useLang()).luckText;
   return (
     <Section style={styles.sec}>
       {LUCK_ORDER.map((k, i) => {
@@ -27,12 +30,12 @@ export function LuckList({ deep, onOpen }: Props) {
               <View style={styles.title}>
                 <LuckDot state={st} />
                 <Text style={styles.titleText}>
-                  {LUCK_PRE[k]} {LUCK_WORD[st]}
+                  {t('luck.titleFormat', { pre: t(`luck.pre.${k}`), word: t(`luck.word.${st}`) })}
                 </Text>
               </View>
               <Text style={styles.arrow}>→</Text>
             </View>
-            <Text style={styles.text}>{LUCK_TXT[k][st]}</Text>
+            <Text style={styles.text}>{text[k][st]}</Text>
           </Pressable>
         );
       })}
@@ -53,5 +56,5 @@ const styles = StyleSheet.create({
   title: { flexDirection: 'row', alignItems: 'center', gap: 10, flexShrink: 1 },
   titleText: { fontFamily: fonts.serif, fontSize: 18, color: colors.fg, flexShrink: 1 },
   arrow: { fontFamily: fonts.mono, fontSize: 12, color: colors.fg },
-  text: { fontSize: 13.5, lineHeight: 21.6, color: colors.mute },
+  text: { fontSize: 13.5, lineHeight: 21.6, color: colors.body },
 });

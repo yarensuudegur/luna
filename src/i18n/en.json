@@ -1,0 +1,1540 @@
+{
+  "common": {
+    "close": "Close",
+    "retry": "Try again",
+    "loading": "Loading…",
+    "back": "Back",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "save": "Save",
+    "saved": "Saved ✓",
+    "share": "Share",
+    "you": "You",
+    "someone": "Someone",
+    "unnamed": "Unnamed",
+    "member": "Member",
+    "saveFailed": "Couldn’t save, try again.",
+    "peopleCount": "{{n}} PEOPLE"
+  },
+  "tabs": {
+    "index": "TODAY",
+    "arkadaslar": "FRIENDS",
+    "void": "VOID",
+    "gunluk": "JOURNAL",
+    "sen": "YOU"
+  },
+  "top": {
+    "hideDays": "Hide days",
+    "showDays": "Show days",
+    "newNotice": "New notification"
+  },
+  "date": {
+    "dowShort": [
+      "SUN",
+      "MON",
+      "TUE",
+      "WED",
+      "THU",
+      "FRI",
+      "SAT"
+    ],
+    "dowLong": [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ],
+    "monthShort": [
+      "JAN",
+      "FEB",
+      "MAR",
+      "APR",
+      "MAY",
+      "JUN",
+      "JUL",
+      "AUG",
+      "SEP",
+      "OCT",
+      "NOV",
+      "DEC"
+    ],
+    "monthLong": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "topDate": "{{dow}} {{month}} {{day}}",
+    "dayMonth": "{{month}} {{day}}",
+    "weekSame": "{{month}} {{a}}–{{b}}",
+    "weekSpan": "{{month1}} {{a}}–{{month2}} {{b}}",
+    "today": "TOD",
+    "full": "{{month}} {{day}}, {{year}}",
+    "monthYear": "{{month}} {{year}}",
+    "monthLocative": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ]
+  },
+  "planets": {
+    "Güneş": "Sun",
+    "Ay": "Moon",
+    "Merkür": "Mercury",
+    "Venüs": "Venus",
+    "Mars": "Mars",
+    "Jüpiter": "Jupiter",
+    "Satürn": "Saturn",
+    "Uranüs": "Uranus",
+    "Neptün": "Neptune",
+    "Plüton": "Pluto",
+    "Yükselen": "Rising"
+  },
+  "signs": {
+    "names": [
+      "Aries",
+      "Taurus",
+      "Gemini",
+      "Cancer",
+      "Leo",
+      "Virgo",
+      "Libra",
+      "Scorpio",
+      "Sagittarius",
+      "Capricorn",
+      "Aquarius",
+      "Pisces"
+    ],
+    "in": [
+      "in Aries",
+      "in Taurus",
+      "in Gemini",
+      "in Cancer",
+      "in Leo",
+      "in Virgo",
+      "in Libra",
+      "in Scorpio",
+      "in Sagittarius",
+      "in Capricorn",
+      "in Aquarius",
+      "in Pisces"
+    ],
+    "tones": [
+      "bold and direct",
+      "calm and steady",
+      "curious and restless",
+      "sensitive and protective",
+      "warm and proud",
+      "meticulous and orderly",
+      "balanced and harmonious",
+      "deep and intense",
+      "free-spirited and optimistic",
+      "disciplined and patient",
+      "independent and original",
+      "intuitive and dreamy"
+    ]
+  },
+  "elements": [
+    "Fire",
+    "Earth",
+    "Air",
+    "Water"
+  ],
+  "roles": [
+    "Igniter",
+    "Planner",
+    "Thinker",
+    "Mediator"
+  ],
+  "moon": {
+    "event": {
+      "Dolunay": "Full Moon",
+      "Yeni Ay": "New Moon"
+    },
+    "phase": {
+      "Yeni Ay": "New Moon",
+      "Büyüyen Hilal": "Waxing Crescent",
+      "İlk Dördün": "First Quarter",
+      "Büyüyen Ay": "Waxing Gibbous",
+      "Dolunay": "Full Moon",
+      "Küçülen Ay": "Waning Gibbous",
+      "Son Dördün": "Last Quarter",
+      "Küçülen Hilal": "Waning Crescent"
+    }
+  },
+  "aspects": {
+    "kavuşum": "is conjunct",
+    "altmışlık": "forms a sextile with",
+    "kare": "forms a square with",
+    "üçgen": "forms a trine with",
+    "karşıt": "is opposite",
+    "sentence": "The {{transit}} in the sky {{kind}} your natal {{natal}}."
+  },
+  "houseInfo": {
+    "Placidus": "The most common system. Divides the houses into different widths based on birth time and latitude.",
+    "Whole Sign": "An ancient system. The entire rising sign counts as the 1st house, and each sign is one house.",
+    "Koch": "Similar to Placidus, but more sensitive to the latitude of the birthplace.",
+    "Equal": "Starts at the rising degree and divides every house into an equal 30 degrees.",
+    "Porphyry": "Divides the space between the four angles into three equal parts. The default of some popular apps."
+  },
+  "house": "HOUSE {{n}}",
+  "cat": {
+    "Tümü": "All",
+    "Aşk": "Love",
+    "Arkadaşlar": "Friends",
+    "İş & para": "Work & money",
+    "Ev & aile": "Home & family",
+    "Düşünce": "Mind",
+    "Ruhsal": "Spirit"
+  },
+  "states": [
+    "Power",
+    "Pressure",
+    "Challenge",
+    "Flow"
+  ],
+  "luck": {
+    "word": [
+      "Luck",
+      "Pressure",
+      "Challenge",
+      "Flow"
+    ],
+    "pre": {
+      "Ev & aile": "at home and in family",
+      "Arkadaşlar": "in friendships",
+      "İş & para": "at work and in money",
+      "Aşk": "in love"
+    },
+    "text": {
+      "Ev & aile": [
+        "A family member calls just as you were thinking of them. Even a neighbor waving from across the street feels warmer than usual today.",
+        "Small chores at home may take longer than they look. Don’t guess what someone expects from you, ask.",
+        "An old family topic may come back to the table. Listening without trying to be right keeps the house calmer today.",
+        "A quiet evening at home when nobody needs anything from you. Brew some tea and crack the window open."
+      ],
+      "Arkadaşlar": [
+        "A friend is looking out for you today without you noticing. A small thank-you message changes both your days.",
+        "It feels like everyone wants something from you at once. Say yes to one plan and kindly say later to the rest.",
+        "A sentence in the group chat could be misunderstood. Read it once more before you send it.",
+        "Your friendships are in a calm place today. You have nothing to prove to anyone."
+      ],
+      "İş & para": [
+        "Something you’ve waited for a long time is heading your way. Your first reaction may be doubt, so accept it this time.",
+        "The work on your desk is piling up. Cut your list down to three items and leave the rest for tomorrow.",
+        "A purchase may look sensible at first glance. Let the cart sit overnight.",
+        "A routine, quiet day at work. A good chance to collect your thoughts."
+      ],
+      "Aşk": [
+        "You’re more attractive when you’re relaxed, and everyone sees it today. Don’t be shy about holding a glance a little longer.",
+        "Time can crawl while you wait for a reply. Leave your phone in another room for a while.",
+        "Your expectations may speak louder than your words today. Saying plainly what you want is less tiring than a guessing game.",
+        "Your heart is resting today. You can have a good day without calling anyone."
+      ]
+    },
+    "titleFormat": "{{word}} {{pre}}"
+  },
+  "deepText": {
+    "Ev & aile": [
+      "There’s a peaceful mood at home, share it.",
+      "Chores may pile up, don’t hesitate to ask for help.",
+      "A disagreement with someone in the family could come up, talk without raising your voice.",
+      "A calm day at home."
+    ],
+    "Arkadaşlar": [
+      "Your voice carries more in the group.",
+      "Don’t try to reach everyone, say yes to a single plan.",
+      "Plans with a friend may get tangled, stay flexible.",
+      "A calm day in your social life."
+    ],
+    "İş & para": [
+      "Focus comes easily, finish the hard task now.",
+      "Deadlines may squeeze you, shorten your list.",
+      "Think twice about your spending today.",
+      "A routine day at work."
+    ],
+    "Aşk": [
+      "You’re relaxed and attractive, don’t hide it.",
+      "Don’t overanalyze, stay in the flow.",
+      "Speak openly about your expectations.",
+      "Your heart is resting today."
+    ],
+    "Düşünce": [
+      "Your ideas are flowing, write them down.",
+      "Too many ideas at once, pick one.",
+      "Focusing may be hard, take short breaks.",
+      "Your mind is resting."
+    ],
+    "Ruhsal": [
+      "You feel an inner clarity.",
+      "Finding time for yourself is hard, five minutes is enough.",
+      "An old feeling may surface, be gentle with yourself.",
+      "A quiet inner day."
+    ]
+  },
+  "daily": [
+    {
+      "h": "Going slowly today will save you time.",
+      "b": "With the Moon {{ay}}, your attention can scatter easily. Don’t move on to something new before finishing what’s in your hands. A short, honest conversation with someone toward evening could be the best moment of your day.",
+      "s": "The patience you show yourself is your strongest side today.",
+      "x": "Finish that one task you’ve been postponing before noon."
+    },
+    {
+      "h": "A draft of what you want to say is already ready.",
+      "b": "Mercury is stirring up your communication. Write down the sentence you’ve been composing in your head, then read it aloud once. Being open will serve you better today than being perfect.",
+      "s": "You don’t have to wait for the right moment to say how you feel.",
+      "x": "Don’t beat around the bush, say what you want directly."
+    },
+    {
+      "h": "A small bit of order brings great relief.",
+      "b": "Because the Moon is {{ay}}, home and daily routine may draw your attention more. Tidying a drawer, paying a bill, or making one plan for tomorrow will lighten your mind.",
+      "s": "Every small thing you do today counts.",
+      "x": "Stop using the mess as an excuse, give it ten minutes."
+    },
+    {
+      "h": "Your curiosity can lead you to the right person.",
+      "b": "Jupiter is supporting your social sphere. A good day to write to someone you haven’t talked to in a long time or to speak up in a new group. Asking questions will open more doors for you today than giving answers.",
+      "s": "If you take the first step, nobody will judge you.",
+      "x": "Stop waiting, send the message."
+    },
+    {
+      "h": "Your energy is short but intense today.",
+      "b": "Mars is making an aspect to your rising sign. It’s good to finish the heavy work in the morning and keep the afternoon light. Do something good for your body in the evening. A walk, some stretching or an early night is enough.",
+      "s": "Resting is part of being productive too.",
+      "x": "Don’t spend your energy on pointless arguments."
+    },
+    {
+      "h": "Setting a boundary protects your relationship.",
+      "b": "Saturn wants you to be clear in the area of relationships. Defending the time you set aside for yourself isn’t selfishness. A kind no earns more respect than a reluctant yes.",
+      "s": "Protecting yourself is also a way of protecting the people you love.",
+      "x": "Don’t try to please everyone, protect your own plan."
+    },
+    {
+      "h": "Your intuition is working fast today.",
+      "b": "The Moon {{ay}} is making a harmonious aspect to Neptune. When you make a decision, note your first feeling and look at it again in the evening. Dreams and small coincidences may tell you more today.",
+      "s": "You don’t need permission to trust your inner voice.",
+      "x": "Don’t ignore what you feel, but don’t rush either."
+    },
+    {
+      "h": "Finishing something today will feel really good.",
+      "b": "Venus is lighting up your area of effort. Completing an unfinished project, a book or a correspondence will give you more satisfaction than you expect.",
+      "s": "Congratulate yourself for everything you finish.",
+      "x": "Close one item from the list you left half-done today."
+    }
+  ],
+  "dos": [
+    "A long walk",
+    "A window seat",
+    "An old song",
+    "An early night",
+    "A simple breakfast",
+    "A notebook",
+    "Hot tea",
+    "A short message",
+    "A bookshop",
+    "House plants",
+    "A quiet train car",
+    "Your own recipe",
+    "An empty evening",
+    "Handwriting",
+    "Fresh air",
+    "A purple pen"
+  ],
+  "donts": [
+    "Late-night shopping",
+    "Old messages",
+    "A third coffee",
+    "Comparing",
+    "A rushed email",
+    "Arguing in the group chat",
+    "Scenarios in your head",
+    "Needless apologies",
+    "Screens in bed",
+    "Forgotten promises",
+    "Unfinished work",
+    "Too many plans"
+  ],
+  "houseTheme": [
+    "your identity and appearance",
+    "your money and what you value",
+    "your communication and close surroundings",
+    "your home and family",
+    "love, fun and creativity",
+    "your daily routine and body",
+    "your partnerships",
+    "shared resources and transformation",
+    "learning and travel",
+    "your career and goals",
+    "your friends and groups",
+    "your inner world and rest"
+  ],
+  "reading": {
+    "houses": "The Moon is passing through the {{moonHouse}} house of your chart today, so {{moonTheme}} may be more on your mind. The Sun is in your {{sunHouse}} house, lighting up {{sunTheme}}.",
+    "signs": "The Moon is moving {{moon}} today, and the Sun is {{sun}}.",
+    "shareMessage": "{{h}}\n\n{{body}}\n\nDo: {{dos}}\nDon’t: {{donts}}\n\nLuna · {{date}}"
+  },
+  "tarot": [
+    [
+      "0",
+      "The Fool",
+      "A new beginning, courage, an unplanned step.",
+      "Leaping without thinking, scatteredness.",
+      "Try a small first today."
+    ],
+    [
+      "I",
+      "The Magician",
+      "The power to start something with the tools at hand.",
+      "Scattered energy, unfinished work.",
+      "Turn an idea into a concrete step today."
+    ],
+    [
+      "II",
+      "The High Priestess",
+      "Intuition, knowing quietly.",
+      "Silencing your inner voice.",
+      "Stay quiet and listen for a while before deciding."
+    ],
+    [
+      "III",
+      "The Empress",
+      "Abundance, nurture, productivity.",
+      "Neglecting yourself.",
+      "Prepare something that feels good to you."
+    ],
+    [
+      "IV",
+      "The Emperor",
+      "Order, boundaries, responsibility.",
+      "Rigidity, need for control.",
+      "Give your day a clear structure."
+    ],
+    [
+      "V",
+      "The Hierophant",
+      "Tradition, learning, a guide.",
+      "Questioning the patterns.",
+      "Ask someone you trust for their view."
+    ],
+    [
+      "VI",
+      "The Lovers",
+      "Choice, harmony, clarity of values.",
+      "Indecision, misalignment.",
+      "Make your choice according to your values."
+    ],
+    [
+      "VII",
+      "The Chariot",
+      "Direction, willpower, progress.",
+      "Scattered focus.",
+      "Aim at a single goal."
+    ],
+    [
+      "VIII",
+      "Strength",
+      "Gentle strength, patience, courage.",
+      "Self-doubt.",
+      "Stay firm without being harsh."
+    ],
+    [
+      "IX",
+      "The Hermit",
+      "Turning inward, time for solitary thought.",
+      "Isolating yourself too much.",
+      "Set aside a quiet hour for yourself."
+    ],
+    [
+      "X",
+      "Wheel of Fortune",
+      "Change, cycles, luck.",
+      "Resisting what you can’t control.",
+      "Go with the flow."
+    ],
+    [
+      "XI",
+      "Justice",
+      "Balance, honesty, consequences.",
+      "A one-sided view.",
+      "Look at an issue from both sides."
+    ],
+    [
+      "XII",
+      "The Hanged Man",
+      "Waiting, seeing from a different angle.",
+      "Needless sacrifice.",
+      "Don’t rush, change your perspective."
+    ],
+    [
+      "XIII",
+      "Death",
+      "The closing of a chapter, renewal.",
+      "Resisting change.",
+      "Let go of something that no longer serves you."
+    ],
+    [
+      "XIV",
+      "Temperance",
+      "Middle path, patience, harmony.",
+      "Excess.",
+      "Find the measure."
+    ],
+    [
+      "XV",
+      "The Devil",
+      "Habits that hold you.",
+      "Breaking free of chains.",
+      "Notice one habit, take a day off from it."
+    ],
+    [
+      "XVI",
+      "The Tower",
+      "Sudden change, the collapse of shaky foundations.",
+      "An avoided confrontation.",
+      "Stay flexible toward the unexpected."
+    ],
+    [
+      "XVII",
+      "The Star",
+      "Hope, healing, inspiration.",
+      "Exhaustion, losing hope.",
+      "Write a small wish for the future."
+    ],
+    [
+      "XVIII",
+      "The Moon",
+      "Uncertainty, dreams, intuition.",
+      "Confusion clearing.",
+      "Note down your dreams."
+    ],
+    [
+      "XIX",
+      "The Sun",
+      "Joy, openness, success.",
+      "Passing clouds.",
+      "Share a joy with someone you love."
+    ],
+    [
+      "XX",
+      "Judgement",
+      "Answering a call, rebirth.",
+      "Judging yourself too harshly.",
+      "Listen to a call you’ve been putting off."
+    ],
+    [
+      "XXI",
+      "The World",
+      "Completion, wholeness.",
+      "Getting stuck on the last step.",
+      "Celebrate a cycle."
+    ],
+    [
+      "A",
+      "Ace of Wands",
+      "Action and passion: a new beginning, a fresh spark.",
+      "Action and passion: a delayed or missed opportunity.",
+      "Take a small first step today."
+    ],
+    [
+      "2",
+      "Two of Wands",
+      "Action and passion: a choice or a search for balance.",
+      "Action and passion: indecision and imbalance.",
+      "Write both options side by side, then pick one."
+    ],
+    [
+      "3",
+      "Three of Wands",
+      "Action and passion: growth and teamwork.",
+      "Action and passion: delays and friction in cooperation.",
+      "Ask someone for support, or support someone."
+    ],
+    [
+      "4",
+      "Four of Wands",
+      "Action and passion: stability and rest.",
+      "Action and passion: restlessness and lingering fatigue.",
+      "Take a short break and regroup."
+    ],
+    [
+      "5",
+      "Five of Wands",
+      "Action and passion: competition, friction and a tough test.",
+      "Action and passion: conflict easing or being suppressed.",
+      "Don’t try to win every argument, choose what matters."
+    ],
+    [
+      "6",
+      "Six of Wands",
+      "Action and passion: harmony, progress and recognition.",
+      "Action and passion: disharmony and feeling unrecognized.",
+      "Notice something you achieved and share it."
+    ],
+    [
+      "7",
+      "Seven of Wands",
+      "Action and passion: resilience and defending your ground.",
+      "Action and passion: wear and staying on the defensive.",
+      "Hold your boundary, but don’t stay on the defensive."
+    ],
+    [
+      "8",
+      "Eight of Wands",
+      "Action and passion: movement, speed and focus.",
+      "Action and passion: slowing down and scattered focus.",
+      "Get a waiting task moving today."
+    ],
+    [
+      "9",
+      "Nine of Wands",
+      "Action and passion: accumulation, patience and nearly there.",
+      "Action and passion: burnout and too much caution.",
+      "Be patient, the finish is close."
+    ],
+    [
+      "10",
+      "Ten of Wands",
+      "Action and passion: the completion of a chapter and responsibility.",
+      "Action and passion: a need to put the load down.",
+      "Hand off a piece of the load you carry."
+    ],
+    [
+      "P",
+      "Page of Wands",
+      "Action and passion: curiosity, news and a wish to learn.",
+      "Action and passion: carelessness and incomplete news.",
+      "Learn something you’re curious about today."
+    ],
+    [
+      "Kn",
+      "Knight of Wands",
+      "Action and passion: taking action, with a risk of rushing.",
+      "Action and passion: hasty or scattered steps.",
+      "Check your direction before you speed up."
+    ],
+    [
+      "Q",
+      "Queen of Wands",
+      "Action and passion: maturity, compassion and inner strength.",
+      "Action and passion: withdrawal and emotional swings.",
+      "Approach yourself and those around you with compassion."
+    ],
+    [
+      "K",
+      "King of Wands",
+      "Action and passion: mastery, authority and responsibility.",
+      "Action and passion: rigidity and the risk of abusing power.",
+      "Carry your responsibility in a calm, clear voice."
+    ],
+    [
+      "A",
+      "Ace of Cups",
+      "Feelings and relationships: a new beginning, a fresh spark.",
+      "Feelings and relationships: a delayed or missed opportunity.",
+      "Take a small first step today."
+    ],
+    [
+      "2",
+      "Two of Cups",
+      "Feelings and relationships: a choice or a search for balance.",
+      "Feelings and relationships: indecision and imbalance.",
+      "Write both options side by side, then pick one."
+    ],
+    [
+      "3",
+      "Three of Cups",
+      "Feelings and relationships: growth and teamwork.",
+      "Feelings and relationships: delays and friction in cooperation.",
+      "Ask someone for support, or support someone."
+    ],
+    [
+      "4",
+      "Four of Cups",
+      "Feelings and relationships: stability and rest.",
+      "Feelings and relationships: restlessness and lingering fatigue.",
+      "Take a short break and regroup."
+    ],
+    [
+      "5",
+      "Five of Cups",
+      "Feelings and relationships: competition, friction and a tough test.",
+      "Feelings and relationships: conflict easing or being suppressed.",
+      "Don’t try to win every argument, choose what matters."
+    ],
+    [
+      "6",
+      "Six of Cups",
+      "Feelings and relationships: harmony, progress and recognition.",
+      "Feelings and relationships: disharmony and feeling unrecognized.",
+      "Notice something you achieved and share it."
+    ],
+    [
+      "7",
+      "Seven of Cups",
+      "Feelings and relationships: resilience and defending your ground.",
+      "Feelings and relationships: wear and staying on the defensive.",
+      "Hold your boundary, but don’t stay on the defensive."
+    ],
+    [
+      "8",
+      "Eight of Cups",
+      "Feelings and relationships: movement, speed and focus.",
+      "Feelings and relationships: slowing down and scattered focus.",
+      "Get a waiting task moving today."
+    ],
+    [
+      "9",
+      "Nine of Cups",
+      "Feelings and relationships: accumulation, patience and nearly there.",
+      "Feelings and relationships: burnout and too much caution.",
+      "Be patient, the finish is close."
+    ],
+    [
+      "10",
+      "Ten of Cups",
+      "Feelings and relationships: the completion of a chapter and responsibility.",
+      "Feelings and relationships: a need to put the load down.",
+      "Hand off a piece of the load you carry."
+    ],
+    [
+      "P",
+      "Page of Cups",
+      "Feelings and relationships: curiosity, news and a wish to learn.",
+      "Feelings and relationships: carelessness and incomplete news.",
+      "Learn something you’re curious about today."
+    ],
+    [
+      "Kn",
+      "Knight of Cups",
+      "Feelings and relationships: taking action, with a risk of rushing.",
+      "Feelings and relationships: hasty or scattered steps.",
+      "Check your direction before you speed up."
+    ],
+    [
+      "Q",
+      "Queen of Cups",
+      "Feelings and relationships: maturity, compassion and inner strength.",
+      "Feelings and relationships: withdrawal and emotional swings.",
+      "Approach yourself and those around you with compassion."
+    ],
+    [
+      "K",
+      "King of Cups",
+      "Feelings and relationships: mastery, authority and responsibility.",
+      "Feelings and relationships: rigidity and the risk of abusing power.",
+      "Carry your responsibility in a calm, clear voice."
+    ],
+    [
+      "A",
+      "Ace of Swords",
+      "Thought and communication: a new beginning, a fresh spark.",
+      "Thought and communication: a delayed or missed opportunity.",
+      "Take a small first step today."
+    ],
+    [
+      "2",
+      "Two of Swords",
+      "Thought and communication: a choice or a search for balance.",
+      "Thought and communication: indecision and imbalance.",
+      "Write both options side by side, then pick one."
+    ],
+    [
+      "3",
+      "Three of Swords",
+      "Thought and communication: growth and teamwork.",
+      "Thought and communication: delays and friction in cooperation.",
+      "Ask someone for support, or support someone."
+    ],
+    [
+      "4",
+      "Four of Swords",
+      "Thought and communication: stability and rest.",
+      "Thought and communication: restlessness and lingering fatigue.",
+      "Take a short break and regroup."
+    ],
+    [
+      "5",
+      "Five of Swords",
+      "Thought and communication: competition, friction and a tough test.",
+      "Thought and communication: conflict easing or being suppressed.",
+      "Don’t try to win every argument, choose what matters."
+    ],
+    [
+      "6",
+      "Six of Swords",
+      "Thought and communication: harmony, progress and recognition.",
+      "Thought and communication: disharmony and feeling unrecognized.",
+      "Notice something you achieved and share it."
+    ],
+    [
+      "7",
+      "Seven of Swords",
+      "Thought and communication: resilience and defending your ground.",
+      "Thought and communication: wear and staying on the defensive.",
+      "Hold your boundary, but don’t stay on the defensive."
+    ],
+    [
+      "8",
+      "Eight of Swords",
+      "Thought and communication: movement, speed and focus.",
+      "Thought and communication: slowing down and scattered focus.",
+      "Get a waiting task moving today."
+    ],
+    [
+      "9",
+      "Nine of Swords",
+      "Thought and communication: accumulation, patience and nearly there.",
+      "Thought and communication: burnout and too much caution.",
+      "Be patient, the finish is close."
+    ],
+    [
+      "10",
+      "Ten of Swords",
+      "Thought and communication: the completion of a chapter and responsibility.",
+      "Thought and communication: a need to put the load down.",
+      "Hand off a piece of the load you carry."
+    ],
+    [
+      "P",
+      "Page of Swords",
+      "Thought and communication: curiosity, news and a wish to learn.",
+      "Thought and communication: carelessness and incomplete news.",
+      "Learn something you’re curious about today."
+    ],
+    [
+      "Kn",
+      "Knight of Swords",
+      "Thought and communication: taking action, with a risk of rushing.",
+      "Thought and communication: hasty or scattered steps.",
+      "Check your direction before you speed up."
+    ],
+    [
+      "Q",
+      "Queen of Swords",
+      "Thought and communication: maturity, compassion and inner strength.",
+      "Thought and communication: withdrawal and emotional swings.",
+      "Approach yourself and those around you with compassion."
+    ],
+    [
+      "K",
+      "King of Swords",
+      "Thought and communication: mastery, authority and responsibility.",
+      "Thought and communication: rigidity and the risk of abusing power.",
+      "Carry your responsibility in a calm, clear voice."
+    ],
+    [
+      "A",
+      "Ace of Pentacles",
+      "Money and work: a new beginning, a fresh spark.",
+      "Money and work: a delayed or missed opportunity.",
+      "Take a small first step today."
+    ],
+    [
+      "2",
+      "Two of Pentacles",
+      "Money and work: a choice or a search for balance.",
+      "Money and work: indecision and imbalance.",
+      "Write both options side by side, then pick one."
+    ],
+    [
+      "3",
+      "Three of Pentacles",
+      "Money and work: growth and teamwork.",
+      "Money and work: delays and friction in cooperation.",
+      "Ask someone for support, or support someone."
+    ],
+    [
+      "4",
+      "Four of Pentacles",
+      "Money and work: stability and rest.",
+      "Money and work: restlessness and lingering fatigue.",
+      "Take a short break and regroup."
+    ],
+    [
+      "5",
+      "Five of Pentacles",
+      "Money and work: competition, friction and a tough test.",
+      "Money and work: conflict easing or being suppressed.",
+      "Don’t try to win every argument, choose what matters."
+    ],
+    [
+      "6",
+      "Six of Pentacles",
+      "Money and work: harmony, progress and recognition.",
+      "Money and work: disharmony and feeling unrecognized.",
+      "Notice something you achieved and share it."
+    ],
+    [
+      "7",
+      "Seven of Pentacles",
+      "Money and work: resilience and defending your ground.",
+      "Money and work: wear and staying on the defensive.",
+      "Hold your boundary, but don’t stay on the defensive."
+    ],
+    [
+      "8",
+      "Eight of Pentacles",
+      "Money and work: movement, speed and focus.",
+      "Money and work: slowing down and scattered focus.",
+      "Get a waiting task moving today."
+    ],
+    [
+      "9",
+      "Nine of Pentacles",
+      "Money and work: accumulation, patience and nearly there.",
+      "Money and work: burnout and too much caution.",
+      "Be patient, the finish is close."
+    ],
+    [
+      "10",
+      "Ten of Pentacles",
+      "Money and work: the completion of a chapter and responsibility.",
+      "Money and work: a need to put the load down.",
+      "Hand off a piece of the load you carry."
+    ],
+    [
+      "P",
+      "Page of Pentacles",
+      "Money and work: curiosity, news and a wish to learn.",
+      "Money and work: carelessness and incomplete news.",
+      "Learn something you’re curious about today."
+    ],
+    [
+      "Kn",
+      "Knight of Pentacles",
+      "Money and work: taking action, with a risk of rushing.",
+      "Money and work: hasty or scattered steps.",
+      "Check your direction before you speed up."
+    ],
+    [
+      "Q",
+      "Queen of Pentacles",
+      "Money and work: maturity, compassion and inner strength.",
+      "Money and work: withdrawal and emotional swings.",
+      "Approach yourself and those around you with compassion."
+    ],
+    [
+      "K",
+      "King of Pentacles",
+      "Money and work: mastery, authority and responsibility.",
+      "Money and work: rigidity and the risk of abusing power.",
+      "Carry your responsibility in a calm, clear voice."
+    ]
+  ],
+  "tarotUi": {
+    "title": "Card of the day",
+    "pick": "Pick a card from the deck.",
+    "reversedTag": "REVERSED",
+    "reversedSuffix": ", reversed",
+    "newCard": "NEW CARD {{time}}",
+    "energy": "Today this energy may be with you: {{text}}",
+    "error": "Couldn’t save the card right now. Try again in a moment.",
+    "cardN": "Card {{n}}",
+    "dayCard": "Card of the day: {{name}}{{rev}}. {{advice}}"
+  },
+  "today": {
+    "missingBirth": "Today’s reading couldn’t be calculated because your birth details are incomplete.",
+    "summary": "Summary of the day",
+    "do": "DO",
+    "dont": "DON’T",
+    "deepBtn": "Go deeper ›",
+    "end": "The end"
+  },
+  "cosmic": {
+    "today": "TODAY",
+    "inDays": "IN {{n}} DAYS",
+    "eventLine": "{{name}} {{sign}}"
+  },
+  "deep": {
+    "back": "← Today",
+    "label": "Go deeper · {{date}}",
+    "sky": "In the sky today",
+    "save": "SAVE",
+    "savedBtn": "SAVED",
+    "share": "SHARE ↗"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "loginTitle": "Welcome back.",
+    "loginSubtitle": "The sky is waiting where you left it.",
+    "noAccount": "NO ACCOUNT? SIGN UP",
+    "resendUnconfirmed": "RESEND THE CONFIRMATION EMAIL",
+    "resendCooldownCaps": "RESEND ({{n}})",
+    "signupTitle": "Let’s chart your sky together.",
+    "signupSubtitle": "First create an account; then we’ll ask for your birth details.",
+    "haveAccount": "ALREADY HAVE AN ACCOUNT? SIGN IN",
+    "minChars": "At least {{n}} characters.",
+    "verifyTitle": "Check your email.",
+    "verifyAddress": "{{email}}",
+    "verifyYour": "your email",
+    "verifyBody": "Tap the link we sent to {{to}}. You can sign in once your account is verified.",
+    "resend": "Resend",
+    "resendCooldown": "Resend ({{n}})",
+    "otherEmail": "Use a different email",
+    "resent": "We’ve sent the confirmation link again.",
+    "errors": {
+      "invalid": "Wrong email or password.",
+      "exists": "An account with this email already exists.",
+      "unconfirmed": "Your email isn’t verified yet. Tap the link in your inbox; if it didn’t arrive, resend it below.",
+      "shortPassword": "Password must be at least 6 characters.",
+      "badEmail": "Enter a valid email.",
+      "rateLimit": "Too many attempts. Try again in a bit.",
+      "network": "Couldn’t connect. Check your internet.",
+      "other": "Something went wrong. Try again."
+    }
+  },
+  "onboarding": {
+    "step": "Step {{n}} / {{total}}",
+    "nameTitle": "What should we call you?",
+    "nameSubtitle": "Your friends will see you by this name.",
+    "nameLabel": "Your name",
+    "handleTitle": "Pick a username.",
+    "handleSubtitle": "Your friends will find you with it.",
+    "handleLabel": "Username",
+    "handlePlaceholder": "@username",
+    "handle": {
+      "bos": "3–20 characters: letters, digits, dot, underscore.",
+      "gecersiz": "Must be at least 3 characters.",
+      "kontrol": "Checking…",
+      "musait": "Available.",
+      "dolu": "This username is taken.",
+      "hata": "Couldn’t check. Check your connection."
+    },
+    "dateTitle": "What day were you born?",
+    "dateSubtitle": "This date is the foundation of your Sun sign and your chart.",
+    "day": "Day",
+    "month": "Month",
+    "year": "Year",
+    "dayPh": "DD",
+    "monthPh": "MM",
+    "yearPh": "YYYY",
+    "dateInvalid": "Enter a valid date.",
+    "timeTitle": "What time were you born?",
+    "timeSubtitle": "Your rising sign and houses depend on the time. It’s fine if you don’t know.",
+    "hour": "Hour",
+    "minute": "Minute",
+    "hourPh": "HH",
+    "minutePh": "MM",
+    "timeInvalid": "Use 24-hour format, e.g. 14 : 30.",
+    "dontKnow": "I don’t know",
+    "placeTitle": "Where were you born?",
+    "placeSubtitle": "We calculate the sky for the city you were born in.",
+    "citySearch": "Search city",
+    "cityPlaceholder": "Istanbul, London…",
+    "noCity": "No city found for this search.",
+    "notifTitle": "Shall we remind you gently?",
+    "notifSubtitle": "We can remind you in the evening to add your feelings to the bottle, and tell you when your new card is ready if you like. We won’t send any other notifications. You can change this anytime in Settings.",
+    "allowFinish": "Allow and finish",
+    "notNow": "Not now",
+    "handleTaken": "That username was just taken by someone else. Go back and pick a new one.",
+    "saveError": "Couldn’t save. Check your connection and try again."
+  },
+  "birthEdit": {
+    "step": "Birth details · {{n}} / {{total}}",
+    "saveBtn": "Save and recalculate",
+    "saveError": "Couldn’t save your birth details. Check your connection and try again."
+  },
+  "gunluk": {
+    "today": "Today",
+    "loadError": "Your mood entries couldn’t be loaded. Check your connection.",
+    "comeBack": "Come back at {{time}} to log your feelings.",
+    "countdown": "IN {{time}}",
+    "tryNow": "Try it now in dev",
+    "inBottle": "Today is in your bottle.",
+    "full": "The bottle is full. Tap it to open.",
+    "tomorrow": "See you again tomorrow evening at {{time}}.",
+    "newBottleTitle": "Your new bottle is ready.",
+    "newBottleNote": "You closed this week’s bottle. New entries start on Monday.",
+    "daysFilled": "{{n}}/7 DAYS",
+    "bottleTitle": "THIS\nWEEK’S\nBOTTLE",
+    "bottleLabel": "Mood bottle",
+    "bottleFull": "BOTTLE IS FULL",
+    "bottleTonight": "FILLS TONIGHT",
+    "bottleOpensSunday": "OPENS SUNDAY EVENING",
+    "bottleTapOpen": "TAP TO OPEN",
+    "bottleAddToday": "ADD TODAY, LET IT POP",
+    "daysLeft": "{{n}} DAYS LEFT",
+    "bottleNew": "NEW BOTTLE",
+    "bottleNewSub": "FIRST ORB ON MONDAY",
+    "archive": "Bottle archive",
+    "archiveMood": "Feeling: {{mood}}",
+    "savedTitle": "Saved",
+    "savedEmpty": "Readings you save with Save on the Go deeper page stay here.",
+    "monthly": "MONTHLY RECAP",
+    "monthReady": "Your {{month}} recap is ready.",
+    "open": "OPEN →",
+    "toastIn": "Today went into the bottle",
+    "toastArchived": "Bottle saved to the archive",
+    "toastFailed": "Couldn’t save, try again",
+    "toastSundayWait": "The bottle will pop once you add today",
+    "toastSundayOnly": "The bottle opens on Sunday evening",
+    "toastNewBottle": "The new bottle starts on Monday",
+    "mood": {
+      "title": "How did you feel today?",
+      "label": "Today · {{date}}",
+      "placeholder": "What happened today?",
+      "error": "Couldn’t save. Check your connection and try again.",
+      "put": "Put in the bottle"
+    },
+    "week": {
+      "opened": "Bottle opened",
+      "best": "This week’s feeling: {{mood}}.",
+      "shareStory": "Share to Story",
+      "mondayNew": "A NEW, EMPTY BOTTLE ON MONDAY MORNING",
+      "replay": "Watch the pop again",
+      "newBottle": "Move to a new bottle",
+      "sky": "The sky and you"
+    },
+    "story": {
+      "preview": "STORY PREVIEW",
+      "head": "{{name}} · Bottle of the week",
+      "noShare": "Sharing isn’t available on this device.",
+      "noImage": "Couldn’t prepare the image. Try again.",
+      "dialog": "Share to Story"
+    },
+    "wrapped": {
+      "head": "{{name}} · {{month}} recap",
+      "next": "Next",
+      "last": "END",
+      "tap": "TAP · NEXT",
+      "share": "SHARE"
+    },
+    "insights": {
+      "element": "Your peace is highest when the Moon is in {{element}} signs.",
+      "energy": "Your most energetic day is {{day}}. That day the Moon was {{sign}}.",
+      "card": "On your happiest day you had drawn the {{card}} card."
+    },
+    "month": {
+      "mood": "FEELING OF THE MONTH",
+      "avg": "Average {{v}} / 10",
+      "energy": "YOUR MOST ENERGETIC DAY",
+      "moonIn": "Moon {{sign}}.",
+      "card": "THE CARD YOU DREW MOST",
+      "times": "{{n}} times. {{text}}",
+      "ending": "{{month}} IS ENDING",
+      "seeYou": "See you next month."
+    }
+  },
+  "moods": {
+    "mutluluk": "Happiness",
+    "enerji": "Energy",
+    "huzur": "Peace",
+    "kaygi": "Anxiety",
+    "sevgi": "Love",
+    "motivasyon": "Motivation"
+  },
+  "sen": {
+    "chart": "Chart",
+    "settings": "Settings",
+    "noBirth": "Your chart couldn’t be calculated because your birth details are incomplete.",
+    "noTime": "Add your birth time and your rising sign and houses will be calculated",
+    "birthChart": "BIRTH CHART",
+    "signsCol": "SIGNS",
+    "housesCol": "HOUSES",
+    "similarLink": "Add a friend",
+    "similarRest": " to see who’s similar"
+  },
+  "planetCards": {
+    "template": "{{role}} Your {{sign}} {{name}} lives this area in a {{tone}} way.",
+    "asc": "Your rising sign is the face you show people at first glance. It shows in your style and in how you come across when you meet someone new. It changes every two hours, so if it feels off, double-check your birth time. Your {{sign}} Rising makes you come across as {{tone}}.",
+    "roles": {
+      "Güneş": "Your identity and life force.",
+      "Ay": "Your emotions and need for security.",
+      "Merkür": "How you think and speak.",
+      "Venüs": "How you love and what you value.",
+      "Mars": "Your drive and power to act.",
+      "Jüpiter": "Your area of growth and luck.",
+      "Satürn": "Your limits and responsibilities.",
+      "Uranüs": "Your area of change and freedom. A generational planet.",
+      "Neptün": "Your imagination and intuition. A generational planet.",
+      "Plüton": "Your area of transformation and depth. A generational planet."
+    },
+    "names": {
+      "Güneş": "Sun",
+      "Ay": "Moon",
+      "Merkür": "Mercury",
+      "Venüs": "Venus",
+      "Mars": "Mars",
+      "Jüpiter": "Jupiter",
+      "Satürn": "Saturn",
+      "Uranüs": "Uranus",
+      "Neptün": "Neptune",
+      "Plüton": "Pluto"
+    }
+  },
+  "settings": {
+    "profile": "PROFILE",
+    "avatarRow": "PROFILE PHOTO",
+    "change": "CHANGE ›",
+    "avatarTitle": "Profile photo",
+    "avatarError": "Couldn’t save the profile photo. Check your connection and try again.",
+    "readings": "READINGS",
+    "relationship": "RELATIONSHIP STATUS",
+    "lifeStage": "LIFE STAGE",
+    "relationshipTitle": "Relationship status",
+    "lifeStageTitle": "Life stage",
+    "relationshipOptions": {
+      "Belirtmek istemiyorum": "Prefer not to say",
+      "Bekâr": "Single",
+      "Flört ediyor": "Dating",
+      "İlişkide": "In a relationship",
+      "Evli": "Married"
+    },
+    "lifeOptions": {
+      "Belirtmek istemiyorum": "Prefer not to say",
+      "Öğrenci": "Student",
+      "Çalışan": "Working",
+      "Ebeveyn": "Parent",
+      "Emekli": "Retired"
+    },
+    "language": "LANGUAGE",
+    "languageTitle": "Language",
+    "chartSection": "CHART",
+    "houseSystem": "HOUSE SYSTEM",
+    "houseSystemTitle": "House system",
+    "classicOnly": "Classical planets only",
+    "birthInfo": "BIRTH DETAILS",
+    "noTimeShort": "NO TIME",
+    "notifications": "NOTIFICATIONS",
+    "cardReminder": "Card reminder",
+    "cardReminderNote": "When on, a “Your new card is ready.” notification arrives every night at 00:00.",
+    "evening": "EVENING FEELINGS",
+    "eveningTitle": "Evening time",
+    "eveningNote": "Mood logging opens every evening after this time, and the reminder arrives then.",
+    "permission": "Notification permission",
+    "permissionState": {
+      "granted": "ON",
+      "denied": "OFF",
+      "undetermined": "NOT ASKED",
+      "unavailable": "NOT ON THIS DEVICE"
+    },
+    "openPhoneSettings": "OPEN PHONE SETTINGS",
+    "allow": "ALLOW",
+    "deniedNote": "Reminders aren’t arriving because permission is off. The rest of the app works normally.",
+    "testSent": "Put the app in the background: two notifications will arrive in 10 and 20 seconds.",
+    "testUnavailable": "Notifications aren’t available on this device.",
+    "testBtn": "SEND TEST NOTIFICATION",
+    "privacy": "PRIVACY",
+    "privacyText": "Your birth details, mood entries and Void chats are stored on your account; only you can see them. What you write to Void is sent to Google Gemini to generate a reply. When you delete your account, all your data is permanently deleted.",
+    "support": "SUPPORT",
+    "emergency": "EMERGENCY",
+    "emergencyNote": "If you’re thinking about harming yourself or you’re in crisis, call your local emergency number (112 in Türkiye) and reach out to someone you trust. Astrology isn’t a scientific method; consult an expert for important decisions.",
+    "signOut": "Sign out",
+    "delete": {
+      "button": "Delete account",
+      "askTitle": "Delete your account?",
+      "askText": "Are you sure you want to delete your account? Your profile, mood entries, Void chats and friendships will be permanently deleted. This can’t be undone.",
+      "continue": "Continue",
+      "lastTitle": "Last step",
+      "typeHandle": "To confirm, type your username: @{{handle}}",
+      "confirm": "Delete my account",
+      "error": "Couldn’t delete the account. Check your connection and try again."
+    },
+    "archive": "Archive"
+  },
+  "void": {
+    "welcome": "WELCOME TO VOID",
+    "leftA11y": "Questions left: {{n}}",
+    "loadError": "Your history couldn’t be loaded. Check your connection.",
+    "placeholder": "ASK SOMETHING...",
+    "placeholderLimit": "NEW QUESTIONS AT 00:00",
+    "question": "Question",
+    "ask": "ASK",
+    "who": "VOID",
+    "thinking": "Void is thinking…",
+    "meta": "{{n}} QUESTIONS · RENEWS AT 00:00",
+    "newChat": "NEW CHAT",
+    "failed": "Something went wrong, your question wasn’t used. Try again in a moment.",
+    "limit": "You’ve used today’s questions. New ones at 00:00.",
+    "catNames": {
+      "Ben": "Me",
+      "Aşk": "Love",
+      "İş": "Work",
+      "Sosyal": "Social"
+    },
+    "cats": {
+      "Ben": [
+        "What should I focus on this month?",
+        "Why have I been feeling tired lately?",
+        "Why do I question myself so much?",
+        "How do I learn to be alone?",
+        "What should I worry less about?"
+      ],
+      "Aşk": [
+        "How do I move forward with my crush this week?",
+        "Why am I always drawn to the same type of people?",
+        "What should I talk about more openly in my relationship?",
+        "How do I protect my heart from breaking?"
+      ],
+      "İş": [
+        "Which are my most productive days during exam week?",
+        "Is it a good time to start a new project?",
+        "How do I resolve tension with a coworker?",
+        "What kind of job would make me happier?"
+      ],
+      "Sosyal": [
+        "What role do I play in my friend group?",
+        "Is it a good time to meet new people?",
+        "Should I write to someone I haven’t talked to in a long time?",
+        "How do I learn to say no?"
+      ]
+    }
+  },
+  "friends": {
+    "tabs": {
+      "kisiler": "People",
+      "odalar": "Chat & rooms",
+      "grup": "Group chart"
+    },
+    "removedFromGroup": "You were removed from this group",
+    "friendRemoved": "{{name}} was removed from your friends",
+    "groupUpdated": "Group updated",
+    "groupCreated": "Group created",
+    "groupDeleted": "Group deleted",
+    "roomLocked": "The room opens on the day of the event",
+    "eventRoom": "Event room",
+    "publicRoom": "Open to everyone",
+    "eventIntro": "The room is open. What do you want to let go of this month?",
+    "nearby": "NEARBY",
+    "sideBySide": "Put your charts side by side.",
+    "add": {
+      "titleBump": "ADD FRIEND",
+      "titleQr": "ADD WITH QR",
+      "titleScan": "SCAN CODE",
+      "self": "This is your own code.",
+      "failed": "Couldn’t add, try again.",
+      "invalid": "The code is invalid or has expired.",
+      "notLuna": "This isn’t a Luna code.",
+      "matched": "You matched with {{name}}.",
+      "addedToList": "ADDED TO YOUR FRIENDS",
+      "bump": "Gently tap the phones together.",
+      "searching": "LOOKING FOR A NEARBY PHONE",
+      "tryQr": "DIDN’T WORK? TRY THE QR CODE",
+      "qrA11y": "QR code for @{{handle}}",
+      "showCode": "Have your friend scan this code.",
+      "codeFailed": "COULDN’T GET A CODE",
+      "codeValid": "CODE IS VALID FOR 10 MINUTES, ONE USE",
+      "retry": "TRY AGAIN",
+      "scanBtn": "Scan with camera",
+      "sendLink": "Send link",
+      "backToBump": "BACK TO BUMP",
+      "needCamera": "Allow camera access to scan the code.",
+      "allow": "Allow",
+      "openSettings": "Open settings",
+      "backToCode": "BACK TO MY CODE",
+      "frame": "Frame your friend’s QR code"
+    },
+    "loadError": "Your friends couldn’t be loaded.",
+    "empty": "Nobody here yet. Add your first friend with “Add +”.",
+    "rooms": {
+      "cosmic": "COSMIC EVENT ROOM",
+      "open": "OPEN",
+      "opensIn": "OPENS IN {{n}} DAYS",
+      "roomName": "{{name}} room",
+      "sub": "{{date}} · Moon {{sign}}. Stays open throughout the event.",
+      "groups": "GROUPS",
+      "newGroup": "NEW GROUP +",
+      "loadError": "Groups couldn’t be loaded.",
+      "none": "You have no groups yet.",
+      "groupMeta": "GROUP · {{n}} PEOPLE",
+      "unread": "Unread message",
+      "noMessages": "No messages yet"
+    },
+    "room": {
+      "back": "← BACK",
+      "edit": "EDIT",
+      "loading": "LOADING",
+      "sendFailed": "Couldn’t send, try again.",
+      "placeholder": "Write a message",
+      "message": "Message",
+      "send": "SEND"
+    },
+    "group": {
+      "editTitle": "Edit group",
+      "newTitle": "New group",
+      "nameLabel": "GROUP NAME",
+      "namePlaceholder": "E.g. Roommates",
+      "nameA11y": "Group name",
+      "people": "PEOPLE",
+      "needFriends": "You need to add friends first.",
+      "needName": "Give the group a name",
+      "needPerson": "Pick at least one person",
+      "saveFailed": "Couldn’t save, try again",
+      "deleteFailed": "Couldn’t delete, try again",
+      "confirmDelete": "Are you sure? Delete",
+      "delete": "Delete group"
+    },
+    "map": {
+      "label": "GROUP CHART",
+      "empty": "A group chart needs the birth chart of at least one friend. It appears here as you add friends.",
+      "labelPeople": "GROUP CHART · {{n}} PEOPLE",
+      "headline": "Your group is {{percent}}% {{element}}.",
+      "barA11y": "{{element}}: {{n}} people",
+      "roles": "ROLES",
+      "shareBtn": "Share group card",
+      "shareMessage": "Our group is {{percent}}% {{element}}. See our chart on Luna."
+    },
+    "sheet": {
+      "title": "FRIEND",
+      "relation": "RELATIONSHIP",
+      "relationA11y": "Relationship: {{rel}}",
+      "today": "TODAY",
+      "compat": "COMPATIBILITY",
+      "compatPending": "Compatibility is calculated from two birth charts. It will appear here once {{name}} completes their birth details.",
+      "barA11y": "{{k}}: {{n}} out of 10",
+      "confirmNote": "{{name}} is removed from your friends, and you’re removed from theirs. Shared groups stay.",
+      "removeFailed": "Couldn’t remove, try again.",
+      "confirmRemove": "ARE YOU SURE? REMOVE",
+      "remove": "REMOVE FRIEND",
+      "cancel": "CANCEL",
+      "history": "{{from}} → {{to}}, {{date}}"
+    },
+    "transition": {
+      "signs": "{{a}} and {{b}}.",
+      "format": "From {{from}} to {{to}}.",
+      "withFriend": "YOU & {{name}}",
+      "shareMessage": "{{from}} → {{to}} with {{name}}. {{caption}}",
+      "brand": "LU — NA · {{date}}",
+      "sunSame": "Your Suns are in the same element, you speak the same language.",
+      "sunFeed": "Your Suns are in elements that nourish each other.",
+      "sunDiff": "Your Suns move at different speeds, which adds curiosity to the relationship."
+    },
+    "compatKeys": {
+      "Aşk": "Love",
+      "Arkadaşlık": "Friendship",
+      "İletişim": "Communication",
+      "İş": "Work"
+    },
+    "addButton": "Add +"
+  },
+  "rel": {
+    "types": {
+      "Arkadaş": "Friend",
+      "Aile": "Family",
+      "Flört": "Flirt",
+      "Partner": "Partner",
+      "İş arkadaşı": "Coworker",
+      "Eski sevgili": "Ex"
+    },
+    "from": {
+      "Arkadaş": "friend",
+      "Aile": "family",
+      "Flört": "flirt",
+      "Partner": "partner",
+      "İş arkadaşı": "coworker",
+      "Eski sevgili": "ex"
+    },
+    "to": {
+      "Flört": "flirt",
+      "Partner": "partner"
+    },
+    "blurb": {
+      "Arkadaş": [
+        "A nice day to do something together.",
+        "A short message is enough.",
+        "Give each other some space today."
+      ],
+      "Aile": [
+        "One phone call makes you both happy.",
+        "Keep the conversation light.",
+        "Leave sensitive topics for another day."
+      ],
+      "Flört": [
+        "There’s a spark between you, make a plan.",
+        "Stay in the flow, don’t force it.",
+        "Don’t read too much into messages."
+      ],
+      "Partner": [
+        "An evening together would feel good.",
+        "Share the daily chores.",
+        "Tiredness can shorten patience, be gentle."
+      ],
+      "İş arkadaşı": [
+        "You’ll move fast on a shared task.",
+        "Clarify roles.",
+        "Read emails twice."
+      ],
+      "Eski sevgili": [
+        "Keep your boundaries, focus on yourself today.",
+        "Keep your boundaries, focus on yourself today.",
+        "Not a good day to reopen old topics."
+      ]
+    },
+    "tagsAll": [
+      "Deep-talk day",
+      "Productive together",
+      "Banter day",
+      "Understanding in silence",
+      "Risk of pointless arguments",
+      "Change of plans",
+      "Patience needed",
+      "Shared curiosity"
+    ],
+    "tagsRomantic": [
+      "Mutual attraction",
+      "Romantic plan",
+      "Watch for jealousy"
+    ]
+  },
+  "notif": {
+    "nowFriends": "You and {{name}} are now friends.",
+    "addedToGroup": "{{adder}} added you to {{group}}.",
+    "addedToSome": "{{adder}} added you to a group.",
+    "removedFrom": "You were removed from {{group}}.",
+    "removedFromSome": "You were removed from a group.",
+    "message": "{{group}} · {{who}}: {{text}}",
+    "group": "Group"
+  },
+  "reminders": {
+    "channel": "Reminders",
+    "evening": "Add today to your bottle.",
+    "card": "Your new card is ready."
+  },
+  "future": {
+    "link": "SEND YOUR FUTURE SELF A MESSAGE",
+    "hint": "You write the message. We send it back to you when the stars align.",
+    "discard": "DISCARD",
+    "submit": "SUBMIT",
+    "sent": "Your message is in the stars.",
+    "error": "Couldn’t send the message. Check your connection and try again.",
+    "inputA11y": "Message to your future self",
+    "notification": "A message from your past self.",
+    "banner": "A message from your past self.",
+    "fullLabel": "MESSAGE FROM {{date}}",
+    "markFailed": "Couldn’t mark the message as opened."
+  },
+  "archive": {
+    "title": "Archive",
+    "empty": "No messages from your past yet.",
+    "loadError": "The archive couldn’t be loaded. Check your connection.",
+    "dayA11y": "Messages delivered on {{date}}",
+    "writtenOn": "Written on {{day}} {{month}}",
+    "delete": "Delete",
+    "deleteAsk": "Delete this message permanently?",
+    "deleteFailed": "Couldn’t delete the message. Try again.",
+    "seeArchive": "View in archive"
+  }
+}

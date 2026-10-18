@@ -64,13 +64,13 @@ export function MoodSlider({ value, onChange, label, min = 0, max = 10 }: Props)
 const styles = StyleSheet.create({
   hit: { height: 32, justifyContent: 'center' },
   track: { height: 1, backgroundColor: colors.border },
-  fill: { position: 'absolute', left: 0, height: 1, backgroundColor: colors.fg },
+  fill: { position: 'absolute', left: 0, height: 1, backgroundColor: colors.black },
   thumb: {
     position: 'absolute',
     top: (32 - THUMB) / 2,
     width: THUMB,
     height: THUMB,
     borderRadius: THUMB / 2,
-    backgroundColor: colors.fg,
+    backgroundColor: colors.black,
   },
 });

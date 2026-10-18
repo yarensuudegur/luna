@@ -1,3 +1,4 @@
+import { locale } from '@/i18n/lang';
 import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 import { colors, fonts } from '@/theme';
 
@@ -23,7 +24,7 @@ export function Button({ children, onPress, variant = 'solid', disabled, loading
       {loading ? (
         <ActivityIndicator color={ghost ? colors.fg : colors.white} />
       ) : (
-        <Text style={[styles.label, ghost && styles.labelGhost]}>{children.toLocaleUpperCase('tr')}</Text>
+        <Text style={[styles.label, ghost && styles.labelGhost]}>{children.toLocaleUpperCase(locale())}</Text>
       )}
     </Pressable>
   );
@@ -35,9 +36,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.fg,
+    backgroundColor: colors.black,
     borderWidth: 1,
-    borderColor: colors.fg,
+    borderColor: colors.black,
   },
   ghost: { backgroundColor: 'transparent' },
   inactive: { opacity: 0.35 },

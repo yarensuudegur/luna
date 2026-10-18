@@ -20,6 +20,6 @@ export function Bar({ filled, total = 10, label }: { filled: number; total?: num
 
 const styles = StyleSheet.create({
   bar: { flexDirection: 'row', gap: 3 },
-  cell: { width: 9, height: 9, borderWidth: 1, borderColor: colors.fg },
-  on: { backgroundColor: colors.fg },
+  cell: { width: 9, height: 9, borderWidth: 1, borderColor: colors.black },
+  on: { backgroundColor: colors.black },
 });

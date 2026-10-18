@@ -1,3 +1,4 @@
+import { t } from '@/i18n/core';
 import type { Chart, PlanetKey } from './chart';
 import { norm, signIndex } from './zodiac';
 
@@ -120,9 +121,9 @@ export function compatibility(a: Chart, b: Chart): Compat {
 export function sunPairLine(sunA: number, sunB: number): string {
   const a = elementOf(sunA);
   const b = elementOf(sunB);
-  if (a === b) return 'Güneşleriniz aynı elementte, aynı dili konuşuyorsunuz.';
-  if ((a + b) % 2 === 0) return 'Güneşleriniz birbirini besleyen elementlerde.';
-  return 'Güneşleriniz farklı hızlarda, bu da ilişkiye merak katıyor.';
+  if (a === b) return t('friends.transition.sunSame');
+  if ((a + b) % 2 === 0) return t('friends.transition.sunFeed');
+  return t('friends.transition.sunDiff');
 }
 
 export const ROLES = ['Ateşleyici', 'Planlayıcı', 'Fikir insanı', 'Arabulucu'] as const;

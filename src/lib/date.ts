@@ -1,18 +1,17 @@
-const GUNLER = ['PAZ', 'PZT', 'SAL', 'ÇAR', 'PER', 'CUM', 'CTS'] as const;
-const AYLAR = ['OCA', 'ŞUB', 'MAR', 'NİS', 'MAY', 'HAZ', 'TEM', 'AĞU', 'EYL', 'EKİ', 'KAS', 'ARA'] as const;
-
-/** Örn. "PAZ 18 EKİ" */
-export function formatTopDate(d: Date = new Date()): string {
-  return `${GUNLER[d.getDay()]} ${d.getDate()} ${AYLAR[d.getMonth()]}`;
-}
-
-const GUN_ADLARI = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'] as const;
-const AY_ADLARI = [
-  'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-  'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık',
-] as const;
+import { t } from '@/i18n/core';
 
 const pad2 = (n: number) => String(n).padStart(2, '0');
+
+const list = (key: string): string[] => t(key, { returnObjects: true }) as unknown as string[];
+
+/** Örn. "PAZ 18 EKİ" / "SUN OCT 18" */
+export function formatTopDate(d: Date = new Date()): string {
+  return t('date.topDate', {
+    dow: list('date.dowShort')[d.getDay()],
+    day: d.getDate(),
+    month: list('date.monthShort')[d.getMonth()],
+  });
+}
 
 /** Yerel tarihi "YYYY-MM-DD" anahtarına çevirir. */
 export function dateKey(d: Date = new Date()): string {
@@ -31,14 +30,27 @@ export function addDays(d: Date, n: number): Date {
   return r;
 }
 
-/** Örn. "18 Ekim" */
+/** Örn. "18 Ekim 2026" / "October 18, 2026" */
+export function formatFullDate(d: Date): string {
+  return t('date.full', { day: d.getDate(), month: monthName(d), year: d.getFullYear() });
+}
+
+/** Ay adı, örn. "Ekim" / "October". */
+export function monthName(d: Date): string {
+  return list('date.monthLong')[d.getMonth()];
+}
+
+/** Örn. "18 Ekim" / "October 18" */
 export function formatDayMonth(d: Date): string {
-  return `${d.getDate()} ${AY_ADLARI[d.getMonth()]}`;
+  return t('date.dayMonth', { day: d.getDate(), month: monthName(d) });
 }
 
 export function dayName(d: Date): string {
-  return GUN_ADLARI[d.getDay()];
+  return list('date.dowLong')[d.getDay()];
 }
+
+/** Haftanın kısa gün adı ("PAZ") ve "bugün" kısaltması. */
+export const dayShort = (d: Date): string => list('date.dowShort')[d.getDay()];
 
 /** Gece yarısına kalan süre, "SS:DD:SS". */
 export function countdownToMidnight(now: Date = new Date()): string {

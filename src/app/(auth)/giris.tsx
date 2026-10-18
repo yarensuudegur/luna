@@ -4,13 +4,15 @@ import { Pressable, StyleSheet, Text } from 'react-native';
 import { Button } from '@/components/Button';
 import { Field } from '@/components/Field';
 import { FormScreen } from '@/components/FormScreen';
-import { isUnconfirmed, trAuthError } from '@/lib/auth-errors';
+import { useTranslation } from '@/i18n';
+import { authErrorText, isUnconfirmed } from '@/lib/auth-errors';
 import { useResendConfirmation } from '@/lib/resend';
 import { supabase } from '@/lib/supabase';
 import { colors, fonts } from '@/theme';
 
 export default function GirisScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
@@ -29,7 +31,7 @@ export default function GirisScreen() {
       password,
     });
     if (err) {
-      setError(trAuthError(err.message));
+      setError(authErrorText(err.message));
       setUnconfirmed(isUnconfirmed(err.message));
     }
     setBusy(false);
@@ -37,21 +39,21 @@ export default function GirisScreen() {
 
   return (
     <FormScreen
-      title="Tekrar hoş geldin."
-      subtitle="Gökyüzü bıraktığın yerde seni bekliyor."
+      title={t('auth.loginTitle')}
+      subtitle={t('auth.loginSubtitle')}
       footer={
         <>
           <Button onPress={submit} disabled={!canSubmit} loading={busy}>
-            Giriş yap
+            {t('auth.signIn')}
           </Button>
           <Pressable onPress={() => router.replace('/kayit')} style={styles.switch}>
-            <Text style={styles.switchText}>HESABIN YOK MU? KAYIT OL</Text>
+            <Text style={styles.switchText}>{t('auth.noAccount')}</Text>
           </Pressable>
         </>
       }
     >
       <Field
-        label="E-posta"
+        label={t('auth.email')}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -60,7 +62,7 @@ export default function GirisScreen() {
         textContentType="emailAddress"
       />
       <Field
-        label="Şifre"
+        label={t('auth.password')}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -74,7 +76,7 @@ export default function GirisScreen() {
         <Pressable onPress={resend.resend} disabled={resend.busy || resend.cooldown > 0} style={styles.switch}>
           <Text style={styles.switchText}>
             {resend.message ??
-              (resend.cooldown > 0 ? `TEKRAR GÖNDER (${resend.cooldown})` : 'DOĞRULAMA E-POSTASINI TEKRAR GÖNDER')}
+              (resend.cooldown > 0 ? t('auth.resendCooldownCaps', { n: resend.cooldown }) : t('auth.resendUnconfirmed'))}
           </Text>
         </Pressable>
       )}

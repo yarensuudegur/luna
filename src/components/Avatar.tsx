@@ -1,4 +1,5 @@
 import { Image, StyleSheet, View } from 'react-native';
+import { useTranslation } from '@/i18n';
 import { avatarSource } from '@/lib/avatars';
 import { colors } from '@/theme';
 
@@ -10,12 +11,13 @@ type Props = {
 };
 
 export function Avatar({ avatar, size, blend = true }: Props) {
+  const { t } = useTranslation();
   return (
     <View style={[styles.wrap, { width: size, height: size, borderRadius: size / 2 }]}>
       <View style={[styles.img, blend && styles.multiply]}>
         <Image
           source={avatarSource(avatar)}
-          accessibilityLabel="Profil fotoğrafı"
+          accessibilityLabel={t('settings.avatarTitle')}
           style={[styles.img, { transform: [{ scale: 1.14 }, { translateY: size * 0.04 }] }]}
         />
       </View>

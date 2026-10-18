@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { trAuthError } from '@/lib/auth-errors';
+import { t } from '@/i18n/core';
+import { authErrorText } from '@/lib/auth-errors';
 import { supabase } from '@/lib/supabase';
 
 const COOLDOWN = 60;
@@ -21,9 +22,9 @@ export function useResendConfirmation(email: string) {
     setBusy(true);
     setMessage(null);
     const { error } = await supabase.auth.resend({ type: 'signup', email });
-    if (error) setMessage(trAuthError(error.message));
+    if (error) setMessage(authErrorText(error.message));
     else {
-      setMessage('Doğrulama bağlantısını tekrar gönderdik.');
+      setMessage(t('auth.resent'));
       setCooldown(COOLDOWN);
     }
     setBusy(false);

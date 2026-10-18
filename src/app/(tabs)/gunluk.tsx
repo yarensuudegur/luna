@@ -9,6 +9,7 @@ import { StorySheet } from '@/components/gunluk/StorySheet';
 import { WeekSummary } from '@/components/gunluk/WeekSummary';
 import { Wrapped } from '@/components/gunluk/Wrapped';
 import { Label, LinkText, Section } from '@/components/Section';
+import { useTranslation } from '@/i18n';
 import { useAuth } from '@/lib/auth';
 import {
   BOTTLE,
@@ -16,6 +17,7 @@ import {
   isEvening,
   isSunday,
   low,
+  moodLabel,
   monthName,
   monthSlides,
   orbsFor,
@@ -23,10 +25,11 @@ import {
   weekData,
   weekInsights,
   weekKeys,
+  weekLabel,
 } from '@/lib/bottle';
 import type { MoodEntry, WeekData } from '@/lib/bottle';
 import { formatTopDate, fromDateKey } from '@/lib/date';
-import { moonSignOf, useBottleArchive, useMoods, useOpenedWeeks } from '@/lib/moods';
+import { moonSignOf, useBottleArchive, useClosedWeeks, useMoods, useOpenedWeeks } from '@/lib/moods';
 import { useReminders } from '@/lib/reminders';
 import { useSavedList } from '@/lib/saved';
 import { useSettings } from '@/lib/settings';
@@ -54,6 +57,8 @@ function mouthInSection(sectionWidth: number) {
 
 export default function GunlukScreen() {
   const router = useRouter();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
   const { profile } = useAuth();
   const userId = profile?.id;
   const name = profile?.name ?? '';
@@ -62,6 +67,7 @@ export default function GunlukScreen() {
   const { moods, loading, error, reload, save } = useMoods(userId);
   const archive = useBottleArchive(userId);
   const openedWeeks = useOpenedWeeks(userId);
+  const closedWeeks = useClosedWeeks(userId);
   const saved = useSavedList(userId);
   const { noteMoodSaved } = useReminders();
 
@@ -97,21 +103,27 @@ export default function GunlukScreen() {
   const days = useMemo(() => weekKeys(today), [today]);
   const weekStart = days[0];
   const filledDays = useMemo(() => days.filter((k) => moods[k]), [days, moods]);
-  const orbs = useMemo(() => orbsFor(filledDays), [filledDays]);
   const todayDone = !!moods[today];
   const sunday = isSunday(today);
   const opened = openedWeeks.weeks.includes(weekStart);
+  /** "Yeni şişeye geç" ile kapatılan hafta: özet gizlenir, boş yeni şişe görünür. */
+  const closed = closedWeeks.weeks.includes(weekStart);
+  const summaryOpen = opened && !closed;
+  const orbs = useMemo(() => orbsFor(closed ? [] : filledDays), [closed, filledDays]);
   const evening = demoEve || isEvening(now, eveningTime);
-  const current = useMemo(() => weekData(weekStart, days, moods), [weekStart, days, moods]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const current = useMemo(() => weekData(weekStart, days, moods), [weekStart, days, moods, lang]);
 
-  const tarot = useCardMap(userId, opened || wrappedOpen);
+  const tarot = useCardMap(userId, summaryOpen || wrappedOpen);
   const insights = useMemo(
-    () => (opened ? weekInsights(filledDays, moods, tarot, moonSignOf) : []),
-    [opened, filledDays, moods, tarot],
+    () => (summaryOpen ? weekInsights(filledDays, moods, tarot, moonSignOf) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [summaryOpen, filledDays, moods, tarot, lang],
   );
   const slides = useMemo(
     () => (wrappedOpen ? monthSlides(fromDateKey(today), moods, tarot, moonSignOf, name) : []),
-    [wrappedOpen, today, moods, tarot, name],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [wrappedOpen, today, moods, tarot, name, lang],
   );
   const archived = archive.list.some((a) => a.weekStart === weekStart);
 
@@ -145,14 +157,14 @@ export default function GunlukScreen() {
       await wait(900);
       await popBottle();
     } else {
-      showToast('Bugün şişeye girdi');
+      showToast(t('gunluk.toastIn'));
     }
     return true;
   }
 
   async function onSaveBottle() {
-    if (await archive.add(weekStart, current)) showToast('Şişe arşivine kaydedildi');
-    else showToast('Kaydedilemedi, tekrar dene');
+    if (await archive.add(weekStart, current)) showToast(t('gunluk.toastArchived'));
+    else showToast(t('gunluk.toastFailed'));
   }
 
   async function replay() {
@@ -164,10 +176,18 @@ export default function GunlukScreen() {
     await popBottle();
   }
 
+  /** Bu haftanın özetini kapatır; boş yeni şişe görünür ve hafta kapandı olarak işaretlenir. */
+  async function startNewBottle() {
+    closedWeeks.mark(weekStart, true);
+    await wait(150);
+    scroll.current?.scrollTo({ y: 0, animated: true });
+  }
+
   function onBottlePress() {
     if (busy.current) return;
-    if (sunday && todayDone) popBottle();
-    else showToast(sunday ? 'Bugünü ekleyince şişe patlayacak' : 'Şişe Pazar akşamı açılır');
+    if (closed) showToast(t('gunluk.toastNewBottle'));
+    else if (sunday && todayDone) popBottle();
+    else showToast(sunday ? t('gunluk.toastSundayWait') : t('gunluk.toastSundayOnly'));
   }
 
   function openSaved(key: string) {
@@ -183,15 +203,15 @@ export default function GunlukScreen() {
       <ScrollView ref={scroll} style={styles.root} contentContainerStyle={styles.content}>
         {loading ? (
           <Section>
-            <Label>Bugün</Label>
-            <Text style={styles.body}>Yükleniyor…</Text>
+            <Label>{t('gunluk.today')}</Label>
+            <Text style={styles.body}>{t('common.loading')}</Text>
           </Section>
         ) : error ? (
           <Section>
-            <Label>Bugün</Label>
-            <Text style={styles.body}>Duygu kayıtların yüklenemedi. Bağlantını kontrol et.</Text>
+            <Label>{t('gunluk.today')}</Label>
+            <Text style={styles.body}>{t('gunluk.loadError')}</Text>
             <LinkText onPress={reload} accessibilityRole="button" style={styles.retry}>
-              Tekrar dene
+              {t('common.retry')}
             </LinkText>
           </Section>
         ) : !todayDone ? (
@@ -199,29 +219,35 @@ export default function GunlukScreen() {
             <MoodForm dateLabel={formatTopDate(now)} onSave={onSaveMood} />
           ) : (
             <Section style={styles.center}>
-              <Label>Bugün</Label>
-              <Text style={[styles.h1, styles.centerText]}>
-                Duygularını kaydetmek için saat {eveningTime}’de geri gel.
-              </Text>
-              {!!countdown && <Text style={styles.count}>{countdown} SONRA</Text>}
+              <Label>{t('gunluk.today')}</Label>
+              <Text style={[styles.h1, styles.centerText]}>{t('gunluk.comeBack', { time: eveningTime })}</Text>
+              {!!countdown && <Text style={styles.count}>{t('gunluk.countdown', { time: countdown })}</Text>}
               {__DEV__ && (
                 <LinkText onPress={() => setDemoEve(true)} accessibilityRole="button" style={styles.demo}>
-                  Taslakta şimdi dene
+                  {t('gunluk.tryNow')}
                 </LinkText>
               )}
             </Section>
           )
+        ) : closed ? (
+          <Section style={styles.center}>
+            <Label>{t('gunluk.today')}</Label>
+            <Text style={[styles.h1, styles.centerText]}>{t('gunluk.newBottleTitle')}</Text>
+            <Text style={[styles.body, styles.mute, styles.centerText, styles.doneNote]}>
+              {t('gunluk.newBottleNote')}
+            </Text>
+          </Section>
         ) : !opened ? (
           <Section style={styles.center}>
-            <Label>Bugün</Label>
-            <Text style={[styles.h1, styles.centerText]}>Bugün şişende.</Text>
+            <Label>{t('gunluk.today')}</Label>
+            <Text style={[styles.h1, styles.centerText]}>{t('gunluk.inBottle')}</Text>
             <Text style={[styles.body, styles.mute, styles.centerText, styles.doneNote]}>
-              {sunday ? 'Şişe doldu. Açmak için ona dokun.' : `Yarın akşam ${eveningTime}’de tekrar görüşürüz.`}
+              {sunday ? t('gunluk.full') : t('gunluk.tomorrow', { time: eveningTime })}
             </Text>
           </Section>
         ) : null}
 
-        {!loading && !error && opened ? (
+        {!loading && !error && summaryOpen ? (
           <View onLayout={(e) => (summaryY.current = e.nativeEvent.layout.y)}>
             <WeekSummary
               data={current}
@@ -233,6 +259,7 @@ export default function GunlukScreen() {
               onShare={() => setStory(current)}
               onSave={onSaveBottle}
               onReplay={replay}
+              onNewBottle={startNewBottle}
             />
           </View>
         ) : (
@@ -243,26 +270,34 @@ export default function GunlukScreen() {
               bottleY.current = e.nativeEvent.layout.y;
             }}
           >
-            <Text style={[styles.lbl, styles.above]}>{filledDays.length}/7 GÜN</Text>
-            <Text style={[styles.bt, styles.above]}>{'BU\nHAFTANIN\nŞİŞESİ'}</Text>
+            <Text style={[styles.lbl, styles.above]}>{t('gunluk.daysFilled', { n: closed ? 0 : filledDays.length })}</Text>
+            <Text style={[styles.bt, styles.above]}>{t('gunluk.bottleTitle')}</Text>
             <Pressable
               style={styles.bottleBtn}
               onPress={onBottlePress}
               accessibilityRole="button"
-              accessibilityLabel="Duygu şişesi"
+              accessibilityLabel={t('gunluk.bottleLabel')}
             >
               <Bottle key={bottleRun} ref={bottle} orbs={orbs} />
             </Pressable>
             <View style={[styles.bmeta, styles.above]}>
               <Text style={styles.mono}>
-                {sunday ? (todayDone ? 'ŞİŞE DOLDU' : 'BU AKŞAM DOLACAK') : 'PAZAR AKŞAMI AÇILIR'}
+                {closed
+                  ? t('gunluk.bottleNew')
+                  : sunday
+                    ? todayDone
+                      ? t('gunluk.bottleFull')
+                      : t('gunluk.bottleTonight')
+                    : t('gunluk.bottleOpensSunday')}
               </Text>
               <Text style={[styles.mono, styles.mute]}>
-                {sunday
-                  ? todayDone
-                    ? 'AÇMAK İÇİN DOKUN'
-                    : 'BUGÜNÜ EKLE, PATLASIN'
-                  : `${7 - filledDays.length} GÜN KALDI`}
+                {closed
+                  ? t('gunluk.bottleNewSub')
+                  : sunday
+                    ? todayDone
+                      ? t('gunluk.bottleTapOpen')
+                      : t('gunluk.bottleAddToday')
+                    : t('gunluk.daysLeft', { n: 7 - filledDays.length })}
               </Text>
             </View>
             {spray && <Spray x={spray.x} y={spray.y} />}
@@ -271,17 +306,17 @@ export default function GunlukScreen() {
 
         {archive.list.length > 0 && (
           <Section>
-            <Label>Şişe arşivi</Label>
+            <Label>{t('gunluk.archive')}</Label>
             {archive.list.map((a) => (
               <Pressable
                 key={a.weekStart}
                 style={styles.li}
-                onPress={() => setStory(a.summary)}
+                onPress={() => setStory({ ...a.summary, label: weekLabel(a.weekStart) })}
                 accessibilityRole="button"
               >
                 <View style={styles.grow}>
-                  <Text style={[styles.mono, styles.mute]}>{up(a.summary.label)}</Text>
-                  <Text style={styles.liTitle}>Duygusu: {low(a.summary.best)}</Text>
+                  <Text style={[styles.mono, styles.mute]}>{up(weekLabel(a.weekStart))}</Text>
+                  <Text style={styles.liTitle}>{t('gunluk.archiveMood', { mood: low(moodLabel(a.summary.best)) })}</Text>
                 </View>
                 <Text style={styles.arrow}>→</Text>
               </Pressable>
@@ -290,7 +325,7 @@ export default function GunlukScreen() {
         )}
 
         <Section>
-          <Label>Kaydedilenler</Label>
+          <Label>{t('gunluk.savedTitle')}</Label>
           {saved.length > 0 ? (
             saved.map((s) => (
               <Pressable key={s.key} style={styles.li} onPress={() => openSaved(s.key)} accessibilityRole="button">
@@ -302,17 +337,15 @@ export default function GunlukScreen() {
               </Pressable>
             ))
           ) : (
-            <Text style={[styles.body, styles.mute]}>
-              Derine in sayfasında Kaydet’e bastığın yorumlar burada durur.
-            </Text>
+            <Text style={[styles.body, styles.mute]}>{t('gunluk.savedEmpty')}</Text>
           )}
         </Section>
 
         <Section last>
           <Pressable style={styles.room} onPress={() => setWrappedOpen(true)} accessibilityRole="button">
-            <Text style={[styles.mono, styles.onDark]}>AYLIK ÖZET</Text>
-            <Text style={styles.roomTitle}>{monthName(fromDateKey(today))} özetin hazır.</Text>
-            <Text style={[styles.mono, styles.onDark, styles.roomOpen]}>AÇ →</Text>
+            <Text style={[styles.mono, styles.onDark]}>{t('gunluk.monthly')}</Text>
+            <Text style={styles.roomTitle}>{t('gunluk.monthReady', { month: monthName(fromDateKey(today)) })}</Text>
+            <Text style={[styles.mono, styles.onDark, styles.roomOpen]}>{t('gunluk.open')}</Text>
           </Pressable>
         </Section>
       </ScrollView>
@@ -341,8 +374,8 @@ const styles = StyleSheet.create({
   center: { alignItems: 'center' },
   centerText: { textAlign: 'center' },
   h1: { fontFamily: fonts.serif, fontSize: 34, lineHeight: 44, letterSpacing: -0.34, color: colors.fg },
-  body: { fontSize: 14, lineHeight: 22.7, color: colors.fg },
-  mute: { color: colors.mute },
+  body: { fontSize: 14, lineHeight: 22.7, color: colors.body },
+  mute: { color: colors.body },
   doneNote: { marginTop: 10 },
   count: {
     fontFamily: fonts.mono,
@@ -393,7 +426,7 @@ const styles = StyleSheet.create({
   liTitle: { fontFamily: fonts.serif, fontSize: 17, lineHeight: 23, color: colors.fg, marginTop: 4 },
   arrow: { fontFamily: fonts.mono, fontSize: 14, color: colors.fg },
 
-  room: { backgroundColor: colors.fg, padding: 24, gap: 8 },
+  room: { backgroundColor: colors.black, padding: 24, gap: 8 },
   onDark: { color: colors.white },
   roomTitle: { fontFamily: fonts.serif, fontSize: 30, lineHeight: 40, color: colors.white },
   roomOpen: { marginTop: 6 },
@@ -404,7 +437,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     letterSpacing: 1.2,
     color: colors.white,
-    backgroundColor: colors.fg,
+    backgroundColor: colors.black,
     paddingVertical: 11,
     paddingHorizontal: 16,
   },

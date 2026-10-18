@@ -1,3 +1,4 @@
+import { locale } from '@/i18n/lang';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { colors, fonts } from '@/theme';
@@ -17,7 +18,7 @@ export function useToast() {
 
   const node = text ? (
     <View style={styles.toast} pointerEvents="none">
-      <Text style={styles.text}>{text.toLocaleUpperCase('tr')}</Text>
+      <Text style={styles.text}>{text.toLocaleUpperCase(locale())}</Text>
     </View>
   ) : null;
 
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     bottom: 16,
     maxWidth: '90%',
-    backgroundColor: colors.fg,
+    backgroundColor: colors.black,
     paddingVertical: 11,
     paddingHorizontal: 14,
     zIndex: 70,

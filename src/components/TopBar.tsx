@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Animated, Easing, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Polyline } from 'react-native-svg';
+import { useTranslation } from '@/i18n';
 import { formatTopDate } from '@/lib/date';
 import { useToday } from '@/lib/today';
 import { colors, fonts, layout } from '@/theme';
@@ -22,7 +23,7 @@ function Chevron({ open }: { open: boolean }) {
   return (
     <Animated.View style={{ transform: [{ rotate: turn.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '180deg'] }) }] }}>
       <Svg width={11} height={7} viewBox="0 0 11 7">
-        <Polyline points="1,1 5.5,5.8 10,1" fill="none" stroke={colors.fg} strokeWidth={1.2} />
+        <Polyline points="1,1 5.5,5.8 10,1" fill="none" stroke={colors.black} strokeWidth={1.2} />
       </Svg>
     </Animated.View>
   );
@@ -31,6 +32,7 @@ function Chevron({ open }: { open: boolean }) {
 /** `routeName`: üst çubuğun bulunduğu sekme. Yalnız Bugün'de tarih gün şeridini açar. */
 export function TopBar({ routeName }: { routeName: string }) {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const { daysOpen, toggleDays, deepOpen } = useToday();
   const toggles = routeName === 'index' && !deepOpen;
 
@@ -42,7 +44,7 @@ export function TopBar({ routeName }: { routeName: string }) {
           onPress={toggleDays}
           accessibilityRole="button"
           accessibilityState={{ expanded: daysOpen }}
-          accessibilityLabel={daysOpen ? 'Günleri gizle' : 'Günleri göster'}
+          accessibilityLabel={daysOpen ? t('top.hideDays') : t('top.showDays')}
           hitSlop={10}
           style={styles.dateBtn}
         >

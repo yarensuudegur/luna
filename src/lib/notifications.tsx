@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
+import { t } from '@/i18n/core';
 import { NotificationBanner } from '@/components/NotificationBanner';
 import { useAuth } from '@/lib/auth';
 import { subscribeChanges } from '@/lib/realtime';
@@ -95,7 +96,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
       names = new Map(list.map((m) => [m.id, m.name]));
       memberNames.current.set(groupId, names);
     }
-    return names.get(who) ?? 'Biri';
+    return names.get(who) ?? t('common.someone');
   }, []);
 
   const ready = useRef<Promise<void>>(Promise.resolve());
@@ -204,7 +205,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
           if (!friendId) return;
           const { data } = await supabase.rpc('friend_list');
           const friend = ((data ?? []) as { id: string; name: string | null }[]).find((f) => f.id === friendId);
-          notify(`${friend?.name ?? 'Biri'} ile artık arkadaşsınız.`, { kind: 'friend', friendId }, true);
+          notify(t('notif.nowFriends', { name: friend?.name ?? t('common.someone') }), { kind: 'friend', friendId }, true);
           return;
         }
 
@@ -219,7 +220,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
             const adder = await nameInGroup(groupId, by);
             const group = groupNames.current.get(groupId);
             notify(
-              `${adder} seni ${group ? `${group} grubuna` : 'bir gruba'} ekledi.`,
+              group ? t('notif.addedToGroup', { adder, group }) : t('notif.addedToSome', { adder }),
               { kind: 'group', groupId },
               true,
             );
@@ -229,7 +230,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
             await loadGroups();
             emit({ kind: 'groups' });
             if (ignored.current.delete(groupId)) return;
-            notify(group ? `${group} grubundan çıkarıldın.` : 'Bir gruptan çıkarıldın.', { kind: 'groups' }, true);
+            notify(group ? t('notif.removedFrom', { group }) : t('notif.removedFromSome'), { kind: 'groups' }, true);
           }
           return;
         }
@@ -303,8 +304,8 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
         }
         setUnread((prev) => new Set(prev).add(r.room_id));
         const who = await nameInGroup(r.room_id, r.sender);
-        const group = groupNames.current.get(r.room_id) ?? 'Grup';
-        notify(`${group} · ${who}: ${clip(r.body, 60)}`, { kind: 'group', groupId: r.room_id }, false);
+        const group = groupNames.current.get(r.room_id) ?? t('notif.group');
+        notify(t('notif.message', { group, who, text: clip(r.body, 60) }), { kind: 'group', groupId: r.room_id }, false);
       },
     );
 
