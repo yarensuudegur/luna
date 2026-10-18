@@ -7,7 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "luna",
     "userInterfaceStyle": "light",
-    "backgroundColor": "#ffffff",
+    "backgroundColor": "#f6f6f4",
     "ios": {
       "supportsTablet": false
     },
@@ -29,7 +29,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#f6f6f4",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
@@ -43,7 +43,8 @@
           "cameraPermission": "Arkadaşının QR kodunu okutmak için kameraya erişim gerekir.",
           "recordAudioAndroid": false
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true

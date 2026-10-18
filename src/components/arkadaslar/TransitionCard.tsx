@@ -1,6 +1,9 @@
+import { locale } from '@/i18n/lang';
 import { Modal, Pressable, Share, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BURCLAR, sunPairLine } from '@/lib/astro';
+import { useTranslation } from '@/i18n';
+import { relName, signName } from '@/i18n/names';
+import { sunPairLine } from '@/lib/astro';
 import { formatDayMonth } from '@/lib/date';
 import type { Friend } from '@/lib/friends';
 import { transitionTitle } from '@/lib/relations';
@@ -18,37 +21,45 @@ type Props = {
 /** Arkadaş → Flört / Partner geçişinde açılan siyah tam ekran kart. */
 export function TransitionCard({ friend, from, to, mySun, onClose }: Props) {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   const pair = mySun !== null && friend.sun !== null ? sunPairLine(mySun, friend.sun) : '';
   const signs =
-    mySun !== null && friend.sun !== null ? `${BURCLAR[mySun]} ve ${BURCLAR[friend.sun]}.` : '';
+    mySun !== null && friend.sun !== null ? t('friends.transition.signs', { a: signName(mySun), b: signName(friend.sun) }) : '';
   const title = transitionTitle(from, to);
-  const date = formatDayMonth(new Date()).toLocaleUpperCase('tr');
+  const date = formatDayMonth(new Date()).toLocaleUpperCase(locale());
   const caption = [pair, signs].filter(Boolean).join(' ');
 
   function share() {
-    Share.share({ message: `${friend.name} ile ${from} → ${to}. ${caption}`.trim() }).catch(() => {});
+    Share.share({
+      message: t('friends.transition.shareMessage', {
+        name: friend.name,
+        from: relName(from),
+        to: relName(to),
+        caption,
+      }).trim(),
+    }).catch(() => {});
   }
 
   return (
     <Modal visible animationType="fade" onRequestClose={onClose}>
       <View style={[styles.root, { paddingTop: insets.top + 22, paddingBottom: insets.bottom + 26 }]}>
         <View style={styles.row}>
-          <Text style={styles.mono}>LU — NA · {date}</Text>
-          <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel="Kapat" style={styles.x}>
+          <Text style={styles.mono}>{t('friends.transition.brand', { date })}</Text>
+          <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel={t('common.close')} style={styles.x}>
             <Text style={styles.xText}>✕</Text>
           </Pressable>
         </View>
         <View>
           <Text style={[styles.mono, styles.dim]}>
-            {from.toLocaleUpperCase('tr')} → {to.toLocaleUpperCase('tr')}
+            {relName(from).toLocaleUpperCase(locale())} → {relName(to).toLocaleUpperCase(locale())}
           </Text>
           <Text style={styles.title}>{title}</Text>
           {caption !== '' && <Text style={styles.body}>{caption}</Text>}
         </View>
         <View style={styles.row}>
-          <Text style={[styles.mono, styles.dim]}>SEN & {friend.name.toLocaleUpperCase('tr')}</Text>
+          <Text style={[styles.mono, styles.dim]}>{t('friends.transition.withFriend', { name: friend.name.toLocaleUpperCase(locale()) })}</Text>
           <Pressable onPress={share} accessibilityRole="button" style={styles.share}>
-            <Text style={styles.shareText}>PAYLAŞ</Text>
+            <Text style={styles.shareText}>{t('common.share').toLocaleUpperCase(locale())}</Text>
           </Pressable>
         </View>
       </View>
@@ -59,7 +70,7 @@ export function TransitionCard({ friend, from, to, mySun, onClose }: Props) {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.fg,
+    backgroundColor: colors.black,
     justifyContent: 'space-between',
     paddingHorizontal: layout.screenPadding,
   },

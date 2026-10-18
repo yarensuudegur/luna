@@ -1,9 +1,10 @@
 import { forwardRef, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Bottle } from '@/components/gunluk/Bottle';
-import { BOTTLE, MOODS, orbsFor, up } from '@/lib/bottle';
+import { useTranslation } from '@/i18n';
+import { moodName } from '@/i18n/names';
+import { BOTTLE, MOODS, low, moodLabel, orbsFor, up } from '@/lib/bottle';
 import type { WeekData } from '@/lib/bottle';
-import { low } from '@/lib/bottle';
 import { colors, fonts } from '@/theme';
 
 /** Prototipteki .story.big genişliği; tüm ölçüler buna göre ölçeklenir. */
@@ -18,6 +19,7 @@ type Props = {
 
 /** 9:16 story kartı (prototipteki storyCard). Paylaşılan görüntü bu görünümden alınır. */
 export const StoryCard = forwardRef<View, Props>(function StoryCard({ data, name, width }, ref) {
+  const { t } = useTranslation();
   const f = width / BASE;
   const orbs = useMemo(() => orbsFor(data.keys), [data.keys]);
 
@@ -28,7 +30,7 @@ export const StoryCard = forwardRef<View, Props>(function StoryCard({ data, name
       style={[styles.card, { width, aspectRatio: 9 / 16, paddingVertical: 16 * f, paddingHorizontal: 14 * f }]}
     >
       <View style={styles.head}>
-        <Text style={[styles.mono, { fontSize: 9.5 * f }]}>{up(`${name} · Haftanın şişesi`)}</Text>
+        <Text style={[styles.mono, { fontSize: 9.5 * f }]}>{up(t('gunluk.story.head', { name }))}</Text>
         <Text style={[styles.mono, styles.mute, { fontSize: 9.5 * f, marginTop: 4 }]}>{up(data.label)}</Text>
       </View>
 
@@ -44,14 +46,14 @@ export const StoryCard = forwardRef<View, Props>(function StoryCard({ data, name
       </View>
 
       <Text style={[styles.line, { fontSize: 23 * f, lineHeight: 30 * f }]}>
-        Bu haftanın duygusu: {low(data.best)}.
+        {t('gunluk.week.best', { mood: low(moodLabel(data.best)) })}
       </Text>
 
       <View style={styles.avg}>
-        {MOODS.map(([k, label]) => (
+        {MOODS.map(([k]) => (
           <View key={k} style={styles.avgItem}>
             <Text style={[styles.avgVal, { fontSize: 17 * f, lineHeight: 23 * f }]}>{data.avg[k]}</Text>
-            <Text style={[styles.avgLabel, { fontSize: 8 * f }]}>{up(label)}</Text>
+            <Text style={[styles.avgLabel, { fontSize: 8 * f }]}>{up(moodName(k))}</Text>
           </View>
         ))}
       </View>
@@ -62,7 +64,7 @@ export const StoryCard = forwardRef<View, Props>(function StoryCard({ data, name
 const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
-    borderColor: colors.fg,
+    borderColor: colors.black,
     backgroundColor: colors.bg,
     justifyContent: 'space-between',
     alignItems: 'center',

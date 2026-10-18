@@ -1,3 +1,4 @@
+import { t } from '@/i18n/core';
 import { pickN, rng } from '@/lib/daily/rng';
 
 export const REL_TYPES = ['Arkadaş', 'Aile', 'Flört', 'Partner', 'İş arkadaşı', 'Eski sevgili'] as const;
@@ -28,56 +29,23 @@ export function codeFromQr(data: string): string | null {
 
 // ----- Profil ekranındaki "BUGÜN" bölümü (prototipteki friendDay) -----
 
-export const REL_BLURB: Record<RelType, readonly [string, string, string]> = {
-  Arkadaş: ['Birlikte bir şey yapmak için güzel bir gün.', 'Kısa bir mesaj yeter.', 'Bugün birbirinize alan tanıyın.'],
-  Aile: ['Bir telefon ikinizi de mutlu eder.', 'Sohbet hafif kalsın.', 'Hassas konuları başka bir güne bırakın.'],
-  Flört: ['Aranızda kıvılcım var, bir plan yap.', 'Akışta kalın, zorlamayın.', 'Mesajları fazla yorumlama.'],
-  Partner: [
-    'Birlikte geçireceğiniz bir akşam iyi gelir.',
-    'Gündelik işleri paylaşın.',
-    'Yorgunluk sabrı azaltabilir, nazik olun.',
-  ],
-  'İş arkadaşı': ['Ortak bir işte hızlı ilerlersiniz.', 'Rolleri netleştirin.', 'E-postaları iki kez okuyun.'],
-  'Eski sevgili': [
-    'Sınırlarını koru, bugün kendine odaklan.',
-    'Sınırlarını koru, bugün kendine odaklan.',
-    'Eski konuları açmak için uygun bir gün sayılmaz.',
-  ],
-};
-
-const TAGS_ALL = [
-  'Derin sohbet günü',
-  'Birlikte üretken',
-  'Şakalaşma günü',
-  'Sessizce anlaşma',
-  'Boş tartışma riski',
-  'Plan değişikliği',
-  'Sabır gerek',
-  'Ortak merak',
-];
-const TAGS_ROM = ['Karşılıklı çekim', 'Romantik plan', 'Kıskançlığa dikkat'];
+const list = (key: string): string[] => t(key, { returnObjects: true }) as unknown as string[];
 
 export type FriendDay = { blurb: string; tags: string[] };
 
-/** Günün cümlesi ve etiketleri: kişi + gün + ilişki türünden tohumlanır. */
+/** Günün cümlesi ve etiketleri: kişi + gün + ilişki türünden tohumlanır. Seçim dilden bağımsızdır. */
 export function friendDay(friend: { id: string; rel: RelType }, key: string): FriendDay {
   const r = rng('f' + friend.id + key + friend.rel);
   const score = Math.min(10, Math.round(3 + r() * 6));
   const tier = score >= 7 ? 0 : score >= 4 ? 1 : 2;
-  const pool = ROMANTIC.includes(friend.rel) ? TAGS_ALL.concat(TAGS_ROM) : TAGS_ALL;
-  return { blurb: REL_BLURB[friend.rel][tier], tags: pickN(r, pool, 2) };
+  const all = list('rel.tagsAll');
+  const romantic = list('rel.tagsRomantic');
+  const pool = ROMANTIC.includes(friend.rel) ? all.concat(romantic) : all;
+  const picked = pickN(r, pool.map((_, i) => i), 2).map((i) => pool[i]);
+  return { blurb: list(`rel.blurb.${friend.rel}`)[tier], tags: picked };
 }
 
-const FROM_ABLATIVE: Record<RelType, string> = {
-  Arkadaş: 'Arkadaştan',
-  Aile: 'Aileden',
-  Flört: 'Flörtten',
-  Partner: 'Sevgiliden',
-  'İş arkadaşı': 'İş arkadaşından',
-  'Eski sevgili': 'Eski sevgiliden',
-};
-
-/** Geçiş kartının başlığı: "Arkadaştan flörte." */
+/** Geçiş kartının başlığı: "Arkadaştan flörte." / "From friend to flirt." */
 export function transitionTitle(from: RelType, to: RelType): string {
-  return `${FROM_ABLATIVE[from]} ${to === 'Flört' ? 'flörte' : 'sevgiliye'}.`;
+  return t('friends.transition.format', { from: t(`rel.from.${from}`), to: t(`rel.to.${to}`) });
 }

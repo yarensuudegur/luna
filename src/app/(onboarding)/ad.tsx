@@ -3,10 +3,12 @@ import { useState } from 'react';
 import { Button } from '@/components/Button';
 import { Field } from '@/components/Field';
 import { FormScreen } from '@/components/FormScreen';
+import { useTranslation } from '@/i18n';
 import { useOnboarding } from '@/lib/onboarding';
 
 export default function AdScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { draft, update } = useOnboarding();
   const [name, setName] = useState(draft.name);
   const clean = name.trim();
@@ -18,17 +20,17 @@ export default function AdScreen() {
 
   return (
     <FormScreen
-      eyebrow="Adım 1 / 6"
-      title="Sana nasıl seslenelim?"
-      subtitle="Arkadaşların seni bu adla görecek."
+      eyebrow={t('onboarding.step', { n: 1, total: 6 })}
+      title={t('onboarding.nameTitle')}
+      subtitle={t('onboarding.nameSubtitle')}
       footer={
         <Button onPress={next} disabled={clean.length < 2}>
-          Devam
+          {t('common.continue')}
         </Button>
       }
     >
       <Field
-        label="Adın"
+        label={t('onboarding.nameLabel')}
         value={name}
         onChangeText={setName}
         autoFocus

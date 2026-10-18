@@ -1,8 +1,10 @@
+import { locale } from '@/i18n/lang';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, Easing, Pressable, StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle, Line, Path } from 'react-native-svg';
 import { Label, Section } from '@/components/Section';
-import { TAROT } from '@/lib/daily';
+import { useLang, useTranslation } from '@/i18n';
+import { contentFor } from '@/lib/daily';
 import { countdownToMidnight } from '@/lib/date';
 import type { TarotState } from '@/lib/tarot';
 import { colors, fonts } from '@/theme';
@@ -15,13 +17,16 @@ const CARD_H = 102;
 const PIVOT = CARD_H * 2.3;
 const FAN_RADIUS = PIVOT - CARD_H / 2;
 
+/** İlk harfi küçültür (cümle ortasında kullanmak için). */
+const lowerFirst = (s: string): string => s.charAt(0).toLocaleLowerCase(locale()) + s.slice(1);
+
 /** Prototipteki tarotArt: kartın numarasına göre değişen çizgisel desen. */
 export function TarotArt({ index, size }: { index: number; size: number }) {
   const s = size;
   const c = s / 2;
   const m = index % 6;
   const n = 6 + (index % 5) * 2;
-  const stroke = { stroke: colors.fg, fill: 'none', strokeWidth: 1 } as const;
+  const stroke = { stroke: colors.black, fill: 'none', strokeWidth: 1 } as const;
   const items: React.ReactNode[] = [];
 
   if (m === 0) {
@@ -35,7 +40,7 @@ export function TarotArt({ index, size }: { index: number; size: number }) {
           y1={c + Math.sin(a) * s * 0.22}
           x2={c + Math.cos(a) * s * 0.4}
           y2={c + Math.sin(a) * s * 0.4}
-          stroke={colors.fg}
+          stroke={colors.black}
         />,
       );
     }
@@ -49,7 +54,7 @@ export function TarotArt({ index, size }: { index: number; size: number }) {
       />,
     );
     for (let k = 0; k < 3; k++) {
-      items.push(<Circle key={k} cx={c + s * (0.22 + k * 0.06)} cy={c - s * (0.2 - k * 0.18)} r={1.4} fill={colors.fg} />);
+      items.push(<Circle key={k} cx={c + s * (0.22 + k * 0.06)} cy={c - s * (0.2 - k * 0.18)} r={1.4} fill={colors.black} />);
     }
   } else if (m === 2) {
     const pts = n / 2 + 3;
@@ -62,14 +67,14 @@ export function TarotArt({ index, size }: { index: number; size: number }) {
     items.push(<Path key="p" d={`${d}Z`} {...stroke} />);
   } else if (m === 3) {
     for (let k = 1; k <= 4; k++) items.push(<Circle key={k} cx={c} cy={c} r={s * 0.09 * k} {...stroke} />);
-    items.push(<Circle key="dot" cx={c} cy={c} r={2} fill={colors.fg} />);
+    items.push(<Circle key="dot" cx={c} cy={c} r={2} fill={colors.black} />);
   } else if (m === 4) {
     items.push(
       <Path key="p" d={`M ${c} ${c - s * 0.38} L ${c + s * 0.3} ${c + s * 0.3} L ${c - s * 0.3} ${c + s * 0.3} Z`} {...stroke} />,
     );
     for (let k = 1; k < 4; k++) {
       const y = c - s * 0.38 + (s * 0.68 * k) / 4;
-      items.push(<Line key={k} x1={c - (s * 0.3 * k) / 4} y1={y} x2={c + (s * 0.3 * k) / 4} y2={y} stroke={colors.fg} />);
+      items.push(<Line key={k} x1={c - (s * 0.3 * k) / 4} y1={y} x2={c + (s * 0.3 * k) / 4} y2={y} stroke={colors.black} />);
     }
   } else {
     items.push(<Circle key="c" cx={c} cy={c} r={s * 0.36} {...stroke} />);
@@ -82,7 +87,7 @@ export function TarotArt({ index, size }: { index: number; size: number }) {
           y1={c - Math.sin(a) * s * 0.36}
           x2={c + Math.cos(a) * s * 0.36}
           y2={c + Math.sin(a) * s * 0.36}
-          stroke={colors.fg}
+          stroke={colors.black}
           strokeWidth={0.7}
         />,
       );
@@ -110,7 +115,8 @@ function CardBack({ radius }: { radius: number }) {
 }
 
 function CardFace({ index, reversed }: { index: number; reversed: boolean }) {
-  const [num, name] = TAROT[index];
+  const { t } = useTranslation();
+  const [num, name] = contentFor(useLang()).tarot[index];
   return (
     <View style={styles.face}>
       <Text style={styles.faceNum}>{num}</Text>
@@ -119,7 +125,7 @@ function CardFace({ index, reversed }: { index: number; reversed: boolean }) {
       </View>
       <View style={styles.faceNameWrap}>
         <Text style={styles.faceName}>{name}</Text>
-        {reversed && <Text style={styles.faceRev}>TERS</Text>}
+        {reversed && <Text style={styles.faceRev}>{t('tarotUi.reversedTag')}</Text>}
       </View>
     </View>
   );
@@ -161,6 +167,7 @@ function FanCard({ i, picked, lift, fade, onPress }: {
   fade: Animated.Value;
   onPress: (i: number) => void;
 }) {
+  const { t } = useTranslation();
   const angle = -FAN_SPAN / 2 + i * (FAN_SPAN / (CARD_COUNT - 1));
   const rad = (angle * Math.PI) / 180;
   const tx = FAN_RADIUS * Math.sin(rad);
@@ -182,7 +189,7 @@ function FanCard({ i, picked, lift, fade, onPress }: {
         onPress={() => onPress(i)}
         disabled={picked !== null}
         accessibilityRole="button"
-        accessibilityLabel={`${i + 1}. kart`}
+        accessibilityLabel={t('tarotUi.cardN', { n: i + 1 })}
         style={styles.fill}
       >
         <CardBack radius={4} />
@@ -221,26 +228,32 @@ function Fan({ onPick }: { onPick: () => Promise<boolean> }) {
 }
 
 function Countdown() {
+  const { t } = useTranslation();
   const [text, setText] = useState(countdownToMidnight);
   useEffect(() => {
     const id = setInterval(() => setText(countdownToMidnight()), 1000);
     return () => clearInterval(id);
   }, []);
-  return <Text style={styles.count}>YENİ KART {text}</Text>;
+  return <Text style={styles.count}>{t('tarotUi.newCard', { time: text })}</Text>;
 }
 
-/** Günün tarot kartı: 22 kartlık yelpaze, seçilince çevrilir. Günde bir kart. */
+/**
+ * Günün tarot kartı: yelpazede 22 kart görünür, seçilince 78 kartlık desteden rastgele biri çekilir
+ * ve çevrilir. Günde bir kart.
+ */
 export function TarotSection({ tarot }: { tarot: TarotState }) {
+  const { t } = useTranslation();
+  const cards = contentFor(useLang()).tarot;
   const { loading, drawn, error, draw } = tarot;
   // Bu oturumda çekildiyse çevirme animasyonu oynar, kayıttan geldiyse kart açık gelir.
   const freshlyDrawn = useRef(false);
 
   if (drawn) {
-    const c = TAROT[drawn.card];
+    const c = cards[drawn.card];
     return (
-      <Section style={styles.center}>
+      <Section last style={styles.center}>
         <View style={styles.headRow}>
-          <Label style={styles.noMargin}>Günün kartı</Label>
+          <Label style={styles.noMargin}>{t('tarotUi.title')}</Label>
           <Countdown />
         </View>
         <View style={{ marginTop: 18 }}>
@@ -249,21 +262,21 @@ export function TarotSection({ tarot }: { tarot: TarotState }) {
         <View style={styles.stack}>
           <Text style={styles.h1}>
             {c[1]}
-            {drawn.reversed ? ', ters' : ''}.
+            {drawn.reversed ? t('tarotUi.reversedSuffix') : ''}.
           </Text>
           <Text style={styles.body}>
-            Bugün bu enerji olabilir: {(drawn.reversed ? c[3] : c[2]).toLocaleLowerCase('tr')}
+            {t('tarotUi.energy', { text: lowerFirst(drawn.reversed ? c[3] : c[2]) })}
           </Text>
-          <Text style={[styles.body, { color: colors.mute }]}>{c[4]}</Text>
+          <Text style={[styles.body, { color: colors.body }]}>{c[4]}</Text>
         </View>
       </Section>
     );
   }
 
   return (
-    <Section style={styles.center}>
-      <Label>Günün kartı</Label>
-      <Text style={styles.h1}>Desteden bir kart seç.</Text>
+    <Section last style={styles.center}>
+      <Label>{t('tarotUi.title')}</Label>
+      <Text style={styles.h1}>{t('tarotUi.pick')}</Text>
       {loading ? (
         <View style={styles.fan} />
       ) : (
@@ -274,7 +287,7 @@ export function TarotSection({ tarot }: { tarot: TarotState }) {
           }}
         />
       )}
-      {error && <Text style={styles.error}>Kart şu an kaydedilemedi. Biraz sonra tekrar dene.</Text>}
+      {error && <Text style={styles.error}>{t('tarotUi.error')}</Text>}
     </Section>
   );
 }
@@ -287,11 +300,11 @@ const styles = StyleSheet.create({
   count: { fontFamily: fonts.mono, fontSize: 10, letterSpacing: 1.2, color: colors.mute },
   h1: { fontFamily: fonts.serif, fontSize: 30, lineHeight: 39, letterSpacing: -0.3, color: colors.fg, textAlign: 'center' },
   stack: { marginTop: 20, gap: 12, alignItems: 'center' },
-  body: { fontSize: 14, lineHeight: 22.7, color: colors.fg, textAlign: 'center' },
+  body: { fontSize: 14, lineHeight: 22.7, color: colors.body, textAlign: 'center' },
   error: { marginTop: 8, fontFamily: fonts.mono, fontSize: 10, letterSpacing: 1, color: colors.mute, textAlign: 'center' },
   fan: { alignSelf: 'stretch', height: 200, marginTop: 10, marginHorizontal: -20, overflow: 'hidden' },
   fanCard: { position: 'absolute', left: '50%', top: 34, width: CARD_W, height: CARD_H, marginLeft: -CARD_W / 2 },
-  back: { flex: 1, backgroundColor: colors.fg, borderWidth: 1, borderColor: colors.fg, overflow: 'hidden' },
+  back: { flex: 1, backgroundColor: colors.black, borderWidth: 1, borderColor: colors.black, overflow: 'hidden' },
   backFrame: {
     position: 'absolute',
     top: 4,
@@ -309,9 +322,9 @@ const styles = StyleSheet.create({
   face: {
     flex: 1,
     borderWidth: 1,
-    borderColor: colors.fg,
+    borderColor: colors.black,
     borderRadius: 5,
-    backgroundColor: colors.white,
+    backgroundColor: colors.bg,
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 12,

@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { addDays, dateKey, fromDateKey } from '@/lib/date';
+import { useTranslation } from '@/i18n';
+import { addDays, dateKey, dayShort, fromDateKey } from '@/lib/date';
 import { colors, fonts, layout } from '@/theme';
 
-const GUNLER = ['PAZ', 'PZT', 'SAL', 'ÇAR', 'PER', 'CUM', 'CTS'] as const;
 const ITEM_W = 46;
 const GAP = 2;
 const PAD = 14;
@@ -16,6 +16,7 @@ type Props = {
 
 /** Bugünden ±7 gün; seçili günün altında ince çizgi. */
 export function DayStrip({ today, selected, onSelect }: Props) {
+  const { t } = useTranslation();
   const scroll = useRef<ScrollView>(null);
   const width = useRef(0);
   const base = fromDateKey(today);
@@ -56,7 +57,7 @@ export function DayStrip({ today, selected, onSelect }: Props) {
             style={styles.day}
           >
             <Text style={[styles.w, isToday && styles.today, on && styles.on]}>
-              {isToday ? 'BGN' : GUNLER[d.getDay()]}
+              {isToday ? t('date.today') : dayShort(d)}
             </Text>
             <Text style={[styles.n, isToday && styles.today, on && styles.on]}>{d.getDate()}</Text>
             {on && <View style={styles.underline} />}
@@ -85,6 +86,6 @@ const styles = StyleSheet.create({
     left: 12,
     right: 12,
     height: layout.hairline,
-    backgroundColor: colors.fg,
+    backgroundColor: colors.black,
   },
 });

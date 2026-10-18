@@ -1,3 +1,4 @@
+import { locale } from '@/i18n/lang';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { ReactNode } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,7 +20,7 @@ export function FormScreen({ title, subtitle, eyebrow, children, footer, scroll 
   const insets = useSafeAreaInsets();
   const head = (
     <View>
-      <Text style={styles.eyebrow}>{(eyebrow ?? 'LU — NA').toLocaleUpperCase('tr')}</Text>
+      <Text style={styles.eyebrow}>{(eyebrow ?? 'LU — NA').toLocaleUpperCase(locale())}</Text>
       <Text style={styles.title}>{title}</Text>
       {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
     </View>
@@ -55,6 +56,6 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: layout.screenPadding, paddingBottom: 24 },
   eyebrow: { fontFamily: fonts.mono, fontSize: 10.5, letterSpacing: 2.4, color: colors.mute },
   title: { marginTop: 14, fontFamily: fonts.serif, fontSize: 34, lineHeight: 40, color: colors.fg },
-  subtitle: { marginTop: 10, fontSize: 15, lineHeight: 22, color: colors.mute },
+  subtitle: { marginTop: 10, fontSize: 15, lineHeight: 22, color: colors.body },
   footer: { paddingHorizontal: layout.screenPadding, paddingTop: 12, gap: 8 },
 });

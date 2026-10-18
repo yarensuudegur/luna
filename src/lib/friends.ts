@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { t } from '@/i18n/core';
 import { computeChart, signIndex } from '@/lib/astro';
 import type { Chart } from '@/lib/astro';
 import { useRealtime } from '@/lib/notifications';
@@ -61,7 +62,7 @@ function toFriend(row: FriendRow): Friend {
   const moon = lonOf('Ay');
   return {
     id: row.id,
-    name: row.name ?? 'Adsız',
+    name: row.name ?? t('common.unnamed'),
     handle: row.handle ?? '',
     avatar: row.avatar,
     rel: isRel(row.rel_type) ? row.rel_type : 'Arkadaş',

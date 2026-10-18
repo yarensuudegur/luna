@@ -1,3 +1,4 @@
+import { t } from '@/i18n/core';
 import { supabase } from '@/lib/supabase';
 
 export type MemberInfo = { id: string; name: string; handle: string; avatar: string | null };
@@ -9,7 +10,7 @@ export async function fetchMembers(groupId: string): Promise<MemberInfo[]> {
   const { data } = await supabase.rpc('group_member_info', { p_group: groupId });
   return ((data ?? []) as MemberRow[]).map((m) => ({
     id: m.id,
-    name: m.name ?? 'Adsız',
+    name: m.name ?? t('common.unnamed'),
     handle: m.handle ?? '',
     avatar: m.avatar,
   }));

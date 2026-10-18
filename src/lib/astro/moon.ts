@@ -27,6 +27,11 @@ export type MoonEvent = {
   sign: number;
 };
 
+/** `from` anından sonraki ilk yeni ayın anı; bulunamazsa null. */
+export function nextNewMoon(from: Date): Date | null {
+  return SearchMoonPhase(0, from, 40)?.date ?? null;
+}
+
 /** `from` anından sonraki ilk yeni ay ya da dolunay; bulunamazsa null. */
 export function nextMoonEvent(from: Date): MoonEvent | null {
   const newMoon = SearchMoonPhase(0, from, 40);

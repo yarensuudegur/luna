@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { computeChart, cuspsOf, moonPhaseName, nextMoonEvent } from '@/lib/astro';
-import { DAILY, DEEP_CATEGORIES } from './content';
+import { DAILY_META, DEEP_CATEGORIES, TAROT_COUNT, contentFor } from './content';
 import { buildReading } from './reading';
 import { rng } from './rng';
 import { computeTransits } from './transits';
@@ -62,19 +62,54 @@ describe('günlük yorum', () => {
     expect(buildReading('user-1', '2026-10-18', tr)).toEqual(buildReading('user-1', '2026-10-18', tr));
   });
 
-  it('ton yalnızca kapanış cümlesini değiştirir', () => {
-    const item = DAILY.find((d) => d.h === buildReading('user-1', '2026-10-18', tr).h)!;
-    const soft = buildReading('user-1', '2026-10-18', tr, 'Destekleyici');
-    const hard = buildReading('user-1', '2026-10-18', tr, 'Sert');
-    expect(soft.body.endsWith(item.s)).toBe(true);
-    expect(hard.body.endsWith(item.x)).toBe(true);
-    expect(soft.h).toBe(hard.h);
+  it('dil yalnızca metni değiştirir, seçimi değil', () => {
+    const trText = buildReading('user-1', '2026-10-18', tr, 'tr');
+    const enText = buildReading('user-1', '2026-10-18', tr, 'en');
+    const index = contentFor('tr').daily.findIndex((d) => d.h === trText.h);
+    expect(index).toBeGreaterThanOrEqual(0);
+    expect(enText.h).toBe(contentFor('en').daily[index].h);
+    expect(enText.h).not.toBe(trText.h);
+    expect(enText.deep.map((d) => [d.k, d.st])).toEqual(trText.deep.map((d) => [d.k, d.st]));
+    expect(enText.dos).toHaveLength(3);
+    expect(enText.body).not.toContain('{{ay}}');
+  });
+
+  it('iki dilin içerikleri aynı büyüklükte', () => {
+    const a = contentFor('tr');
+    const b = contentFor('en');
+    expect(a.daily).toHaveLength(DAILY_META.length);
+    expect(b.daily).toHaveLength(DAILY_META.length);
+    expect(b.dos).toHaveLength(a.dos.length);
+    expect(b.donts).toHaveLength(a.donts.length);
+    expect(b.houseTheme).toHaveLength(12);
+    for (const k of DEEP_CATEGORIES) expect(b.deep[k]).toHaveLength(4);
+  });
+
+  it('tarot destesi 78 kart: 22 büyük + 4 × 14 küçük arkana', () => {
+    for (const lang of ['tr', 'en'] as const) {
+      const cards = contentFor(lang).tarot;
+      expect(cards).toHaveLength(TAROT_COUNT);
+      expect(TAROT_COUNT).toBe(78);
+      expect(new Set(cards.map((c) => c[1])).size).toBe(78);
+      for (const c of cards) {
+        expect(c).toHaveLength(5);
+        expect(c.every((x) => x.length > 0)).toBe(true);
+      }
+    }
+    const tr = contentFor('tr').tarot;
+    expect(tr[17][1]).toBe('Yıldız');
+    expect(tr[22][1]).toBe('Asalar Ası');
+    expect(tr[35][1]).toBe('Asalar Papazı');
+    expect(tr[36][1]).toBe('Kupalar Ası');
+    expect(tr[50][1]).toBe('Kılıçlar Ası');
+    expect(tr[64][1]).toBe('Tılsımlar Ası');
+    expect(tr[77][1]).toBe('Tılsımlar Papazı');
   });
 
   it('havuzdan gelir ve {ay} yer tutucusu kalmaz', () => {
     const r = buildReading('user-1', '2026-10-18', tr);
-    expect(DAILY.map((d) => d.h)).toContain(r.h);
-    expect(r.body).not.toContain('{ay}');
+    expect(contentFor('tr').daily.map((d) => d.h)).toContain(r.h);
+    expect(r.body).not.toContain('{{ay}}');
     expect(r.dos).toHaveLength(3);
     expect(r.donts).toHaveLength(3);
     expect(r.deep.map((d) => d.k)).toEqual([...DEEP_CATEGORIES]);

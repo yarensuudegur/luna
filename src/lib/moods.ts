@@ -136,15 +136,13 @@ export function useBottleArchive(userId: string | undefined) {
   return { list, add };
 }
 
-const openedKey = (userId: string) => `luna.bottle.opened.${userId}.v1`;
-
-/** Şişesi patlatılmış haftalar (pazartesi anahtarları); cihazda tutulur. */
-export function useOpenedWeeks(userId: string | undefined) {
+/** Cihazda tutulan hafta listesi (pazartesi anahtarları). */
+function useWeekSet(userId: string | undefined, storageKey: (userId: string) => string) {
   const [weeks, setWeeks] = useState<string[]>([]);
 
   useEffect(() => {
     if (!userId) return;
-    AsyncStorage.getItem(openedKey(userId))
+    AsyncStorage.getItem(storageKey(userId))
       .then((raw) => {
         const list = raw ? (JSON.parse(raw) as unknown) : [];
         if (Array.isArray(list)) setWeeks(list.filter((w): w is string => typeof w === 'string'));
@@ -157,14 +155,27 @@ export function useOpenedWeeks(userId: string | undefined) {
       if (!userId) return;
       setWeeks((prev) => {
         const next = opened ? [...prev.filter((w) => w !== week), week] : prev.filter((w) => w !== week);
-        AsyncStorage.setItem(openedKey(userId), JSON.stringify(next)).catch(() => {});
+        AsyncStorage.setItem(storageKey(userId), JSON.stringify(next)).catch(() => {});
         return next;
       });
     },
-    [userId],
+    [userId, storageKey],
   );
 
   return { weeks, mark };
+}
+
+const openedKey = (userId: string) => `luna.bottle.opened.${userId}.v1`;
+const closedKey = (userId: string) => `luna.bottle.closed.${userId}.v1`;
+
+/** Şişesi patlatılmış haftalar (pazartesi anahtarları); cihazda tutulur. */
+export function useOpenedWeeks(userId: string | undefined) {
+  return useWeekSet(userId, openedKey);
+}
+
+/** "Yeni şişeye geç" ile kapatılmış haftalar: özet gizlenir, boş yeni şişe görünür. */
+export function useClosedWeeks(userId: string | undefined) {
+  return useWeekSet(userId, closedKey);
 }
 
 const moonCache = new Map<string, number>();

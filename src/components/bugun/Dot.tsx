@@ -32,10 +32,10 @@ const styles = StyleSheet.create({
     height: 7,
     borderRadius: 3.5,
     borderWidth: 1,
-    borderColor: colors.fg,
+    borderColor: colors.black,
     overflow: 'hidden',
   },
-  filled: { backgroundColor: colors.fg },
+  filled: { backgroundColor: colors.black },
   dashed: { borderStyle: 'dashed' },
-  half: { width: 3, height: 7, backgroundColor: colors.fg },
+  half: { width: 3, height: 7, backgroundColor: colors.black },
 });

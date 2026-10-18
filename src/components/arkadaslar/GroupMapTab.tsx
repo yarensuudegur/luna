@@ -1,32 +1,34 @@
+import { locale } from '@/i18n/lang';
 import { Share, StyleSheet, Text, View } from 'react-native';
 import { Button } from '@/components/Button';
 import { Bar } from '@/components/arkadaslar/Bar';
 import { Initial } from '@/components/arkadaslar/Initial';
 import { Label, Section } from '@/components/Section';
-import { ELEMENTS, ROLES, elementOf, groupMix } from '@/lib/astro';
+import { useTranslation } from '@/i18n';
+import { elementName, roleName } from '@/i18n/names';
+import { elementOf, groupMix } from '@/lib/astro';
 import { colors, fonts, layout } from '@/theme';
 
 export type MapPerson = { id: string; name: string; sun: number | null; me?: boolean };
 
 /** Grup haritası alt sekmesi: element dağılımı ve roller (sen + arkadaşların). */
 export function GroupMapTab({ people }: { people: MapPerson[] }) {
+  const { t } = useTranslation();
   const known = people.filter((p): p is MapPerson & { sun: number } => p.sun !== null);
   const mix = groupMix(known.map((p) => p.sun));
-  const lowName = ELEMENTS[mix.dominant].toLocaleLowerCase('tr');
+  const lowName = elementName(mix.dominant).toLocaleLowerCase(locale());
 
   function share() {
     Share.share({
-      message: `Grubumuz %${mix.percent} ${lowName}. Haritamıza Luna’da bak.`,
+      message: t('friends.map.shareMessage', { percent: mix.percent, element: lowName }),
     }).catch(() => {});
   }
 
   if (known.length < 2) {
     return (
       <Section last>
-        <Label>GRUP HARİTASI</Label>
-        <Text style={styles.body}>
-          Grup haritası için en az bir arkadaşının doğum haritası gerekir. Arkadaş ekledikçe burada belirir.
-        </Text>
+        <Label>{t('friends.map.label')}</Label>
+        <Text style={styles.body}>{t('friends.map.empty')}</Text>
       </Section>
     );
   }
@@ -34,16 +36,18 @@ export function GroupMapTab({ people }: { people: MapPerson[] }) {
   return (
     <>
       <Section>
-        <Label>GRUP HARİTASI · {mix.total} KİŞİ</Label>
-        <Text style={styles.h2}>
-          Grubunuz %{mix.percent} {lowName}.
-        </Text>
+        <Label>{t('friends.map.labelPeople', { n: mix.total })}</Label>
+        <Text style={styles.h2}>{t('friends.map.headline', { percent: mix.percent, element: lowName })}</Text>
         <View style={styles.elements}>
-          {ELEMENTS.map((e, i) => (
-            <View key={e} style={styles.row}>
-              <Text style={[styles.mono, styles.elementName]}>{e.toLocaleUpperCase('tr')}</Text>
+          {[0, 1, 2, 3].map((i) => (
+            <View key={i} style={styles.row}>
+              <Text style={[styles.mono, styles.elementName]}>{elementName(i).toLocaleUpperCase(locale())}</Text>
               <View style={styles.flex}>
-                <Bar filled={mix.counts[i]} total={mix.total} label={`${e}: ${mix.counts[i]} kişi`} />
+                <Bar
+                  filled={mix.counts[i]}
+                  total={mix.total}
+                  label={t('friends.map.barA11y', { element: elementName(i), n: mix.counts[i] })}
+                />
               </View>
               <Text style={styles.mono}>{mix.counts[i]}</Text>
             </View>
@@ -52,7 +56,7 @@ export function GroupMapTab({ people }: { people: MapPerson[] }) {
       </Section>
 
       <Section last>
-        <Label>ROLLER</Label>
+        <Label>{t('friends.map.roles')}</Label>
         {known.map((p, i) => {
           const e = elementOf(p.sun);
           return (
@@ -60,14 +64,14 @@ export function GroupMapTab({ people }: { people: MapPerson[] }) {
               <Initial name={p.name} outline={p.me} />
               <Text style={styles.name}>{p.name}</Text>
               <Text style={styles.monoS}>
-                {ROLES[e].toLocaleUpperCase('tr')} · {ELEMENTS[e].toLocaleUpperCase('tr')}
+                {roleName(e).toLocaleUpperCase(locale())} · {elementName(e).toLocaleUpperCase(locale())}
               </Text>
             </View>
           );
         })}
         <View style={styles.share}>
           <Button variant="ghost" onPress={share}>
-            Grup kartını paylaş
+            {t('friends.map.shareBtn')}
           </Button>
         </View>
       </Section>
@@ -77,7 +81,7 @@ export function GroupMapTab({ people }: { people: MapPerson[] }) {
 
 const styles = StyleSheet.create({
   h2: { fontFamily: fonts.serif, fontSize: 24, lineHeight: 32, color: colors.fg },
-  body: { fontSize: 14, lineHeight: 22, color: colors.mute },
+  body: { fontSize: 14, lineHeight: 22, color: colors.body },
   elements: { marginTop: 20, gap: 12 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   flex: { flex: 1 },

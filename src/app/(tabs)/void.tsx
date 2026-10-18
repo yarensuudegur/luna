@@ -1,4 +1,4 @@
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { setStatusBarStyle } from 'expo-status-bar';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -16,10 +16,11 @@ import {
 import type { ImageSourcePropType } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stars } from '@/components/void/Stars';
+import { useLang, useTranslation } from '@/i18n';
 import { useAuth } from '@/lib/auth';
 import { up } from '@/lib/bottle';
 import { useSettings } from '@/lib/settings';
-import { MAX_QUESTION, VOID_CATS, VOID_CAT_NAMES, useVoid } from '@/lib/void';
+import { MAX_QUESTION, VOID_CAT_NAMES, useVoid, voidQuestions } from '@/lib/void';
 import type { VoidCategory } from '@/lib/void';
 import { colors, fonts, layout } from '@/theme';
 
@@ -31,42 +32,14 @@ const IMAGES: Record<VoidCategory, { source: ImageSourcePropType; height: number
 };
 
 export default function VoidScreen() {
-  const { noAI } = useSettings();
-  return noAI ? <VoidOff /> : <VoidChat />;
-}
-
-/** AI'sız mod açıkken Void yerine gösterilir. */
-function VoidOff() {
   const insets = useSafeAreaInsets();
-  const router = useRouter();
-  useFocusEffect(
-    useCallback(() => {
-      setStatusBarStyle('light');
-      return () => setStatusBarStyle('dark');
-    }, []),
-  );
-  return (
-    <View style={styles.root}>
-      <Stars />
-      <View style={[styles.offBox, { paddingTop: insets.top + 80 }]}>
-        <Text style={styles.headTitle}>VOID KAPALI</Text>
-        <Text style={styles.offText}>
-          AI’sız mod açık. Yalnızca insan yazarların metinleri gösteriliyor. Void’i yeniden açmak için Sen › Ayarlar bölümünden modu kapat.
-        </Text>
-        <Pressable onPress={() => router.navigate('/sen')} accessibilityRole="button" hitSlop={10}>
-          <Text style={styles.link}>AYARLARA GİT</Text>
-        </Pressable>
-      </View>
-    </View>
-  );
-}
-
-function VoidChat() {
-  const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
+  const lang = useLang();
   const { profile } = useAuth();
-  const { tone, relationship, lifeStage } = useSettings();
+  const { relationship, lifeStage } = useSettings();
+  // Void, seçili dilde cevap verir; dil de isteğe eklenir.
   const { messages, loading, loadError, reload, asking, left, ask, newChat } = useVoid(profile?.id, {
-    tone,
+    lang,
     relationship,
     lifeStage,
   });
@@ -104,8 +77,8 @@ function VoidChat() {
 
       <View style={[styles.head, { paddingTop: insets.top + 14 }]}>
         <View style={styles.headSide} />
-        <Text style={styles.headTitle}>VOID’E HOŞ GELDİN</Text>
-        <View style={styles.count} accessibilityLabel={`Kalan soru: ${left}`}>
+        <Text style={styles.headTitle}>{t('void.welcome')}</Text>
+        <View style={styles.count} accessibilityLabel={t('void.leftA11y', { n: left })}>
           <Text style={styles.countText}>{left}</Text>
         </View>
       </View>
@@ -117,12 +90,12 @@ function VoidChat() {
         keyboardShouldPersistTaps="handled"
       >
         {loading ? (
-          <Text style={styles.status}>Yükleniyor…</Text>
+          <Text style={styles.status}>{t('common.loading')}</Text>
         ) : loadError ? (
           <View style={styles.statusBox}>
-            <Text style={styles.status}>Geçmişin yüklenemedi. Bağlantını kontrol et.</Text>
+            <Text style={styles.status}>{t('void.loadError')}</Text>
             <Pressable onPress={reload} accessibilityRole="button" hitSlop={10}>
-              <Text style={styles.link}>Tekrar dene</Text>
+              <Text style={styles.link}>{t('common.retry')}</Text>
             </Pressable>
           </View>
         ) : (
@@ -145,12 +118,12 @@ function VoidChat() {
                           resizeMode="contain"
                         />
                       </View>
-                      <Text style={[styles.catLabel, k === cat && styles.catLabelOn]}>{up(k)}</Text>
+                      <Text style={[styles.catLabel, k === cat && styles.catLabelOn]}>{up(t(`void.catNames.${k}`))}</Text>
                     </Pressable>
                   ))}
                 </View>
                 <View style={styles.qs}>
-                  {VOID_CATS[cat].map((q) => (
+                  {voidQuestions(cat).map((q) => (
                     <Pressable key={q} onPress={() => send(q)} disabled={left <= 0} accessibilityRole="button">
                       <Text style={styles.qText}>{up(q)}</Text>
                     </Pressable>
@@ -167,7 +140,7 @@ function VoidChat() {
                   </Text>
                 ) : (
                   <View key={m.id}>
-                    <Text style={styles.who}>VOID</Text>
+                    <Text style={styles.who}>{t('void.who')}</Text>
                     <Text style={m.err ? styles.vaErr : styles.va}>{m.body}</Text>
                   </View>
                 ),
@@ -175,7 +148,7 @@ function VoidChat() {
               {asking && (
                 <View style={styles.thinking} accessibilityLiveRegion="polite">
                   <ActivityIndicator size="small" color={colors.spaceMute} />
-                  <Text style={styles.vaErr}>Void düşünüyor…</Text>
+                  <Text style={styles.vaErr}>{t('void.thinking')}</Text>
                 </View>
               )}
             </View>
@@ -191,10 +164,10 @@ function VoidChat() {
             editable={left > 0 && !asking}
             maxLength={MAX_QUESTION}
             multiline
-            placeholder={left > 0 ? 'BİR ŞEY SOR...' : 'YENİ SORULAR 00:00’DA'}
-            placeholderTextColor="#777777"
+            placeholder={left > 0 ? t('void.placeholder') : t('void.placeholderLimit')}
+            placeholderTextColor={colors.spacePlaceholder}
             style={styles.input}
-            accessibilityLabel="Soru"
+            accessibilityLabel={t('void.question')}
           />
           <Pressable
             onPress={() => send(text)}
@@ -203,14 +176,14 @@ function VoidChat() {
             accessibilityState={{ disabled: !canAsk }}
             style={[styles.askBtn, !canAsk && styles.askOff]}
           >
-            <Text style={styles.askText}>SOR</Text>
+            <Text style={styles.askText}>{t('void.ask')}</Text>
           </Pressable>
         </View>
         <View style={styles.meta}>
-          <Text style={styles.metaText}>{left} SORU · 00:00’DA YENİLENİR</Text>
+          <Text style={styles.metaText}>{t('void.meta', { n: left })}</Text>
           {messages.length > 0 && (
             <Pressable onPress={newChat} accessibilityRole="button" hitSlop={8}>
-              <Text style={[styles.metaText, styles.underline]}>YENİ SOHBET</Text>
+              <Text style={[styles.metaText, styles.underline]}>{t('void.newChat')}</Text>
             </Pressable>
           )}
         </View>
@@ -221,8 +194,6 @@ function VoidChat() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.space },
-  offBox: { flex: 1, alignItems: 'center', gap: 22, paddingHorizontal: 32 },
-  offText: { fontFamily: fonts.serif, fontSize: 19, lineHeight: 28, paddingBottom: 10, color: colors.white, textAlign: 'center' },
   flex: { flex: 1 },
   content: { flexGrow: 1, paddingBottom: 24 },
 

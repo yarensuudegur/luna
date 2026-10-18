@@ -1,3 +1,4 @@
+import { locale } from '@/i18n/lang';
 import * as Sharing from 'expo-sharing';
 import { useRef, useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
@@ -5,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { captureRef } from 'react-native-view-shot';
 import { Button } from '@/components/Button';
 import { StoryCard } from '@/components/gunluk/StoryCard';
+import { useTranslation } from '@/i18n';
 import type { WeekData } from '@/lib/bottle';
 import { colors, fonts, layout } from '@/theme';
 
@@ -16,6 +18,7 @@ type Props = {
 
 /** Story önizlemesi (prototipteki storySheet) ve görüntü olarak paylaşım. */
 export function StorySheet({ data, name, onClose }: Props) {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { width: screenW, height: screenH } = useWindowDimensions();
   const card = useRef<View>(null);
@@ -32,14 +35,14 @@ export function StorySheet({ data, name, onClose }: Props) {
     setError(null);
     try {
       if (!(await Sharing.isAvailableAsync())) {
-        setError('Bu cihazda paylaşım açılamıyor.');
+        setError(t('gunluk.story.noShare'));
         return;
       }
       // Ekrandaki küçük kartı değil, story boyutunda (1080×1920) bir görüntü üretir.
       const uri = await captureRef(card, { format: 'png', quality: 1, result: 'tmpfile', width: 1080, height: 1920 });
-      await Sharing.shareAsync(uri, { mimeType: 'image/png', UTI: 'public.png', dialogTitle: 'Story’de paylaş' });
+      await Sharing.shareAsync(uri, { mimeType: 'image/png', UTI: 'public.png', dialogTitle: t('gunluk.story.dialog') });
     } catch {
-      setError('Görüntü hazırlanamadı. Tekrar dene.');
+      setError(t('gunluk.story.noImage'));
     } finally {
       setBusy(false);
     }
@@ -49,16 +52,16 @@ export function StorySheet({ data, name, onClose }: Props) {
     <Modal visible={!!data} animationType="slide" onRequestClose={onClose}>
       <View style={[styles.root, { paddingTop: insets.top + 22, paddingBottom: insets.bottom + 22 }]}>
         <View style={styles.head}>
-          <Text style={styles.lbl}>STORY ÖNİZLEME</Text>
-          <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel="Kapat" hitSlop={10}>
-            <Text style={styles.close}>KAPAT</Text>
+          <Text style={styles.lbl}>{t('gunluk.story.preview')}</Text>
+          <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel={t('common.close')} hitSlop={10}>
+            <Text style={styles.close}>{t('common.close').toLocaleUpperCase(locale())}</Text>
           </Pressable>
         </View>
         <View style={styles.cardWrap}>{data && <StoryCard ref={card} data={data} name={name} width={width} />}</View>
         {error && <Text style={styles.error}>{error}</Text>}
         <View style={styles.actions}>
           <Button onPress={share} loading={busy}>
-            Story’de paylaş
+            {t('gunluk.story.dialog')}
           </Button>
         </View>
       </View>

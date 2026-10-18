@@ -4,24 +4,22 @@ Luna, Co–Star'dan ilham alan sosyal bir astroloji mobil uygulamasıdır. Ders 
 
 ## Co–Star'dan farkları
 
-- **Türkçe ve renksiz arayüz.** Tüm metinler Türkçe; yalnızca siyah, beyaz ve gri tonlar kullanılır.
-- **Ton seçimi.** Günlük metinler ve Void; Destekleyici, Dengeli ya da Sert tonda gelir.
-- **AI'sız mod.** Açıkken Void kapanır, yalnızca insan yazımı metinler gösterilir.
-- **Duygu şişesi ve tarot.** Her akşam duygu kaydı, haftalık şişe ve günün tarot kartı.
+- **Türkçe ve İngilizce, renksiz arayüz.** Telefon dili İngilizceyse uygulama İngilizce açılır, değilse Türkçe; Ayarlar'dan değiştirilir. Yalnızca siyah, beyaz ve gri tonlar kullanılır.
+- **Duygu şişesi ve tarot.** Her akşam duygu kaydı, haftalık şişe ve 78 kartlık desteden günün tarot kartı.
 - **QR ile arkadaş ekleme.** Arkadaşlık, kodu yüz yüze okutarak kurulur.
 - **Sunucuda sayılan Void kotası.** Yapay zekâ astrolog günde 5 soruyla sınırlıdır; sayaç istemciye bırakılmaz.
 - **Sunucu gerektirmeyen bildirimler.** Hatırlatmalar telefonda yerel olarak zamanlanır.
 
 ## Özellikler
 
-- Günlük yorum, Yap / Yapma, Derine in ve şans bölümleri (ton ayarına göre)
-- Günde bir tarot kartı (00:00'da yenilenir)
+- Günlük yorum, Yap / Yapma, Derine in ve şans bölümleri
+- Günde bir tarot kartı: 22 büyük + 56 küçük arkana (00:00'da yenilenir)
 - Akşam duygu kaydı ve haftalık duygu şişesi, arşiv ve aylık özet
 - Void: günde 5 soruluk yapay zekâ astrolog
 - Arkadaşlar: QR ile ekleme, değiştirilebilir ilişki türü, gruplar, anlık sohbet ve uygulama içi bildirimler
 - Doğum haritası, evler tablosu ve gezegen kartları
 - Telefon bildirimleri: akşam hatırlatması ("Bugünü şişene ekle.") ve gece 00:00 kart bildirimi ("Yeni kartın hazır.")
-- Ayarlar: ton, AI'sız mod, ilişki durumu, yaşam evresi, ev sistemi, klasik gezegenler, bildirimler, gizlilik, destek (112)
+- Ayarlar: dil, doğum bilgileri, ilişki durumu, yaşam evresi, ev sistemi, klasik gezegenler, bildirimler, gizlilik, destek (112)
 - E-posta doğrulaması ve hesabı kalıcı olarak silme
 
 ## Mimari
@@ -101,7 +99,7 @@ npm install
    ```
    Supabase panelinde Project Settings › API sayfasındaki URL ve `anon` anahtarı yazılır. `.env` asla commitlenmez.
 2. **Migration sırası.** SQL Editor'da `supabase/migrations/` altındaki dosyaları numara sırasıyla çalıştır:
-   `0001_profiles` › `0002_daily_tarot` › `0003_moods` › `0004_social` › `0005_realtime_social` › `0006_group_added_by` › `0007_void`.
+   `0001_profiles` › `0002_daily_tarot` › `0003_moods` › `0004_social` › `0005_realtime_social` › `0006_group_added_by` › `0007_void` › `0008_tarot_78`.
 3. **E-posta doğrulaması.** Authentication › Providers › Email bölümünde "Confirm email" açık olmalı. Authentication › URL Configuration'da Site URL'i gerçek bir adrese ayarla; aksi halde doğrulama bağlantısı localhost'a düşer.
 4. **Edge Function'lar ve gizli anahtarlar.** [Google AI Studio](https://aistudio.google.com/apikey)'dan bir Gemini anahtarı al, sonra:
    ```
@@ -125,7 +123,7 @@ npm install
 - **Sunucuda kota.** Void'in günlük 5 soru sınırı Edge Function'da, Europe/Istanbul gününe göre sayılır. İstemci sayacı yalnızca gösterim içindir; sınır atlatılamaz. Cevap alınamazsa hak düşmez.
 - **Gizli anahtarlar.** Gemini anahtarı ve service role anahtarı yalnızca Edge Function ortamında durur. İstemciye yalnızca `EXPO_PUBLIC_` önekli URL ve `anon` anahtar verilir.
 - **Hesap silme.** `delete-account` yalnızca isteği yapan kullanıcının kendi hesabını siler; kimlik JWT'den alınır, istekten gelen hiçbir kimlik kullanılmaz.
-- **Gizlilik.** Void'e yazılanlar cevap üretmek için Google Gemini'ye gönderilir. Bunu istemeyenler AI'sız modu açabilir.
+- **Gizlilik.** Void'e yazılanlar cevap üretmek için Google Gemini'ye gönderilir. Void, seçili dilde cevap verir.
 - **Bildirim izni.** Reddedilirse uygulama normal çalışır; Ayarlar'da izin durumu görünür.
 
 ## Ekip ve çalışma düzeni

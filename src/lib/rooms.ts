@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { t } from '@/i18n/core';
 import { diffMembers } from '@/lib/room-utils';
 import { fetchMembers } from '@/lib/members';
 import type { MemberInfo } from '@/lib/members';
@@ -106,7 +107,7 @@ export function useGroups(userId: string | undefined): GroupsState {
       const preview: Record<string, string> = {};
       for (const m of (msgs.data ?? []) as { room_id: string; sender: string | null; body: string }[]) {
         if (preview[m.room_id] !== undefined) continue;
-        preview[m.room_id] = m.sender ? `${names.get(m.sender) ?? 'Biri'}: ${m.body}` : m.body;
+        preview[m.room_id] = m.sender ? `${names.get(m.sender) ?? t('common.someone')}: ${m.body}` : m.body;
       }
       setLast(preview);
       setLoading(false);

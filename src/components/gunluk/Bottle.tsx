@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   maskRoot: { flex: 1, backgroundColor: 'transparent' },
   maskImg: { position: 'absolute', left: PAD.left, top: PAD.top, width: W, height: H },
   solid: { flex: 1, backgroundColor: colors.black },
-  orb: { position: 'absolute', left: 0, top: 0, width: OS, height: OS, borderRadius: OS / 2, backgroundColor: colors.fg },
+  orb: { position: 'absolute', left: 0, top: 0, width: OS, height: OS, borderRadius: OS / 2, backgroundColor: colors.black },
   glass: { position: 'absolute', left: 0, top: 0, width: W, height: H },
   corkAnchor: {
     position: 'absolute',

@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Button } from '@/components/Button';
 import { Field } from '@/components/Field';
 import { Sheet } from '@/components/Sheet';
+import { useTranslation } from '@/i18n';
 import { useAuth } from '@/lib/auth';
 import { colors } from '@/theme';
 
@@ -12,6 +13,7 @@ const clean = (s: string) => s.trim().replace(/^@/, '').toLowerCase();
 
 /** Hesabı sil: önce soru, sonra kullanıcı adını yazdırma. Başarılıysa kök düzen giriş ekranına döner. */
 export function DeleteAccount() {
+  const { t } = useTranslation();
   const { profile, deleteAccount } = useAuth();
   const [step, setStep] = useState<Step>('closed');
   const [typed, setTyped] = useState('');
@@ -33,7 +35,7 @@ export function DeleteAccount() {
     setError(null);
     const ok = await deleteAccount();
     if (!ok) {
-      setError('Hesap silinemedi. Bağlantını kontrol edip tekrar dene.');
+      setError(t('settings.delete.error'));
       setBusy(false);
     }
   }
@@ -41,25 +43,23 @@ export function DeleteAccount() {
   return (
     <View>
       <Button variant="ghost" onPress={() => setStep('ask')}>
-        Hesabı sil
+        {t('settings.delete.button')}
       </Button>
 
-      <Sheet visible={step === 'ask'} title="Hesabın silinsin mi?" onClose={close}>
-        <Text style={styles.text}>
-          Hesabını silmek istediğine emin misin? Profilin, duygu kayıtların, Void sohbetlerin ve arkadaşlıkların kalıcı olarak silinir. Bu işlem geri alınamaz.
-        </Text>
+      <Sheet visible={step === 'ask'} title={t('settings.delete.askTitle')} onClose={close}>
+        <Text style={styles.text}>{t('settings.delete.askText')}</Text>
         <View style={styles.actions}>
-          <Button onPress={() => setStep('type')}>Devam et</Button>
+          <Button onPress={() => setStep('type')}>{t('settings.delete.continue')}</Button>
           <Button variant="ghost" onPress={close}>
-            Vazgeç
+            {t('common.cancel')}
           </Button>
         </View>
       </Sheet>
 
-      <Sheet visible={step === 'type'} title="Son adım" onClose={close}>
-        <Text style={styles.text}>Onaylamak için kullanıcı adını yaz: @{handle}</Text>
+      <Sheet visible={step === 'type'} title={t('settings.delete.lastTitle')} onClose={close}>
+        <Text style={styles.text}>{t('settings.delete.typeHandle', { handle })}</Text>
         <Field
-          label="Kullanıcı adı"
+          label={t('onboarding.handleLabel')}
           value={typed}
           onChangeText={setTyped}
           autoCapitalize="none"
@@ -68,10 +68,10 @@ export function DeleteAccount() {
         />
         <View style={styles.actions}>
           <Button onPress={confirm} disabled={!matches} loading={busy}>
-            Hesabımı sil
+            {t('settings.delete.confirm')}
           </Button>
           <Button variant="ghost" onPress={close} disabled={busy}>
-            Vazgeç
+            {t('common.cancel')}
           </Button>
         </View>
       </Sheet>
@@ -80,6 +80,6 @@ export function DeleteAccount() {
 }
 
 const styles = StyleSheet.create({
-  text: { fontSize: 14, lineHeight: 21, color: colors.mute, marginTop: 10 },
+  text: { fontSize: 14, lineHeight: 21, color: colors.body, marginTop: 10 },
   actions: { gap: 8, marginTop: 22 },
 });

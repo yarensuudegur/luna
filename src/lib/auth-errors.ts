@@ -1,17 +1,20 @@
+import { t } from '@/i18n/core';
+
+/** Supabase hata metni → `auth.errors` anahtarı. */
 const MESAJLAR: ReadonlyArray<readonly [RegExp, string]> = [
-  [/invalid login credentials/i, 'E-posta veya şifre hatalı.'],
-  [/already registered|already been registered/i, 'Bu e-posta ile zaten bir hesap var.'],
-  [/email not confirmed/i, 'E-postan henüz doğrulanmamış. Gelen kutundaki bağlantıya dokun; gelmediyse aşağıdan tekrar gönder.'],
-  [/password should be at least/i, 'Şifre en az 6 karakter olmalı.'],
-  [/invalid.*email|unable to validate email/i, 'Geçerli bir e-posta yaz.'],
-  [/rate limit|too many/i, 'Çok fazla deneme yapıldı. Biraz sonra tekrar dene.'],
-  [/network|fetch/i, 'Bağlantı kurulamadı. İnternetini kontrol et.'],
+  [/invalid login credentials/i, 'invalid'],
+  [/already registered|already been registered/i, 'exists'],
+  [/email not confirmed/i, 'unconfirmed'],
+  [/password should be at least/i, 'shortPassword'],
+  [/invalid.*email|unable to validate email/i, 'badEmail'],
+  [/rate limit|too many/i, 'rateLimit'],
+  [/network|fetch/i, 'network'],
 ];
 
-/** Supabase hata metnini Türkçe, kullanıcıya gösterilebilir bir cümleye çevirir. */
-export function trAuthError(message: string): string {
-  for (const [re, tr] of MESAJLAR) if (re.test(message)) return tr;
-  return 'Bir şeyler ters gitti. Tekrar dene.';
+/** Supabase hata metnini seçili dilde, kullanıcıya gösterilebilir bir cümleye çevirir. */
+export function authErrorText(message: string): string {
+  for (const [re, key] of MESAJLAR) if (re.test(message)) return t(`auth.errors.${key}`);
+  return t('auth.errors.other');
 }
 
 /** Giriş hatası, e-postanın doğrulanmamış olmasından mı? */

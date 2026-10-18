@@ -2,7 +2,9 @@ import { Fragment } from 'react';
 import { useRouter } from 'expo-router';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
-import { BURC_DA, degreeInSign, signIndex } from '@/lib/astro';
+import { useTranslation } from '@/i18n';
+import { planetName } from '@/i18n/names';
+import { degreeInSign, signIndex } from '@/lib/astro';
 import { ascText, planetText } from '@/lib/astro/texts';
 import type { PlanetKey } from '@/lib/astro';
 import { ART } from '@/lib/art';
@@ -40,6 +42,7 @@ function Art({ n, first }: { n: number; first?: boolean }) {
 
 function SimilarRow() {
   const router = useRouter();
+  const { t } = useTranslation();
   return (
     <View style={styles.sim}>
       <Svg width={22} height={14} viewBox="0 0 22 14">
@@ -48,9 +51,9 @@ function SimilarRow() {
       </Svg>
       <Text style={styles.simText}>
         <Text style={styles.simLink} onPress={() => router.push('/arkadaslar')}>
-          Arkadaş ekle
+          {t('sen.similarLink')}
         </Text>
-        , kimin benzediğini gör
+        {t('sen.similarRest')}
       </Text>
     </View>
   );
@@ -58,19 +61,20 @@ function SimilarRow() {
 
 /** Yükselen ve gezegenler için çerçeveli kartlar; aralarında grunge görseller. */
 export function PlanetCards({ items }: { items: CardItem[] }) {
+  const { t } = useTranslation();
   return (
     <View style={styles.cards}>
       <Art n={items.length} first />
       {items.map((item, n) => {
         const sign = signIndex(item.lon);
-        const meta = [item.glyph + '︎', item.house !== null ? `${item.house}. EV` : null, `${degreeInSign(item.lon)}°`]
+        const meta = [item.glyph + '︎', item.house !== null ? t('house', { n: item.house }) : null, `${degreeInSign(item.lon)}°`]
           .filter(Boolean)
           .join(' · ');
         return (
           <Fragment key={item.key}>
             <View style={styles.card}>
               <Text style={styles.meta}>{meta}</Text>
-              <Text style={styles.title}>{`${item.key} ${BURC_DA[sign]}`}</Text>
+              <Text style={styles.title}>{`${planetName(item.key)} ${t(`signs.in.${sign}`)}`}</Text>
               <Text style={styles.body}>
                 {item.key === 'Yükselen' ? ascText(sign) : planetText(item.key, sign)}
               </Text>

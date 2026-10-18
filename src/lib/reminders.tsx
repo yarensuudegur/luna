@@ -1,3 +1,4 @@
+import { useLang } from '@/i18n';
 import { useLastNotificationResponse } from '@/lib/notif-module';
 import { useRouter } from 'expo-router';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -28,6 +29,7 @@ export function RemindersProvider({ children }: { children: ReactNode }) {
   const userId = session?.user.id;
   const { eveningTime, cardReminder } = useSettings();
   const { today } = useToday();
+  const lang = useLang();
   const [permission, setPermission] = useState<PermissionState>('undetermined');
   /** Duygu durumu hangi gün için okundu / hangi gün kayıtlı. */
   const [checkedDay, setCheckedDay] = useState<string | null>(null);
@@ -64,7 +66,8 @@ export function RemindersProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (permission !== 'granted' || checkedDay !== today) return;
     scheduleReminders({ eveningTime, cardReminder, moodDoneToday: doneDay === today }).catch(() => {});
-  }, [permission, checkedDay, today, doneDay, eveningTime, cardReminder]);
+    // Dil değişince bildirim metinleri yeni dille yeniden zamanlanır.
+  }, [permission, checkedDay, today, doneDay, eveningTime, cardReminder, lang]);
 
   // Bildirime dokunma (uygulama kapalıyken de): ilgili sekmeyi aç.
   const last = useLastNotificationResponse();

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { TAROT } from '@/lib/daily';
+import { TAROT_COUNT } from '@/lib/daily';
+import { randomInt } from '@/lib/random';
 import { supabase } from '@/lib/supabase';
 
 export type DrawnCard = { card: number; reversed: boolean };
@@ -29,8 +30,8 @@ export async function fetchCardMap(userId: string): Promise<Record<string, numbe
 /** Günün kartını çeker ve kaydeder; o gün zaten çekilmişse kayıtlı olanı döndürür. */
 export async function drawCard(userId: string, date: string): Promise<DrawnCard> {
   const pick: DrawnCard = {
-    card: Math.floor(Math.random() * TAROT.length),
-    reversed: Math.random() < 0.22,
+    card: randomInt(TAROT_COUNT),
+    reversed: randomInt(100) < 22,
   };
   const { error } = await supabase
     .from('daily_tarot')

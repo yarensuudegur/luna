@@ -1,0 +1,1540 @@
+{
+  "common": {
+    "close": "Kapat",
+    "retry": "Tekrar dene",
+    "loading": "Yükleniyor…",
+    "back": "Geri",
+    "cancel": "Vazgeç",
+    "continue": "Devam",
+    "save": "Kaydet",
+    "saved": "Kaydedildi ✓",
+    "share": "Paylaş",
+    "you": "Sen",
+    "someone": "Biri",
+    "unnamed": "Adsız",
+    "member": "Üye",
+    "saveFailed": "Kaydedilemedi, tekrar dene.",
+    "peopleCount": "{{n}} KİŞİ"
+  },
+  "tabs": {
+    "index": "BUGÜN",
+    "arkadaslar": "ARKADAŞLAR",
+    "void": "VOID",
+    "gunluk": "GÜNLÜK",
+    "sen": "SEN"
+  },
+  "top": {
+    "hideDays": "Günleri gizle",
+    "showDays": "Günleri göster",
+    "newNotice": "Yeni bildirim"
+  },
+  "date": {
+    "dowShort": [
+      "PAZ",
+      "PZT",
+      "SAL",
+      "ÇAR",
+      "PER",
+      "CUM",
+      "CTS"
+    ],
+    "dowLong": [
+      "Pazar",
+      "Pazartesi",
+      "Salı",
+      "Çarşamba",
+      "Perşembe",
+      "Cuma",
+      "Cumartesi"
+    ],
+    "monthShort": [
+      "OCA",
+      "ŞUB",
+      "MAR",
+      "NİS",
+      "MAY",
+      "HAZ",
+      "TEM",
+      "AĞU",
+      "EYL",
+      "EKİ",
+      "KAS",
+      "ARA"
+    ],
+    "monthLong": [
+      "Ocak",
+      "Şubat",
+      "Mart",
+      "Nisan",
+      "Mayıs",
+      "Haziran",
+      "Temmuz",
+      "Ağustos",
+      "Eylül",
+      "Ekim",
+      "Kasım",
+      "Aralık"
+    ],
+    "topDate": "{{dow}} {{day}} {{month}}",
+    "dayMonth": "{{day}} {{month}}",
+    "weekSame": "{{a}}–{{b}} {{month}}",
+    "weekSpan": "{{a}} {{month1}}–{{b}} {{month2}}",
+    "today": "BGN",
+    "full": "{{day}} {{month}} {{year}}",
+    "monthYear": "{{month}} {{year}}",
+    "monthLocative": [
+      "Ocak’ta",
+      "Şubat’ta",
+      "Mart’ta",
+      "Nisan’da",
+      "Mayıs’ta",
+      "Haziran’da",
+      "Temmuz’da",
+      "Ağustos’ta",
+      "Eylül’de",
+      "Ekim’de",
+      "Kasım’da",
+      "Aralık’ta"
+    ]
+  },
+  "planets": {
+    "Güneş": "Güneş",
+    "Ay": "Ay",
+    "Merkür": "Merkür",
+    "Venüs": "Venüs",
+    "Mars": "Mars",
+    "Jüpiter": "Jüpiter",
+    "Satürn": "Satürn",
+    "Uranüs": "Uranüs",
+    "Neptün": "Neptün",
+    "Plüton": "Plüton",
+    "Yükselen": "Yükselen"
+  },
+  "signs": {
+    "names": [
+      "Koç",
+      "Boğa",
+      "İkizler",
+      "Yengeç",
+      "Aslan",
+      "Başak",
+      "Terazi",
+      "Akrep",
+      "Yay",
+      "Oğlak",
+      "Kova",
+      "Balık"
+    ],
+    "in": [
+      "Koç’ta",
+      "Boğa’da",
+      "İkizler’de",
+      "Yengeç’te",
+      "Aslan’da",
+      "Başak’ta",
+      "Terazi’de",
+      "Akrep’te",
+      "Yay’da",
+      "Oğlak’ta",
+      "Kova’da",
+      "Balık’ta"
+    ],
+    "tones": [
+      "atılgan ve doğrudan",
+      "sakin ve kararlı",
+      "meraklı ve hareketli",
+      "duyarlı ve koruyucu",
+      "sıcak ve gururlu",
+      "titiz ve düzenli",
+      "dengeli ve uyumlu",
+      "derin ve yoğun",
+      "özgür ve iyimser",
+      "disiplinli ve sabırlı",
+      "bağımsız ve özgün",
+      "sezgisel ve hayalci"
+    ]
+  },
+  "elements": [
+    "Ateş",
+    "Toprak",
+    "Hava",
+    "Su"
+  ],
+  "roles": [
+    "Ateşleyici",
+    "Planlayıcı",
+    "Fikir insanı",
+    "Arabulucu"
+  ],
+  "moon": {
+    "event": {
+      "Dolunay": "Dolunay",
+      "Yeni Ay": "Yeni Ay"
+    },
+    "phase": {
+      "Yeni Ay": "Yeni Ay",
+      "Büyüyen Hilal": "Büyüyen Hilal",
+      "İlk Dördün": "İlk Dördün",
+      "Büyüyen Ay": "Büyüyen Ay",
+      "Dolunay": "Dolunay",
+      "Küçülen Ay": "Küçülen Ay",
+      "Son Dördün": "Son Dördün",
+      "Küçülen Hilal": "Küçülen Hilal"
+    }
+  },
+  "aspects": {
+    "kavuşum": "ile kavuşuyor",
+    "altmışlık": "ile altmışlık açı yapıyor",
+    "kare": "ile kare yapıyor",
+    "üçgen": "ile üçgen yapıyor",
+    "karşıt": "ile karşıt duruyor",
+    "sentence": "Gökyüzündeki {{transit}}, doğum haritandaki {{natal}} {{kind}}."
+  },
+  "houseInfo": {
+    "Placidus": "En yaygın sistem. Evleri doğum saatine ve enleme göre farklı genişlikte böler.",
+    "Whole Sign": "Antik sistem. Yükselen burcun tamamı 1. ev sayılır, her burç bir evdir.",
+    "Koch": "Placidus’a benzer, doğum yerinin enlemine daha duyarlıdır.",
+    "Equal": "Yükselen dereceden başlayıp her evi 30 derece eşit böler.",
+    "Porphyry": "Dört köşe arasını eşit üçe böler. Bazı popüler uygulamaların varsayılanıdır."
+  },
+  "house": "{{n}}. EV",
+  "cat": {
+    "Tümü": "Tümü",
+    "Aşk": "Aşk",
+    "Arkadaşlar": "Arkadaşlar",
+    "İş & para": "İş & para",
+    "Ev & aile": "Ev & aile",
+    "Düşünce": "Düşünce",
+    "Ruhsal": "Ruhsal"
+  },
+  "states": [
+    "Güç",
+    "Baskı",
+    "Zorluk",
+    "Akış"
+  ],
+  "luck": {
+    "word": [
+      "şans",
+      "baskı",
+      "zorluk",
+      "akış"
+    ],
+    "pre": {
+      "Ev & aile": "Evde ve ailede",
+      "Arkadaşlar": "Arkadaşlıkta",
+      "İş & para": "İşte ve parada",
+      "Aşk": "Aşkta"
+    },
+    "text": {
+      "Ev & aile": [
+        "Bir aile üyesi tam onu düşündüğün anda arıyor. Komşunun yolun karşısından el sallaması bile bugün her zamankinden sıcak geliyor.",
+        "Evdeki küçük işler göründüğünden uzun sürebilir. Birinin senden ne beklediğini tahmin etmeye çalışma, sor.",
+        "Eski bir aile konusu sofraya geri gelebilir. Haklı çıkmaya uğraşmadan dinlemek evi bugün daha sakin tutar.",
+        "Evde kimsenin senden bir şey istemediği sessiz bir akşam. Çayı demle, pencereyi biraz arala."
+      ],
+      "Arkadaşlar": [
+        "Bir arkadaşın bugün seni sen fark etmeden kolluyor. Küçük bir teşekkür mesajı ikinizin de gününü değiştirir.",
+        "Herkes aynı anda senden bir şey istiyor gibi. Tek bir plana evet de, gerisine nazikçe sonra de.",
+        "Grup sohbetinde bir cümle yanlış anlaşılabilir. Göndermeden önce bir kez daha oku.",
+        "Arkadaşlıkların sakin bir günde. Kimseye bir şey kanıtlaman gerekmiyor."
+      ],
+      "İş & para": [
+        "Uzun süredir beklediğin bir şey sana doğru geliyor. İlk tepkin şüphe olabilir, bu sefer kabul et.",
+        "Masandaki işler üst üste biniyor. Listeni üç maddeye indir, gerisini yarına bırak.",
+        "Bir harcama ilk bakışta mantıklı görünebilir. Sepeti bir gece beklet.",
+        "İşte rutin ve sessiz bir gün. Kafanı toplamak için iyi bir fırsat."
+      ],
+      "Aşk": [
+        "Rahat olduğunda daha çekicisin ve bugün bunu herkes görüyor. Bir bakışı biraz daha uzun tutmaktan çekinme.",
+        "Bir mesajın cevabını beklerken zaman yavaş geçebilir. Telefonu bir süre başka odada bırak.",
+        "Beklentilerin bugün söylediklerinden daha yüksek sesle konuşabilir. Ne istediğini açıkça söylemek tahmin oyunundan daha az yorar.",
+        "Kalbin bugün dinleniyor. Kimseyi aramadan da iyi bir gün geçirebilirsin."
+      ]
+    },
+    "titleFormat": "{{pre}} {{word}}"
+  },
+  "deepText": {
+    "Ev & aile": [
+      "Evde huzurlu bir hava var, bunu paylaş.",
+      "Ev işleri birikebilir, yardım istemekten çekinme.",
+      "Ailede biriyle görüş ayrılığı çıkabilir, sesini yükseltmeden konuş.",
+      "Evde sakin bir gün."
+    ],
+    "Arkadaşlar": [
+      "Grubun içinde sesin daha çok duyuluyor.",
+      "Herkese yetişmeye çalışma, tek bir plana evet de.",
+      "Bir arkadaşınla planlar karışabilir, esnek ol.",
+      "Sosyal hayatında sakin bir gün."
+    ],
+    "İş & para": [
+      "Odaklanman kolay, zor işi şimdi bitir.",
+      "Teslim tarihleri sıkıştırabilir, listeni kısalt.",
+      "Harcamalarını bugün iki kez düşün.",
+      "İşte rutin bir gün."
+    ],
+    "Aşk": [
+      "Rahat ve çekicisin, bunu saklama.",
+      "Fazla analiz etme, akışta kal.",
+      "Beklentilerini açıkça konuş.",
+      "Kalbin bugün dinleniyor."
+    ],
+    "Düşünce": [
+      "Fikirlerin akıyor, not al.",
+      "Aynı anda çok fikir var, birini seç.",
+      "Odaklanmak zor olabilir, kısa molalar ver.",
+      "Zihnin dinleniyor."
+    ],
+    "Ruhsal": [
+      "İçsel bir netlik hissediyorsun.",
+      "Kendine zaman bulmak zor, beş dakika yeter.",
+      "Eski bir duygu yüzeye çıkabilir, kendine nazik ol.",
+      "Sessiz bir iç gün."
+    ]
+  },
+  "daily": [
+    {
+      "h": "Bugün yavaş gitmek sana zaman kazandırır.",
+      "b": "Ay {{ay}} ilerlerken dikkatin kolayca dağılabilir. Elindeki işi bitirmeden yenisine geçme. Akşama doğru biriyle yapacağın kısa ve dürüst bir konuşma günün en iyi anı olabilir.",
+      "s": "Kendine gösterdiğin sabır bugün en güçlü yanın.",
+      "x": "Ertelediğin o tek işi öğleden önce bitir."
+    },
+    {
+      "h": "Söylemek istediğin şeyin bir taslağı zaten hazır.",
+      "b": "Merkür iletişim alanını hareketlendiriyor. Kafanda kurduğun cümleyi yazıya dök, sonra bir kez sesli oku. Bugün açık olmak sana kusursuz olmaktan daha çok yarar.",
+      "s": "Ne hissettiğini anlatmak için doğru anı beklemek zorunda değilsin.",
+      "x": "Lafı dolandırma, ne istediğini doğrudan söyle."
+    },
+    {
+      "h": "Küçük bir düzen, büyük bir rahatlama getirir.",
+      "b": "Ay {{ay}} olduğu için ev ve gündelik rutin daha çok dikkatini çekebilir. Bir çekmeceyi toplamak, bir faturayı ödemek ya da yarın için tek bir plan yapmak zihnini hafifletir.",
+      "s": "Bugün yaptığın her küçük şey sayılır.",
+      "x": "Dağınıklığı bahane etmeyi bırak, on dakikanı ayır."
+    },
+    {
+      "h": "Merakın seni doğru kişiye götürebilir.",
+      "b": "Jüpiter sosyal alanını destekliyor. Uzun süredir konuşmadığın birine yazmak ya da yeni bir grupta söz almak için iyi bir gün. Soru sormak bugün sana cevap vermekten daha çok kapı açar.",
+      "s": "İlk adımı atan sen olursan kimse seni yargılamaz.",
+      "x": "Beklemeyi bırak, mesajı gönder."
+    },
+    {
+      "h": "Bugün enerjin kısa ama yoğun.",
+      "b": "Mars yükselenine açı yapıyor. Ağır işleri sabah bitirip öğleden sonrayı hafif tutmak iyi olur. Akşam bedenine iyi gelecek bir şey yap. Yürüyüş, esneme ya da erken uyku yeterli.",
+      "s": "Dinlenmek de üretkenliğin bir parçası.",
+      "x": "Enerjini boş tartışmalara harcama."
+    },
+    {
+      "h": "Bir sınır koymak ilişkini korur.",
+      "b": "Satürn ilişkiler alanında net olmanı istiyor. Kendine ayırdığın zamanı savunmak bencillik sayılmaz. Nazik bir hayır, isteksiz bir evetten daha çok saygı kazanır.",
+      "s": "Kendini korumak sevdiklerini korumanın da bir yolu.",
+      "x": "Herkesi memnun etmeye çalışma, kendi planını koru."
+    },
+    {
+      "h": "Sezgilerin bugün hızlı çalışıyor.",
+      "b": "Ay {{ay}} ve Neptün’e uyumlu açı yapıyor. Bir karar verirken ilk hissini not et, akşam tekrar bak. Rüyalar ve küçük tesadüfler bugün sana daha çok şey anlatabilir.",
+      "s": "İç sesine güvenmek için izin istemene gerek yok.",
+      "x": "Hissettiğini görmezden gelme, ama acele de etme."
+    },
+    {
+      "h": "Bugün bir şeyi bitirmek çok keyifli olacak.",
+      "b": "Venüs emek alanını aydınlatıyor. Yarım kalan bir projeyi, bir kitabı ya da bir yazışmayı tamamlamak sana beklediğinden fazla tatmin verecek.",
+      "s": "Bitirdiğin her şey için kendini tebrik et.",
+      "x": "Yarım bıraktığın listeden bir şeyi bugün kapat."
+    }
+  ],
+  "dos": [
+    "Uzun yürüyüş",
+    "Pencere kenarı",
+    "Eski bir şarkı",
+    "Erken uyku",
+    "Sade kahvaltı",
+    "Not defteri",
+    "Sıcak çay",
+    "Kısa bir mesaj",
+    "Kitapçı",
+    "Ev bitkileri",
+    "Sessiz vagon",
+    "Kendi tarifin",
+    "Boş bir akşam",
+    "El yazısı",
+    "Açık hava",
+    "Mor kalem"
+  ],
+  "donts": [
+    "Gece alışverişi",
+    "Eski mesajlar",
+    "Üçüncü kahve",
+    "Kıyaslama",
+    "Aceleyle e-posta",
+    "Grup sohbetinde tartışma",
+    "Kafanda senaryo",
+    "Gereksiz özür",
+    "Yatakta ekran",
+    "Unutulan sözler",
+    "Yarım iş",
+    "Fazla plan"
+  ],
+  "houseTheme": [
+    "kimliğin ve görünüşün",
+    "paran ve değer verdiklerin",
+    "iletişimin ve yakın çevren",
+    "evin ve ailen",
+    "aşk, eğlence ve yaratıcılık",
+    "günlük rutinin ve bedenin",
+    "ikili ilişkilerin",
+    "paylaşımlar ve dönüşüm",
+    "öğrenme ve yolculuklar",
+    "kariyerin ve hedeflerin",
+    "arkadaşların ve grupların",
+    "iç dünyan ve dinlenme"
+  ],
+  "reading": {
+    "houses": "Ay bugün haritanın {{moonHouse}}. evinden geçiyor, bu yüzden {{moonTheme}} daha çok gündeminde olabilir. Güneş ise {{sunHouse}}. evinde ve {{sunTheme}} alanını aydınlatıyor.",
+    "signs": "Ay bugün {{moon}} ilerliyor, Güneş ise {{sun}}.",
+    "shareMessage": "{{h}}\n\n{{body}}\n\nYap: {{dos}}\nYapma: {{donts}}\n\nLuna · {{date}}"
+  },
+  "tarot": [
+    [
+      "0",
+      "Deli",
+      "Yeni bir başlangıç, cesaret, plansız bir adım.",
+      "Düşünmeden atlamak, dağınıklık.",
+      "Bugün küçük bir ilki dene."
+    ],
+    [
+      "I",
+      "Büyücü",
+      "Elindeki araçlarla bir şey başlatma gücü.",
+      "Dağılan enerji, yarım kalan işler.",
+      "Bir fikri bugün somut bir adıma çevir."
+    ],
+    [
+      "II",
+      "Azize",
+      "Sezgi, sessizce bilmek.",
+      "İç sesini bastırmak.",
+      "Karar vermeden önce bir süre sus ve dinle."
+    ],
+    [
+      "III",
+      "İmparatoriçe",
+      "Bolluk, şefkat, üretkenlik.",
+      "Kendini ihmal etmek.",
+      "Kendine iyi gelen bir şey hazırla."
+    ],
+    [
+      "IV",
+      "İmparator",
+      "Düzen, sınır, sorumluluk.",
+      "Katılık, kontrol ihtiyacı.",
+      "Gününe net bir yapı ver."
+    ],
+    [
+      "V",
+      "Aziz",
+      "Gelenek, öğrenmek, bir rehber.",
+      "Kalıpları sorgulamak.",
+      "Güvendiğin birinden fikir al."
+    ],
+    [
+      "VI",
+      "Aşıklar",
+      "Seçim, uyum, değerlerin netleşmesi.",
+      "Kararsızlık, uyumsuzluk.",
+      "Seçimini değerlerine göre yap."
+    ],
+    [
+      "VII",
+      "Savaş Arabası",
+      "Yön, irade, ilerleme.",
+      "Dağılan odak.",
+      "Tek bir hedefe yönel."
+    ],
+    [
+      "VIII",
+      "Güç",
+      "Yumuşak güç, sabır, cesaret.",
+      "Kendinden şüphe.",
+      "Sert olmadan kararlı kal."
+    ],
+    [
+      "IX",
+      "Ermiş",
+      "İçe dönüş, yalnız düşünme zamanı.",
+      "Kendini fazla soyutlamak.",
+      "Kendine sessiz bir saat ayır."
+    ],
+    [
+      "X",
+      "Kader Çarkı",
+      "Değişim, döngüler, şans.",
+      "Kontrol edemediğine direnmek.",
+      "Akışa uyum sağla."
+    ],
+    [
+      "XI",
+      "Adalet",
+      "Denge, dürüstlük, sonuçlar.",
+      "Tek taraflı bakış.",
+      "Bir konuyu iki taraftan da düşün."
+    ],
+    [
+      "XII",
+      "Asılan Adam",
+      "Bekleme, farklı açıdan bakma.",
+      "Gereksiz fedakârlık.",
+      "Acele etme, bakış açını değiştir."
+    ],
+    [
+      "XIII",
+      "Dönüşüm",
+      "Bir dönemin kapanması, yenilenme.",
+      "Değişime direnmek.",
+      "Artık işine yaramayan bir şeyi bırak."
+    ],
+    [
+      "XIV",
+      "Denge",
+      "Orta yol, sabır, uyum.",
+      "Aşırılık.",
+      "Ölçüyü bul."
+    ],
+    [
+      "XV",
+      "Zincir",
+      "Seni tutan alışkanlıklar.",
+      "Zincirlerden kurtulmak.",
+      "Bir alışkanlığı fark et, bir gün ara ver."
+    ],
+    [
+      "XVI",
+      "Kule",
+      "Ani değişim, sağlam olmayan temellerin yıkılması.",
+      "Kaçınılan bir yüzleşme.",
+      "Beklenmedik olana esnek yaklaş."
+    ],
+    [
+      "XVII",
+      "Yıldız",
+      "Umut, iyileşme, ilham.",
+      "Yorgunluk, umudu kaybetmek.",
+      "Gelecek için küçük bir dilek yaz."
+    ],
+    [
+      "XVIII",
+      "Ay",
+      "Belirsizlik, rüyalar, sezgi.",
+      "Kafa karışıklığının dağılması.",
+      "Rüyalarını not et."
+    ],
+    [
+      "XIX",
+      "Güneş",
+      "Neşe, açıklık, başarı.",
+      "Geçici bulutlar.",
+      "Sevdiğin biriyle bir sevinç paylaş."
+    ],
+    [
+      "XX",
+      "Uyanış",
+      "Bir çağrıya cevap vermek, yeniden doğuş.",
+      "Kendini fazla yargılamak.",
+      "Ertelediğin bir çağrıya kulak ver."
+    ],
+    [
+      "XXI",
+      "Dünya",
+      "Tamamlanma, bütünlük.",
+      "Son adımda takılmak.",
+      "Bir döngüyü kutla."
+    ],
+    [
+      "A",
+      "Asalar Ası",
+      "Eylem ve tutku: yeni bir başlangıç, taze bir kıvılcım.",
+      "Eylem ve tutku: ertelenen ya da kaçırılan bir fırsat.",
+      "Bugün küçük bir ilk adım at."
+    ],
+    [
+      "2",
+      "Asalar İkilisi",
+      "Eylem ve tutku: bir seçim ya da denge arayışı.",
+      "Eylem ve tutku: kararsızlık ve dengesizlik.",
+      "İki seçeneği yan yana yaz, sonra birini seç."
+    ],
+    [
+      "3",
+      "Asalar Üçlüsü",
+      "Eylem ve tutku: büyüme ve ortak çalışma.",
+      "Eylem ve tutku: gecikme ve iş birliğinde aksama.",
+      "Birinden destek iste ya da birine destek ol."
+    ],
+    [
+      "4",
+      "Asalar Dörtlüsü",
+      "Eylem ve tutku: sağlamlık ve dinlenme.",
+      "Eylem ve tutku: huzursuzluk ve geçmeyen bir yorgunluk.",
+      "Kısa bir mola ver, toparlan."
+    ],
+    [
+      "5",
+      "Asalar Beşlisi",
+      "Eylem ve tutku: rekabet, sürtüşme ve zorlu bir sınav.",
+      "Eylem ve tutku: çatışmanın yatışması ya da bastırılması.",
+      "Her tartışmayı kazanmaya çalışma, neyin önemli olduğunu seç."
+    ],
+    [
+      "6",
+      "Asalar Altılısı",
+      "Eylem ve tutku: uyum, ilerleme ve takdir.",
+      "Eylem ve tutku: uyumsuzluk ve takdir görmeme hissi.",
+      "Başardığın bir şeyi fark et ve paylaş."
+    ],
+    [
+      "7",
+      "Asalar Yedilisi",
+      "Eylem ve tutku: direnç ve yerini savunma.",
+      "Eylem ve tutku: yıpranma ve sürekli savunmada kalmak.",
+      "Sınırını koru, ama savunmada kalma."
+    ],
+    [
+      "8",
+      "Asalar Sekizlisi",
+      "Eylem ve tutku: hareket, hız ve odak.",
+      "Eylem ve tutku: yavaşlama ve dağılan odak.",
+      "Bekleyen bir işi bugün harekete geçir."
+    ],
+    [
+      "9",
+      "Asalar Dokuzlusu",
+      "Eylem ve tutku: birikim, sabır ve bitişe yakınlık.",
+      "Eylem ve tutku: tükenmişlik ve fazla temkin.",
+      "Sabret, bitişe az kaldı."
+    ],
+    [
+      "10",
+      "Asalar Onlusu",
+      "Eylem ve tutku: bir dönemin tamamlanması ve sorumluluk.",
+      "Eylem ve tutku: yükü bırakma ihtiyacı.",
+      "Taşıdığın yükün bir parçasını devret."
+    ],
+    [
+      "V",
+      "Asalar Valesi",
+      "Eylem ve tutku: merak, yeni haber ve öğrenme isteği.",
+      "Eylem ve tutku: dikkatsizlik ve eksik haber.",
+      "Merak ettiğin bir şeyi bugün öğren."
+    ],
+    [
+      "Ş",
+      "Asalar Şövalyesi",
+      "Eylem ve tutku: harekete geçme, ama aceleye gelme riski.",
+      "Eylem ve tutku: aceleci ya da dağınık adımlar.",
+      "Hızlanmadan önce yönünü kontrol et."
+    ],
+    [
+      "K",
+      "Asalar Kraliçesi",
+      "Eylem ve tutku: olgunluk, şefkat ve içsel güç.",
+      "Eylem ve tutku: içe kapanma ve duygusal dalgalanma.",
+      "Kendine ve çevrene şefkatle yaklaş."
+    ],
+    [
+      "P",
+      "Asalar Papazı",
+      "Eylem ve tutku: ustalık, otorite ve sorumluluk.",
+      "Eylem ve tutku: katılık ve gücü kötüye kullanma riski.",
+      "Sorumluluğunu sakin ve net bir sesle taşı."
+    ],
+    [
+      "A",
+      "Kupalar Ası",
+      "Duygular ve ilişkiler: yeni bir başlangıç, taze bir kıvılcım.",
+      "Duygular ve ilişkiler: ertelenen ya da kaçırılan bir fırsat.",
+      "Bugün küçük bir ilk adım at."
+    ],
+    [
+      "2",
+      "Kupalar İkilisi",
+      "Duygular ve ilişkiler: bir seçim ya da denge arayışı.",
+      "Duygular ve ilişkiler: kararsızlık ve dengesizlik.",
+      "İki seçeneği yan yana yaz, sonra birini seç."
+    ],
+    [
+      "3",
+      "Kupalar Üçlüsü",
+      "Duygular ve ilişkiler: büyüme ve ortak çalışma.",
+      "Duygular ve ilişkiler: gecikme ve iş birliğinde aksama.",
+      "Birinden destek iste ya da birine destek ol."
+    ],
+    [
+      "4",
+      "Kupalar Dörtlüsü",
+      "Duygular ve ilişkiler: sağlamlık ve dinlenme.",
+      "Duygular ve ilişkiler: huzursuzluk ve geçmeyen bir yorgunluk.",
+      "Kısa bir mola ver, toparlan."
+    ],
+    [
+      "5",
+      "Kupalar Beşlisi",
+      "Duygular ve ilişkiler: rekabet, sürtüşme ve zorlu bir sınav.",
+      "Duygular ve ilişkiler: çatışmanın yatışması ya da bastırılması.",
+      "Her tartışmayı kazanmaya çalışma, neyin önemli olduğunu seç."
+    ],
+    [
+      "6",
+      "Kupalar Altılısı",
+      "Duygular ve ilişkiler: uyum, ilerleme ve takdir.",
+      "Duygular ve ilişkiler: uyumsuzluk ve takdir görmeme hissi.",
+      "Başardığın bir şeyi fark et ve paylaş."
+    ],
+    [
+      "7",
+      "Kupalar Yedilisi",
+      "Duygular ve ilişkiler: direnç ve yerini savunma.",
+      "Duygular ve ilişkiler: yıpranma ve sürekli savunmada kalmak.",
+      "Sınırını koru, ama savunmada kalma."
+    ],
+    [
+      "8",
+      "Kupalar Sekizlisi",
+      "Duygular ve ilişkiler: hareket, hız ve odak.",
+      "Duygular ve ilişkiler: yavaşlama ve dağılan odak.",
+      "Bekleyen bir işi bugün harekete geçir."
+    ],
+    [
+      "9",
+      "Kupalar Dokuzlusu",
+      "Duygular ve ilişkiler: birikim, sabır ve bitişe yakınlık.",
+      "Duygular ve ilişkiler: tükenmişlik ve fazla temkin.",
+      "Sabret, bitişe az kaldı."
+    ],
+    [
+      "10",
+      "Kupalar Onlusu",
+      "Duygular ve ilişkiler: bir dönemin tamamlanması ve sorumluluk.",
+      "Duygular ve ilişkiler: yükü bırakma ihtiyacı.",
+      "Taşıdığın yükün bir parçasını devret."
+    ],
+    [
+      "V",
+      "Kupalar Valesi",
+      "Duygular ve ilişkiler: merak, yeni haber ve öğrenme isteği.",
+      "Duygular ve ilişkiler: dikkatsizlik ve eksik haber.",
+      "Merak ettiğin bir şeyi bugün öğren."
+    ],
+    [
+      "Ş",
+      "Kupalar Şövalyesi",
+      "Duygular ve ilişkiler: harekete geçme, ama aceleye gelme riski.",
+      "Duygular ve ilişkiler: aceleci ya da dağınık adımlar.",
+      "Hızlanmadan önce yönünü kontrol et."
+    ],
+    [
+      "K",
+      "Kupalar Kraliçesi",
+      "Duygular ve ilişkiler: olgunluk, şefkat ve içsel güç.",
+      "Duygular ve ilişkiler: içe kapanma ve duygusal dalgalanma.",
+      "Kendine ve çevrene şefkatle yaklaş."
+    ],
+    [
+      "P",
+      "Kupalar Papazı",
+      "Duygular ve ilişkiler: ustalık, otorite ve sorumluluk.",
+      "Duygular ve ilişkiler: katılık ve gücü kötüye kullanma riski.",
+      "Sorumluluğunu sakin ve net bir sesle taşı."
+    ],
+    [
+      "A",
+      "Kılıçlar Ası",
+      "Düşünce ve iletişim: yeni bir başlangıç, taze bir kıvılcım.",
+      "Düşünce ve iletişim: ertelenen ya da kaçırılan bir fırsat.",
+      "Bugün küçük bir ilk adım at."
+    ],
+    [
+      "2",
+      "Kılıçlar İkilisi",
+      "Düşünce ve iletişim: bir seçim ya da denge arayışı.",
+      "Düşünce ve iletişim: kararsızlık ve dengesizlik.",
+      "İki seçeneği yan yana yaz, sonra birini seç."
+    ],
+    [
+      "3",
+      "Kılıçlar Üçlüsü",
+      "Düşünce ve iletişim: büyüme ve ortak çalışma.",
+      "Düşünce ve iletişim: gecikme ve iş birliğinde aksama.",
+      "Birinden destek iste ya da birine destek ol."
+    ],
+    [
+      "4",
+      "Kılıçlar Dörtlüsü",
+      "Düşünce ve iletişim: sağlamlık ve dinlenme.",
+      "Düşünce ve iletişim: huzursuzluk ve geçmeyen bir yorgunluk.",
+      "Kısa bir mola ver, toparlan."
+    ],
+    [
+      "5",
+      "Kılıçlar Beşlisi",
+      "Düşünce ve iletişim: rekabet, sürtüşme ve zorlu bir sınav.",
+      "Düşünce ve iletişim: çatışmanın yatışması ya da bastırılması.",
+      "Her tartışmayı kazanmaya çalışma, neyin önemli olduğunu seç."
+    ],
+    [
+      "6",
+      "Kılıçlar Altılısı",
+      "Düşünce ve iletişim: uyum, ilerleme ve takdir.",
+      "Düşünce ve iletişim: uyumsuzluk ve takdir görmeme hissi.",
+      "Başardığın bir şeyi fark et ve paylaş."
+    ],
+    [
+      "7",
+      "Kılıçlar Yedilisi",
+      "Düşünce ve iletişim: direnç ve yerini savunma.",
+      "Düşünce ve iletişim: yıpranma ve sürekli savunmada kalmak.",
+      "Sınırını koru, ama savunmada kalma."
+    ],
+    [
+      "8",
+      "Kılıçlar Sekizlisi",
+      "Düşünce ve iletişim: hareket, hız ve odak.",
+      "Düşünce ve iletişim: yavaşlama ve dağılan odak.",
+      "Bekleyen bir işi bugün harekete geçir."
+    ],
+    [
+      "9",
+      "Kılıçlar Dokuzlusu",
+      "Düşünce ve iletişim: birikim, sabır ve bitişe yakınlık.",
+      "Düşünce ve iletişim: tükenmişlik ve fazla temkin.",
+      "Sabret, bitişe az kaldı."
+    ],
+    [
+      "10",
+      "Kılıçlar Onlusu",
+      "Düşünce ve iletişim: bir dönemin tamamlanması ve sorumluluk.",
+      "Düşünce ve iletişim: yükü bırakma ihtiyacı.",
+      "Taşıdığın yükün bir parçasını devret."
+    ],
+    [
+      "V",
+      "Kılıçlar Valesi",
+      "Düşünce ve iletişim: merak, yeni haber ve öğrenme isteği.",
+      "Düşünce ve iletişim: dikkatsizlik ve eksik haber.",
+      "Merak ettiğin bir şeyi bugün öğren."
+    ],
+    [
+      "Ş",
+      "Kılıçlar Şövalyesi",
+      "Düşünce ve iletişim: harekete geçme, ama aceleye gelme riski.",
+      "Düşünce ve iletişim: aceleci ya da dağınık adımlar.",
+      "Hızlanmadan önce yönünü kontrol et."
+    ],
+    [
+      "K",
+      "Kılıçlar Kraliçesi",
+      "Düşünce ve iletişim: olgunluk, şefkat ve içsel güç.",
+      "Düşünce ve iletişim: içe kapanma ve duygusal dalgalanma.",
+      "Kendine ve çevrene şefkatle yaklaş."
+    ],
+    [
+      "P",
+      "Kılıçlar Papazı",
+      "Düşünce ve iletişim: ustalık, otorite ve sorumluluk.",
+      "Düşünce ve iletişim: katılık ve gücü kötüye kullanma riski.",
+      "Sorumluluğunu sakin ve net bir sesle taşı."
+    ],
+    [
+      "A",
+      "Tılsımlar Ası",
+      "Para ve emek: yeni bir başlangıç, taze bir kıvılcım.",
+      "Para ve emek: ertelenen ya da kaçırılan bir fırsat.",
+      "Bugün küçük bir ilk adım at."
+    ],
+    [
+      "2",
+      "Tılsımlar İkilisi",
+      "Para ve emek: bir seçim ya da denge arayışı.",
+      "Para ve emek: kararsızlık ve dengesizlik.",
+      "İki seçeneği yan yana yaz, sonra birini seç."
+    ],
+    [
+      "3",
+      "Tılsımlar Üçlüsü",
+      "Para ve emek: büyüme ve ortak çalışma.",
+      "Para ve emek: gecikme ve iş birliğinde aksama.",
+      "Birinden destek iste ya da birine destek ol."
+    ],
+    [
+      "4",
+      "Tılsımlar Dörtlüsü",
+      "Para ve emek: sağlamlık ve dinlenme.",
+      "Para ve emek: huzursuzluk ve geçmeyen bir yorgunluk.",
+      "Kısa bir mola ver, toparlan."
+    ],
+    [
+      "5",
+      "Tılsımlar Beşlisi",
+      "Para ve emek: rekabet, sürtüşme ve zorlu bir sınav.",
+      "Para ve emek: çatışmanın yatışması ya da bastırılması.",
+      "Her tartışmayı kazanmaya çalışma, neyin önemli olduğunu seç."
+    ],
+    [
+      "6",
+      "Tılsımlar Altılısı",
+      "Para ve emek: uyum, ilerleme ve takdir.",
+      "Para ve emek: uyumsuzluk ve takdir görmeme hissi.",
+      "Başardığın bir şeyi fark et ve paylaş."
+    ],
+    [
+      "7",
+      "Tılsımlar Yedilisi",
+      "Para ve emek: direnç ve yerini savunma.",
+      "Para ve emek: yıpranma ve sürekli savunmada kalmak.",
+      "Sınırını koru, ama savunmada kalma."
+    ],
+    [
+      "8",
+      "Tılsımlar Sekizlisi",
+      "Para ve emek: hareket, hız ve odak.",
+      "Para ve emek: yavaşlama ve dağılan odak.",
+      "Bekleyen bir işi bugün harekete geçir."
+    ],
+    [
+      "9",
+      "Tılsımlar Dokuzlusu",
+      "Para ve emek: birikim, sabır ve bitişe yakınlık.",
+      "Para ve emek: tükenmişlik ve fazla temkin.",
+      "Sabret, bitişe az kaldı."
+    ],
+    [
+      "10",
+      "Tılsımlar Onlusu",
+      "Para ve emek: bir dönemin tamamlanması ve sorumluluk.",
+      "Para ve emek: yükü bırakma ihtiyacı.",
+      "Taşıdığın yükün bir parçasını devret."
+    ],
+    [
+      "V",
+      "Tılsımlar Valesi",
+      "Para ve emek: merak, yeni haber ve öğrenme isteği.",
+      "Para ve emek: dikkatsizlik ve eksik haber.",
+      "Merak ettiğin bir şeyi bugün öğren."
+    ],
+    [
+      "Ş",
+      "Tılsımlar Şövalyesi",
+      "Para ve emek: harekete geçme, ama aceleye gelme riski.",
+      "Para ve emek: aceleci ya da dağınık adımlar.",
+      "Hızlanmadan önce yönünü kontrol et."
+    ],
+    [
+      "K",
+      "Tılsımlar Kraliçesi",
+      "Para ve emek: olgunluk, şefkat ve içsel güç.",
+      "Para ve emek: içe kapanma ve duygusal dalgalanma.",
+      "Kendine ve çevrene şefkatle yaklaş."
+    ],
+    [
+      "P",
+      "Tılsımlar Papazı",
+      "Para ve emek: ustalık, otorite ve sorumluluk.",
+      "Para ve emek: katılık ve gücü kötüye kullanma riski.",
+      "Sorumluluğunu sakin ve net bir sesle taşı."
+    ]
+  ],
+  "tarotUi": {
+    "title": "Günün kartı",
+    "pick": "Desteden bir kart seç.",
+    "reversedTag": "TERS",
+    "reversedSuffix": ", ters",
+    "newCard": "YENİ KART {{time}}",
+    "energy": "Bugün bu enerji olabilir: {{text}}",
+    "error": "Kart şu an kaydedilemedi. Biraz sonra tekrar dene.",
+    "cardN": "{{n}}. kart",
+    "dayCard": "Günün kartı {{name}}{{rev}}. {{advice}}"
+  },
+  "today": {
+    "missingBirth": "Doğum bilgilerin eksik olduğu için bugünün yorumu hesaplanamadı.",
+    "summary": "Günün özeti",
+    "do": "YAP",
+    "dont": "YAPMA",
+    "deepBtn": "Derine in ›",
+    "end": "Bugünlük bu kadar."
+  },
+  "cosmic": {
+    "today": "BUGÜN",
+    "inDays": "{{n}} GÜN SONRA",
+    "eventLine": "{{name}} {{sign}}"
+  },
+  "deep": {
+    "back": "← Bugün",
+    "label": "Derine in · {{date}}",
+    "sky": "Gökyüzünde bugün",
+    "save": "KAYDET",
+    "savedBtn": "KAYDEDİLDİ",
+    "share": "PAYLAŞ ↗"
+  },
+  "auth": {
+    "email": "E-posta",
+    "password": "Şifre",
+    "signIn": "Giriş yap",
+    "signUp": "Kayıt ol",
+    "loginTitle": "Tekrar hoş geldin.",
+    "loginSubtitle": "Gökyüzü bıraktığın yerde seni bekliyor.",
+    "noAccount": "HESABIN YOK MU? KAYIT OL",
+    "resendUnconfirmed": "DOĞRULAMA E-POSTASINI TEKRAR GÖNDER",
+    "resendCooldownCaps": "TEKRAR GÖNDER ({{n}})",
+    "signupTitle": "Haritanı birlikte çıkaralım.",
+    "signupSubtitle": "Önce bir hesap aç; sonra doğum bilgilerini soracağız.",
+    "haveAccount": "ZATEN HESABIN VAR MI? GİRİŞ YAP",
+    "minChars": "En az {{n}} karakter.",
+    "verifyTitle": "E-postanı kontrol et.",
+    "verifyAddress": "{{email}} adresine",
+    "verifyYour": "E-postana",
+    "verifyBody": "{{to}} gönderdiğimiz bağlantıya tıkla. Hesabın doğrulandıktan sonra giriş yapabilirsin.",
+    "resend": "Tekrar gönder",
+    "resendCooldown": "Tekrar gönder ({{n}})",
+    "otherEmail": "Farklı e-posta kullan",
+    "resent": "Doğrulama bağlantısını tekrar gönderdik.",
+    "errors": {
+      "invalid": "E-posta veya şifre hatalı.",
+      "exists": "Bu e-posta ile zaten bir hesap var.",
+      "unconfirmed": "E-postan henüz doğrulanmamış. Gelen kutundaki bağlantıya dokun; gelmediyse aşağıdan tekrar gönder.",
+      "shortPassword": "Şifre en az 6 karakter olmalı.",
+      "badEmail": "Geçerli bir e-posta yaz.",
+      "rateLimit": "Çok fazla deneme yapıldı. Biraz sonra tekrar dene.",
+      "network": "Bağlantı kurulamadı. İnternetini kontrol et.",
+      "other": "Bir şeyler ters gitti. Tekrar dene."
+    }
+  },
+  "onboarding": {
+    "step": "Adım {{n}} / {{total}}",
+    "nameTitle": "Sana nasıl seslenelim?",
+    "nameSubtitle": "Arkadaşların seni bu adla görecek.",
+    "nameLabel": "Adın",
+    "handleTitle": "Bir kullanıcı adı seç.",
+    "handleSubtitle": "Arkadaşların seni bununla bulur.",
+    "handleLabel": "Kullanıcı adı",
+    "handlePlaceholder": "@kullanici",
+    "handle": {
+      "bos": "3–20 karakter: harf, rakam, nokta, alt çizgi.",
+      "gecersiz": "En az 3 karakter olmalı.",
+      "kontrol": "Kontrol ediliyor…",
+      "musait": "Müsait.",
+      "dolu": "Bu kullanıcı adı alınmış.",
+      "hata": "Kontrol edilemedi. Bağlantını kontrol et."
+    },
+    "dateTitle": "Hangi gün doğdun?",
+    "dateSubtitle": "Güneş burcun ve haritanın temeli bu tarih.",
+    "day": "Gün",
+    "month": "Ay",
+    "year": "Yıl",
+    "dayPh": "GG",
+    "monthPh": "AA",
+    "yearPh": "YYYY",
+    "dateInvalid": "Geçerli bir tarih yaz.",
+    "timeTitle": "Kaçta doğdun?",
+    "timeSubtitle": "Yükselen burcun ve evlerin saate bağlı. Bilmiyorsan sorun değil.",
+    "hour": "Saat",
+    "minute": "Dakika",
+    "hourPh": "SS",
+    "minutePh": "DD",
+    "timeInvalid": "24 saat biçiminde yaz, örn. 14 : 30.",
+    "dontKnow": "Bilmiyorum",
+    "placeTitle": "Nerede doğdun?",
+    "placeSubtitle": "Gökyüzünü doğduğun şehre göre hesaplarız.",
+    "citySearch": "Şehir ara",
+    "cityPlaceholder": "İstanbul, Londra…",
+    "noCity": "Bu aramayla şehir bulunamadı.",
+    "notifTitle": "Sana nazikçe hatırlatalım mı?",
+    "notifSubtitle": "Akşamları duygularını şişene eklemeni, istersen yeni kartın hazır olduğunu haber verebiliriz. Başka bildirim göndermeyiz. İstediğin zaman Ayarlar'dan değiştirebilirsin.",
+    "allowFinish": "İzin ver ve bitir",
+    "notNow": "Şimdi değil",
+    "handleTaken": "Bu kullanıcı adı az önce başkası tarafından alındı. Geri dönüp yenisini seç.",
+    "saveError": "Kaydedilemedi. Bağlantını kontrol edip tekrar dene."
+  },
+  "birthEdit": {
+    "step": "Doğum bilgileri · {{n}} / {{total}}",
+    "saveBtn": "Kaydet ve yeniden hesapla",
+    "saveError": "Doğum bilgileri kaydedilemedi. Bağlantını kontrol edip tekrar dene."
+  },
+  "gunluk": {
+    "today": "Bugün",
+    "loadError": "Duygu kayıtların yüklenemedi. Bağlantını kontrol et.",
+    "comeBack": "Duygularını kaydetmek için saat {{time}}’de geri gel.",
+    "countdown": "{{time}} SONRA",
+    "tryNow": "Taslakta şimdi dene",
+    "inBottle": "Bugün şişende.",
+    "full": "Şişe doldu. Açmak için ona dokun.",
+    "tomorrow": "Yarın akşam {{time}}’de tekrar görüşürüz.",
+    "newBottleTitle": "Yeni şişen hazır.",
+    "newBottleNote": "Bu haftanın şişesini kapattın. Yeni kayıtlar Pazartesi başlar.",
+    "daysFilled": "{{n}}/7 GÜN",
+    "bottleTitle": "BU\nHAFTANIN\nŞİŞESİ",
+    "bottleLabel": "Duygu şişesi",
+    "bottleFull": "ŞİŞE DOLDU",
+    "bottleTonight": "BU AKŞAM DOLACAK",
+    "bottleOpensSunday": "PAZAR AKŞAMI AÇILIR",
+    "bottleTapOpen": "AÇMAK İÇİN DOKUN",
+    "bottleAddToday": "BUGÜNÜ EKLE, PATLASIN",
+    "daysLeft": "{{n}} GÜN KALDI",
+    "bottleNew": "YENİ ŞİŞE",
+    "bottleNewSub": "PAZARTESİ İLK TOP",
+    "archive": "Şişe arşivi",
+    "archiveMood": "Duygusu: {{mood}}",
+    "savedTitle": "Kaydedilenler",
+    "savedEmpty": "Derine in sayfasında Kaydet’e bastığın yorumlar burada durur.",
+    "monthly": "AYLIK ÖZET",
+    "monthReady": "{{month}} özetin hazır.",
+    "open": "AÇ →",
+    "toastIn": "Bugün şişeye girdi",
+    "toastArchived": "Şişe arşivine kaydedildi",
+    "toastFailed": "Kaydedilemedi, tekrar dene",
+    "toastSundayWait": "Bugünü ekleyince şişe patlayacak",
+    "toastSundayOnly": "Şişe Pazar akşamı açılır",
+    "toastNewBottle": "Yeni şişe Pazartesi başlıyor",
+    "mood": {
+      "title": "Bugün nasıl hissettin?",
+      "label": "Bugün · {{date}}",
+      "placeholder": "Bugün ne oldu?",
+      "error": "Kaydedilemedi. Bağlantını kontrol edip tekrar dene.",
+      "put": "Şişeye koy"
+    },
+    "week": {
+      "opened": "Şişe açıldı",
+      "best": "Bu haftanın duygusu: {{mood}}.",
+      "shareStory": "Story’de paylaş",
+      "mondayNew": "PAZARTESİ SABAH YENİ, BOŞ BİR ŞİŞE",
+      "replay": "Patlamayı tekrar izle",
+      "newBottle": "Yeni şişeye geç",
+      "sky": "Gökyüzü ve sen"
+    },
+    "story": {
+      "preview": "STORY ÖNİZLEME",
+      "head": "{{name}} · Haftanın şişesi",
+      "noShare": "Bu cihazda paylaşım açılamıyor.",
+      "noImage": "Görüntü hazırlanamadı. Tekrar dene.",
+      "dialog": "Story’de paylaş"
+    },
+    "wrapped": {
+      "head": "{{name}} · {{month}} özeti",
+      "next": "Sonraki",
+      "last": "SON",
+      "tap": "DOKUN · İLERİ",
+      "share": "PAYLAŞ"
+    },
+    "insights": {
+      "element": "Ay {{element}} burçlarındayken huzurun en yüksek.",
+      "energy": "En enerjik günün {{day}}. O gün Ay {{sign}}.",
+      "card": "En mutlu olduğun gün {{card}} kartını çekmiştin."
+    },
+    "month": {
+      "mood": "AYIN DUYGUSU",
+      "avg": "Ortalama {{v}} / 10",
+      "energy": "EN ENERJİK GÜNÜN",
+      "moonIn": "Ay {{sign}}.",
+      "card": "EN ÇOK ÇEKTİĞİN KART",
+      "times": "{{n}} kez. {{text}}",
+      "ending": "{{month}} BİTİYOR",
+      "seeYou": "Gelecek ay görüşürüz."
+    }
+  },
+  "moods": {
+    "mutluluk": "Mutluluk",
+    "enerji": "Enerji",
+    "huzur": "Huzur",
+    "kaygi": "Kaygı",
+    "sevgi": "Sevgi",
+    "motivasyon": "Motivasyon"
+  },
+  "sen": {
+    "chart": "Harita",
+    "settings": "Ayarlar",
+    "noBirth": "Doğum bilgilerin eksik olduğu için harita hesaplanamadı.",
+    "noTime": "Doğum saatini eklersen yükselenin ve evlerin hesaplanır",
+    "birthChart": "DOĞUM HARİTASI",
+    "signsCol": "BURÇLAR",
+    "housesCol": "EVLER",
+    "similarLink": "Arkadaş ekle",
+    "similarRest": ", kimin benzediğini gör"
+  },
+  "planetCards": {
+    "template": "{{role}} {{sign}} {{name}} bu alanı {{tone}} bir biçimde yaşatır.",
+    "asc": "Yükselen burcun, insanlara ilk anda gösterdiğin yüz. Tarzında ve yeni biriyle tanıştığında nasıl göründüğünde ortaya çıkar. İki saatte bir değiştiği için anlamsız geliyorsa doğum saatini bir kez daha kontrol et. {{sign}} Yükseleni seni {{tone}} gösterir.",
+    "roles": {
+      "Güneş": "Kimliğin ve yaşam enerjin.",
+      "Ay": "Duyguların ve güvenlik ihtiyacın.",
+      "Merkür": "Düşünme ve konuşma biçimin.",
+      "Venüs": "Sevme ve değer verme biçimin.",
+      "Mars": "İstek ve harekete geçme gücün.",
+      "Jüpiter": "Büyüme ve şans alanın.",
+      "Satürn": "Sınırların ve sorumlulukların.",
+      "Uranüs": "Değişim ve özgürlük alanın. Kuşak gezegenidir.",
+      "Neptün": "Hayal gücün ve sezgin. Kuşak gezegenidir.",
+      "Plüton": "Dönüşüm ve derinlik alanın. Kuşak gezegenidir."
+    },
+    "names": {
+      "Güneş": "Güneşi",
+      "Ay": "Ayı",
+      "Merkür": "Merkürü",
+      "Venüs": "Venüsü",
+      "Mars": "Marsı",
+      "Jüpiter": "Jüpiteri",
+      "Satürn": "Satürnü",
+      "Uranüs": "Uranüsü",
+      "Neptün": "Neptünü",
+      "Plüton": "Plütonu"
+    }
+  },
+  "settings": {
+    "profile": "PROFİL",
+    "avatarRow": "PROFİL FOTOĞRAFI",
+    "change": "DEĞİŞTİR ›",
+    "avatarTitle": "Profil fotoğrafı",
+    "avatarError": "Profil fotoğrafı kaydedilemedi. Bağlantını kontrol edip tekrar dene.",
+    "readings": "YORUMLAR",
+    "relationship": "İLİŞKİ DURUMU",
+    "lifeStage": "YAŞAM EVRESİ",
+    "relationshipTitle": "İlişki durumu",
+    "lifeStageTitle": "Yaşam evresi",
+    "relationshipOptions": {
+      "Belirtmek istemiyorum": "Belirtmek istemiyorum",
+      "Bekâr": "Bekâr",
+      "Flört ediyor": "Flört ediyor",
+      "İlişkide": "İlişkide",
+      "Evli": "Evli"
+    },
+    "lifeOptions": {
+      "Belirtmek istemiyorum": "Belirtmek istemiyorum",
+      "Öğrenci": "Öğrenci",
+      "Çalışan": "Çalışan",
+      "Ebeveyn": "Ebeveyn",
+      "Emekli": "Emekli"
+    },
+    "language": "DİL",
+    "languageTitle": "Dil",
+    "chartSection": "HARİTA",
+    "houseSystem": "EV SİSTEMİ",
+    "houseSystemTitle": "Ev sistemi",
+    "classicOnly": "Sadece klasik gezegenler",
+    "birthInfo": "DOĞUM BİLGİLERİ",
+    "noTimeShort": "SAAT YOK",
+    "notifications": "BİLDİRİMLER",
+    "cardReminder": "Kart hatırlatması",
+    "cardReminderNote": "Açıkken her gece 00:00’da “Yeni kartın hazır.” bildirimi gelir.",
+    "evening": "AKŞAM DUYGULARI",
+    "eveningTitle": "Akşam saati",
+    "eveningNote": "Duygu kaydı her akşam bu saatten sonra açılır ve o saatte hatırlatma gelir.",
+    "permission": "Bildirim izni",
+    "permissionState": {
+      "granted": "AÇIK",
+      "denied": "KAPALI",
+      "undetermined": "SORULMADI",
+      "unavailable": "BU CİHAZDA YOK"
+    },
+    "openPhoneSettings": "TELEFON AYARLARINI AÇ",
+    "allow": "İZİN VER",
+    "deniedNote": "İzin kapalı olduğu için hatırlatma gelmiyor. Uygulamanın geri kalanı normal çalışır.",
+    "testSent": "Uygulamayı arka plana al: 10 ve 20 saniye sonra iki bildirim gelecek.",
+    "testUnavailable": "Bu cihazda bildirim kullanılamıyor.",
+    "testBtn": "TEST BİLDİRİMİ GÖNDER",
+    "privacy": "GİZLİLİK",
+    "privacyText": "Doğum bilgilerin, duygu kayıtların ve Void sohbetlerin hesabına bağlı olarak saklanır; yalnızca sen görebilirsin. Void’e yazdıkların cevap üretmek için Google Gemini’ye gönderilir. Hesabını sildiğinde tüm verilerin kalıcı olarak silinir.",
+    "support": "DESTEK",
+    "emergency": "ACİL DURUM",
+    "emergencyNote": "Kendine zarar vermeyi düşünüyorsan ya da kriz yaşıyorsan 112’yi ara ve güvendiğin birine ulaş. Astroloji bilimsel bir yöntem sayılmaz; önemli kararlarda uzmana danış.",
+    "signOut": "Çıkış yap",
+    "delete": {
+      "button": "Hesabı sil",
+      "askTitle": "Hesabın silinsin mi?",
+      "askText": "Hesabını silmek istediğine emin misin? Profilin, duygu kayıtların, Void sohbetlerin ve arkadaşlıkların kalıcı olarak silinir. Bu işlem geri alınamaz.",
+      "continue": "Devam et",
+      "lastTitle": "Son adım",
+      "typeHandle": "Onaylamak için kullanıcı adını yaz: @{{handle}}",
+      "confirm": "Hesabımı sil",
+      "error": "Hesap silinemedi. Bağlantını kontrol edip tekrar dene."
+    },
+    "archive": "Arşiv"
+  },
+  "void": {
+    "welcome": "VOID’E HOŞ GELDİN",
+    "leftA11y": "Kalan soru: {{n}}",
+    "loadError": "Geçmişin yüklenemedi. Bağlantını kontrol et.",
+    "placeholder": "BİR ŞEY SOR...",
+    "placeholderLimit": "YENİ SORULAR 00:00’DA",
+    "question": "Soru",
+    "ask": "SOR",
+    "who": "VOID",
+    "thinking": "Void düşünüyor…",
+    "meta": "{{n}} SORU · 00:00’DA YENİLENİR",
+    "newChat": "YENİ SOHBET",
+    "failed": "Bir sorun oldu, hakkın düşmedi. Biraz sonra tekrar dene.",
+    "limit": "Bugünkü soruların bitti. Yeni sorular 00:00’da.",
+    "catNames": {
+      "Ben": "Ben",
+      "Aşk": "Aşk",
+      "İş": "İş",
+      "Sosyal": "Sosyal"
+    },
+    "cats": {
+      "Ben": [
+        "Bu ay neye odaklanmalıyım?",
+        "Neden son günlerde yorgun hissediyorum?",
+        "Kendimi neden bu kadar sorguluyorum?",
+        "Yalnız kalmayı nasıl öğrenirim?",
+        "Nelere daha az takılmalıyım?"
+      ],
+      "Aşk": [
+        "Flörtümle bu hafta nasıl ilerlerim?",
+        "Neden hep aynı tip insanlara çekiliyorum?",
+        "İlişkimde neyi daha açık konuşmalıyım?",
+        "Kalbimi kırılmaktan nasıl korurum?"
+      ],
+      "İş": [
+        "Sınav haftasında en verimli günlerim hangileri?",
+        "Yeni bir projeye başlamak için iyi bir zaman mı?",
+        "İş arkadaşımla gerginliği nasıl çözerim?",
+        "Hangi işte daha mutlu olurum?"
+      ],
+      "Sosyal": [
+        "Arkadaş grubumda nasıl bir rolüm var?",
+        "Yeni insanlarla tanışmak için iyi bir dönem mi?",
+        "Uzun süredir konuşmadığım birine yazmalı mıyım?",
+        "Hayır demeyi nasıl öğrenirim?"
+      ]
+    }
+  },
+  "friends": {
+    "tabs": {
+      "kisiler": "Kişiler",
+      "odalar": "Sohbet & odalar",
+      "grup": "Grup haritası"
+    },
+    "removedFromGroup": "Bu gruptan çıkarıldın",
+    "friendRemoved": "{{name}} arkadaşlıktan çıkarıldı",
+    "groupUpdated": "Grup güncellendi",
+    "groupCreated": "Grup oluşturuldu",
+    "groupDeleted": "Grup silindi",
+    "roomLocked": "Oda olay günü açılır",
+    "eventRoom": "Olay odası",
+    "publicRoom": "Herkese açık",
+    "eventIntro": "Oda açıldı. Bu ay neyi bırakmak istiyorsun?",
+    "nearby": "YAKININDAKİLER",
+    "sideBySide": "Haritalarınızı yan yana koyun.",
+    "add": {
+      "titleBump": "ARKADAŞ EKLE",
+      "titleQr": "QR İLE EKLE",
+      "titleScan": "KODU OKUT",
+      "self": "Bu senin kendi kodun.",
+      "failed": "Eklenemedi, tekrar dene.",
+      "invalid": "Kod geçersiz ya da süresi dolmuş.",
+      "notLuna": "Bu bir Luna kodu değil.",
+      "matched": "{{name}} ile eşleştin.",
+      "addedToList": "ARKADAŞ LİSTENE EKLENDİ",
+      "bump": "Telefonları birbirine hafifçe vur.",
+      "searching": "YAKINDAKİ TELEFON ARANIYOR",
+      "tryQr": "OLMADI MI? QR KODU DENE",
+      "qrA11y": "@{{handle}} için QR kod",
+      "showCode": "Arkadaşın bu kodu okutsun.",
+      "codeFailed": "KOD ALINAMADI",
+      "codeValid": "KOD 10 DAKİKA GEÇERLİ, BİR KEZ KULLANILIR",
+      "retry": "TEKRAR DENE",
+      "scanBtn": "Kamerayla okut",
+      "sendLink": "Link gönder",
+      "backToBump": "BUMP’A DÖN",
+      "needCamera": "Kodu okutmak için kameraya izin ver.",
+      "allow": "İzin ver",
+      "openSettings": "Ayarları aç",
+      "backToCode": "KODUMA DÖN",
+      "frame": "Arkadaşının QR kodunu çerçeveye al"
+    },
+    "loadError": "Arkadaşların yüklenemedi.",
+    "empty": "Henüz kimse yok. “Ekle +” ile ilk arkadaşını ekle.",
+    "rooms": {
+      "cosmic": "KOZMİK OLAY ODASI",
+      "open": "AÇIK",
+      "opensIn": "{{n}} GÜN SONRA AÇILIR",
+      "roomName": "{{name}} odası",
+      "sub": "{{date}} · Ay {{sign}}. Olay boyunca açık kalır.",
+      "groups": "GRUPLAR",
+      "newGroup": "YENİ GRUP +",
+      "loadError": "Gruplar yüklenemedi.",
+      "none": "Henüz grubun yok.",
+      "groupMeta": "GRUP · {{n}} KİŞİ",
+      "unread": "Okunmamış mesaj",
+      "noMessages": "Henüz mesaj yok"
+    },
+    "room": {
+      "back": "← GERİ",
+      "edit": "DÜZENLE",
+      "loading": "YÜKLENİYOR",
+      "sendFailed": "Gönderilemedi, tekrar dene.",
+      "placeholder": "Mesaj yaz",
+      "message": "Mesaj",
+      "send": "GÖNDER"
+    },
+    "group": {
+      "editTitle": "Grubu düzenle",
+      "newTitle": "Yeni grup",
+      "nameLabel": "GRUP ADI",
+      "namePlaceholder": "Örn. Ev arkadaşları",
+      "nameA11y": "Grup adı",
+      "people": "KİŞİLER",
+      "needFriends": "Önce arkadaş eklemelisin.",
+      "needName": "Gruba bir ad ver",
+      "needPerson": "En az bir kişi seç",
+      "saveFailed": "Kaydedilemedi, tekrar dene",
+      "deleteFailed": "Silinemedi, tekrar dene",
+      "confirmDelete": "Emin misin? Sil",
+      "delete": "Grubu sil"
+    },
+    "map": {
+      "label": "GRUP HARİTASI",
+      "empty": "Grup haritası için en az bir arkadaşının doğum haritası gerekir. Arkadaş ekledikçe burada belirir.",
+      "labelPeople": "GRUP HARİTASI · {{n}} KİŞİ",
+      "headline": "Grubunuz %{{percent}} {{element}}.",
+      "barA11y": "{{element}}: {{n}} kişi",
+      "roles": "ROLLER",
+      "shareBtn": "Grup kartını paylaş",
+      "shareMessage": "Grubumuz %{{percent}} {{element}}. Haritamıza Luna’da bak."
+    },
+    "sheet": {
+      "title": "ARKADAŞ",
+      "relation": "İLİŞKİ TÜRÜ",
+      "relationA11y": "İlişki türü: {{rel}}",
+      "today": "BUGÜN",
+      "compat": "UYUM",
+      "compatPending": "Uyum, iki doğum haritasından hesaplanır. {{name}} doğum bilgisini tamamlayınca burada görünür.",
+      "barA11y": "{{k}}: 10 üzerinden {{n}}",
+      "confirmNote": "{{name}} arkadaş listenden çıkarılır, sen de onun listesinden çıkarsın. Ortak gruplar kalır.",
+      "removeFailed": "Çıkarılamadı, tekrar dene.",
+      "confirmRemove": "EMİN MİSİN? ÇIKAR",
+      "remove": "ARKADAŞLIKTAN ÇIKAR",
+      "cancel": "VAZGEÇ",
+      "history": "{{from}} → {{to}}, {{date}}"
+    },
+    "transition": {
+      "signs": "{{a}} ve {{b}}.",
+      "format": "{{from}} {{to}}.",
+      "withFriend": "SEN & {{name}}",
+      "shareMessage": "{{name}} ile {{from}} → {{to}}. {{caption}}",
+      "brand": "LU — NA · {{date}}",
+      "sunSame": "Güneşleriniz aynı elementte, aynı dili konuşuyorsunuz.",
+      "sunFeed": "Güneşleriniz birbirini besleyen elementlerde.",
+      "sunDiff": "Güneşleriniz farklı hızlarda, bu da ilişkiye merak katıyor."
+    },
+    "compatKeys": {
+      "Aşk": "Aşk",
+      "Arkadaşlık": "Arkadaşlık",
+      "İletişim": "İletişim",
+      "İş": "İş"
+    },
+    "addButton": "Ekle +"
+  },
+  "rel": {
+    "types": {
+      "Arkadaş": "Arkadaş",
+      "Aile": "Aile",
+      "Flört": "Flört",
+      "Partner": "Partner",
+      "İş arkadaşı": "İş arkadaşı",
+      "Eski sevgili": "Eski sevgili"
+    },
+    "from": {
+      "Arkadaş": "Arkadaştan",
+      "Aile": "Aileden",
+      "Flört": "Flörtten",
+      "Partner": "Sevgiliden",
+      "İş arkadaşı": "İş arkadaşından",
+      "Eski sevgili": "Eski sevgiliden"
+    },
+    "to": {
+      "Flört": "flörte",
+      "Partner": "sevgiliye"
+    },
+    "blurb": {
+      "Arkadaş": [
+        "Birlikte bir şey yapmak için güzel bir gün.",
+        "Kısa bir mesaj yeter.",
+        "Bugün birbirinize alan tanıyın."
+      ],
+      "Aile": [
+        "Bir telefon ikinizi de mutlu eder.",
+        "Sohbet hafif kalsın.",
+        "Hassas konuları başka bir güne bırakın."
+      ],
+      "Flört": [
+        "Aranızda kıvılcım var, bir plan yap.",
+        "Akışta kalın, zorlamayın.",
+        "Mesajları fazla yorumlama."
+      ],
+      "Partner": [
+        "Birlikte geçireceğiniz bir akşam iyi gelir.",
+        "Gündelik işleri paylaşın.",
+        "Yorgunluk sabrı azaltabilir, nazik olun."
+      ],
+      "İş arkadaşı": [
+        "Ortak bir işte hızlı ilerlersiniz.",
+        "Rolleri netleştirin.",
+        "E-postaları iki kez okuyun."
+      ],
+      "Eski sevgili": [
+        "Sınırlarını koru, bugün kendine odaklan.",
+        "Sınırlarını koru, bugün kendine odaklan.",
+        "Eski konuları açmak için uygun bir gün sayılmaz."
+      ]
+    },
+    "tagsAll": [
+      "Derin sohbet günü",
+      "Birlikte üretken",
+      "Şakalaşma günü",
+      "Sessizce anlaşma",
+      "Boş tartışma riski",
+      "Plan değişikliği",
+      "Sabır gerek",
+      "Ortak merak"
+    ],
+    "tagsRomantic": [
+      "Karşılıklı çekim",
+      "Romantik plan",
+      "Kıskançlığa dikkat"
+    ]
+  },
+  "notif": {
+    "nowFriends": "{{name}} ile artık arkadaşsınız.",
+    "addedToGroup": "{{adder}} seni {{group}} grubuna ekledi.",
+    "addedToSome": "{{adder}} seni bir gruba ekledi.",
+    "removedFrom": "{{group}} grubundan çıkarıldın.",
+    "removedFromSome": "Bir gruptan çıkarıldın.",
+    "message": "{{group}} · {{who}}: {{text}}",
+    "group": "Grup"
+  },
+  "reminders": {
+    "channel": "Hatırlatmalar",
+    "evening": "Bugünü şişene ekle.",
+    "card": "Yeni kartın hazır."
+  },
+  "future": {
+    "link": "GELECEKTEKİ KENDİNE BİR MESAJ GÖNDER",
+    "hint": "Mesajı sen yaz. Yıldızlar hizalandığında sana geri gönderelim.",
+    "discard": "VAZGEÇ",
+    "submit": "GÖNDER",
+    "sent": "Mesajın yıldızlara emanet.",
+    "error": "Mesaj gönderilemedi. Bağlantını kontrol edip tekrar dene.",
+    "inputA11y": "Gelecekteki kendine mesaj",
+    "notification": "Geçmişten bir mesajın var.",
+    "banner": "Geçmişten bir mesajın var.",
+    "fullLabel": "{{date}} TARİHLİ MESAJ",
+    "markFailed": "Mesaj açıldı olarak işaretlenemedi."
+  },
+  "archive": {
+    "title": "Arşiv",
+    "empty": "Henüz geçmişten gelen bir mesajın yok.",
+    "loadError": "Arşiv yüklenemedi. Bağlantını kontrol et.",
+    "dayA11y": "{{date}} günü gelen mesajlar",
+    "writtenOn": "{{day}} {{month}} yazdın",
+    "delete": "Sil",
+    "deleteAsk": "Bu mesaj kalıcı olarak silinsin mi?",
+    "deleteFailed": "Mesaj silinemedi. Tekrar dene.",
+    "seeArchive": "Arşivde gör"
+  }
+}

@@ -24,6 +24,7 @@ src/
     (tabs)/          5 sekme: index (BUGÜN), arkadaslar, void, gunluk, sen
   components/      paylaşılan UI bileşenleri (TopBar, TabBar, ...)
   theme/           renkler, fontlar, ölçüler — stil değerleri sadece buradan
+  i18n/            tr.json ve en.json (tüm arayüz, yorum ve tarot metinleri), i18next kurulumu
   lib/             yardımcılar (tarih, supabase istemcisi, astroloji hesapları)
 ```
 
@@ -32,7 +33,7 @@ Yeni özellik kodu `src/` altında, ilgili ekranın yanında veya `components/` 
 ## Kod kuralları
 
 - TypeScript **strict**; `any` kullanma.
-- Tüm arayüz metinleri **Türkçe**. Büyük harfe çevirirken Türkçe harfleri koru (İ, Ş, Ğ, Ü, Ö, Ç).
+- Arayüz **Türkçe ve İngilizce**: metinler bileşende sabit yazılmaz, `src/i18n/tr.json` ve `en.json` içine konur (iki dosyada aynı anahtarlar olmalı; `npm test` bunu denetler) ve `useTranslation()` / `t()` ile okunur. Büyük/küçük harfe çevirirken `toLocaleUpperCase(locale())` kullan (`@/i18n/lang`): Türkçede İ, Ş, Ğ, Ü, Ö, Ç korunur, İngilizcede `i` → `I` olur. Tarih biçimleri ve ondalık ayracı da dile göre değişir (`@/lib/date`, `decimal`).
 - **Renkli UI yok**: yalnızca siyah `#0b0b0b`, beyaz ve gri tonlar (`src/theme/colors.ts`). Renk, font ve boşluk değerlerini bileşenlerde sabit yazma; `@/theme` kullan.
 - Başlıklar Bodoni Moda, etiketler Space Mono, gövde metni sistem sans.
 - **Bodoni Moda satır yüksekliği**: serif metinlerde `lineHeight` en az `fontSize × 1.3` olmalı (ör. 19 → 26, 34 → 44). Daha sıkı verilirse iOS harflerin üstünü/altını keser. Çok satırlı Bodoni paragraflarına ayrıca `paddingBottom: 8-10` ver; iOS son satırın yüksekliğini eksik ölçüp kesebiliyor.
