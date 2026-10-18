@@ -1,10 +1,12 @@
 import { Tabs } from 'expo-router/js-tabs';
 import { TabBar } from '@/components/TabBar';
 import { TopBar } from '@/components/TopBar';
+import { NotificationsProvider } from '@/lib/notifications';
 import { TodayProvider } from '@/lib/today';
 
 export default function TabsLayout() {
   return (
+    <NotificationsProvider>
     <TodayProvider>
       <Tabs
         tabBar={(props) => <TabBar {...props} />}
@@ -17,5 +19,6 @@ export default function TabsLayout() {
         <Tabs.Screen name="sen" options={{ title: 'SEN' }} />
       </Tabs>
     </TodayProvider>
+    </NotificationsProvider>
   );
 }

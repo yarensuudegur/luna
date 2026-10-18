@@ -35,7 +35,14 @@
         }
       ],
       "expo-status-bar",
-      "expo-sharing"
+      "expo-sharing",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Arkadaşının QR kodunu okutmak için kameraya erişim gerekir.",
+          "recordAudioAndroid": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
