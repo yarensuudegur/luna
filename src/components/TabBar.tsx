@@ -5,8 +5,9 @@ import { colors, fonts, layout } from '@/theme';
 
 export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarProps) {
   const { badge } = useNotifications();
+  const dark = state.routes[state.index]?.name === 'void';
   return (
-    <View style={[styles.bar, { paddingBottom: insets.bottom }]} accessibilityRole="tablist">
+    <View style={[styles.bar, dark && styles.barDark, { paddingBottom: insets.bottom }]} accessibilityRole="tablist">
       {state.routes.map((route, index) => {
         const focused = state.index === index;
         const label = descriptors[route.key].options.title ?? route.name;
@@ -33,12 +34,12 @@ export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarP
             style={styles.item}
           >
             <View>
-              <Text style={[styles.label, focused && styles.labelActive]} numberOfLines={1}>
+              <Text style={[styles.label, dark && styles.labelDark, focused && (dark ? styles.labelActiveDark : styles.labelActive)]} numberOfLines={1}>
                 {label}
               </Text>
               {route.name === 'arkadaslar' && badge && <View style={styles.badge} accessibilityLabel="Yeni bildirim" />}
             </View>
-            {focused && <View style={styles.dot} />}
+            {focused && <View style={[styles.dot, dark && styles.dotDark]} />}
           </Pressable>
         );
       })}
@@ -56,6 +57,10 @@ const styles = StyleSheet.create({
   item: { flex: 1, height: layout.navHeight, alignItems: 'center', justifyContent: 'center' },
   label: { fontFamily: fonts.mono, fontSize: 8.5, letterSpacing: 0.6, color: colors.faint },
   labelActive: { color: colors.fg },
+  barDark: { backgroundColor: colors.space, borderTopColor: colors.spaceLine },
+  labelDark: { color: colors.spaceFaint },
+  dotDark: { backgroundColor: colors.white },
+  labelActiveDark: { color: colors.white },
   badge: { position: 'absolute', top: -2, right: -7, width: 5, height: 5, borderRadius: 3, backgroundColor: colors.fg },
   dot: {
     position: 'absolute',
