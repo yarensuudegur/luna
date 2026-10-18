@@ -1,4 +1,4 @@
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { setStatusBarStyle } from 'expo-status-bar';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -18,6 +18,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stars } from '@/components/void/Stars';
 import { useAuth } from '@/lib/auth';
 import { up } from '@/lib/bottle';
+import { useSettings } from '@/lib/settings';
 import { MAX_QUESTION, VOID_CATS, VOID_CAT_NAMES, useVoid } from '@/lib/void';
 import type { VoidCategory } from '@/lib/void';
 import { colors, fonts, layout } from '@/theme';
@@ -30,9 +31,45 @@ const IMAGES: Record<VoidCategory, { source: ImageSourcePropType; height: number
 };
 
 export default function VoidScreen() {
+  const { noAI } = useSettings();
+  return noAI ? <VoidOff /> : <VoidChat />;
+}
+
+/** AI'sız mod açıkken Void yerine gösterilir. */
+function VoidOff() {
+  const insets = useSafeAreaInsets();
+  const router = useRouter();
+  useFocusEffect(
+    useCallback(() => {
+      setStatusBarStyle('light');
+      return () => setStatusBarStyle('dark');
+    }, []),
+  );
+  return (
+    <View style={styles.root}>
+      <Stars />
+      <View style={[styles.offBox, { paddingTop: insets.top + 80 }]}>
+        <Text style={styles.headTitle}>VOID KAPALI</Text>
+        <Text style={styles.offText}>
+          AI’sız mod açık. Yalnızca insan yazarların metinleri gösteriliyor. Void’i yeniden açmak için Sen › Ayarlar bölümünden modu kapat.
+        </Text>
+        <Pressable onPress={() => router.navigate('/sen')} accessibilityRole="button" hitSlop={10}>
+          <Text style={styles.link}>AYARLARA GİT</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
+}
+
+function VoidChat() {
   const insets = useSafeAreaInsets();
   const { profile } = useAuth();
-  const { messages, loading, loadError, reload, asking, left, ask, newChat } = useVoid(profile?.id);
+  const { tone, relationship, lifeStage } = useSettings();
+  const { messages, loading, loadError, reload, asking, left, ask, newChat } = useVoid(profile?.id, {
+    tone,
+    relationship,
+    lifeStage,
+  });
   const [cat, setCat] = useState<VoidCategory>('Ben');
   const [text, setText] = useState('');
   const scroll = useRef<ScrollView>(null);
@@ -184,6 +221,8 @@ export default function VoidScreen() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.space },
+  offBox: { flex: 1, alignItems: 'center', gap: 22, paddingHorizontal: 32 },
+  offText: { fontFamily: fonts.serif, fontSize: 19, lineHeight: 28, paddingBottom: 10, color: colors.white, textAlign: 'center' },
   flex: { flex: 1 },
   content: { flexGrow: 1, paddingBottom: 24 },
 

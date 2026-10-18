@@ -62,6 +62,15 @@ describe('günlük yorum', () => {
     expect(buildReading('user-1', '2026-10-18', tr)).toEqual(buildReading('user-1', '2026-10-18', tr));
   });
 
+  it('ton yalnızca kapanış cümlesini değiştirir', () => {
+    const item = DAILY.find((d) => d.h === buildReading('user-1', '2026-10-18', tr).h)!;
+    const soft = buildReading('user-1', '2026-10-18', tr, 'Destekleyici');
+    const hard = buildReading('user-1', '2026-10-18', tr, 'Sert');
+    expect(soft.body.endsWith(item.s)).toBe(true);
+    expect(hard.body.endsWith(item.x)).toBe(true);
+    expect(soft.h).toBe(hard.h);
+  });
+
   it('havuzdan gelir ve {ay} yer tutucusu kalmaz', () => {
     const r = buildReading('user-1', '2026-10-18', tr);
     expect(DAILY.map((d) => d.h)).toContain(r.h);

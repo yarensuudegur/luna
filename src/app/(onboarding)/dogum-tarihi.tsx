@@ -40,7 +40,7 @@ export default function DogumTarihiScreen() {
 
   return (
     <FormScreen
-      eyebrow="Adım 3 / 5"
+      eyebrow="Adım 3 / 6"
       title="Hangi gün doğdun?"
       subtitle="Güneş burcun ve haritanın temeli bu tarih."
       footer={

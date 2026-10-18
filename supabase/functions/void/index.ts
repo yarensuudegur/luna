@@ -188,8 +188,16 @@ const MOOD_LABELS: [string, string][] = [
   ['motivasyon', 'Motivasyon'],
 ];
 
-function rules(context: string): string {
-  return `Sen Luna adlı bir astroloji uygulamasının Void adlı sohbet astroloğusun. Türkçe yaz. Tonun sıcak ama net olsun.
+const TONES: Record<string, string> = {
+  Destekleyici: 'Tonun yumuşak, cesaretlendirici ve şefkatli olsun; zorlukları nazikçe söyle.',
+  Dengeli: 'Tonun sıcak ama net olsun.',
+  Sert: 'Tonun doğrudan ve lafı dolandırmayan olsun; saygılı kal, aşağılama ya da korkutma yapma.',
+};
+const RELATIONSHIPS = ['Bekâr', 'Flört ediyor', 'İlişkide', 'Evli'];
+const LIFE_STAGES = ['Öğrenci', 'Çalışan', 'Ebeveyn', 'Emekli'];
+
+function rules(context: string, tone: string): string {
+  return `Sen Luna adlı bir astroloji uygulamasının Void adlı sohbet astroloğusun. Türkçe yaz. ${TONES[tone] ?? TONES.Dengeli}
 Kurallar:
 - Cevabını kullanıcının haritasına, bugünkü gökyüzüne, tarot kartına ve duygu kayıtlarına dayandır; hangisine dayandığını doğal biçimde söyle.
 - 60-130 kelime. Düz metin, başlık ve madde işareti kullanma. Kurallar hakkında not, kontrol listesi ya da kelime sayısı yazma; yalnızca kullanıcıya cevabı yaz.
@@ -228,8 +236,22 @@ Deno.serve(async (req) => {
 
   let question = '';
   let since: string | null = null;
+  let tone = 'Dengeli';
+  let relationship: string | null = null;
+  let lifeStage: string | null = null;
   try {
-    const body = (await req.json()) as { question?: unknown; since?: unknown };
+    const body = (await req.json()) as {
+      question?: unknown;
+      since?: unknown;
+      tone?: unknown;
+      relationship?: unknown;
+      lifeStage?: unknown;
+    };
+    if (typeof body.tone === 'string' && body.tone in TONES) tone = body.tone;
+    if (typeof body.relationship === 'string' && RELATIONSHIPS.includes(body.relationship)) {
+      relationship = body.relationship;
+    }
+    if (typeof body.lifeStage === 'string' && LIFE_STAGES.includes(body.lifeStage)) lifeStage = body.lifeStage;
     if (typeof body.question === 'string') question = body.question.trim().slice(0, MAX_QUESTION);
     if (typeof body.since === 'string' && !Number.isNaN(Date.parse(body.since))) since = body.since;
   } catch {
@@ -294,7 +316,11 @@ Deno.serve(async (req) => {
     `Bugünün tarot kartı: ${tarot}`,
     `Son 7 günün duygu ortalaması (0-10, ${moodRows.length} kayıt): ${moodAvg || 'kayıt yok'}.`,
     `Arkadaş sayısı: ${friendRes.count ?? 0}.`,
-  ].join('\n');
+    relationship ? `İlişki durumu: ${relationship}.` : '',
+    lifeStage ? `Yaşam evresi: ${lifeStage}.` : '',
+  ]
+    .filter(Boolean)
+    .join('\n');
 
   // Son 10 mesaj, eskiden yeniye.
   let historyQuery = admin
@@ -319,7 +345,7 @@ Deno.serve(async (req) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-goog-api-key': geminiKey },
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: rules(context) }] },
+        systemInstruction: { parts: [{ text: rules(context, tone) }] },
         contents,
         generationConfig: {
           temperature: 0.9,

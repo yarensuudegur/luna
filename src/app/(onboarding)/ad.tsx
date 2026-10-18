@@ -18,7 +18,7 @@ export default function AdScreen() {
 
   return (
     <FormScreen
-      eyebrow="Adım 1 / 5"
+      eyebrow="Adım 1 / 6"
       title="Sana nasıl seslenelim?"
       subtitle="Arkadaşların seni bu adla görecek."
       footer={

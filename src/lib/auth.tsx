@@ -1,6 +1,7 @@
 import type { Session } from '@supabase/supabase-js';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
+import { cancelReminders } from '@/lib/reminder-native';
 import { supabase } from '@/lib/supabase';
 
 export type Profile = {
@@ -25,6 +26,8 @@ type AuthState = {
   loading: boolean;
   refreshProfile: () => Promise<void>;
   signOut: () => Promise<void>;
+  /** Hesabı sunucuda siler ve oturumu kapatır; başarısızsa false döner. */
+  deleteAccount: () => Promise<boolean>;
 };
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -81,8 +84,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [userId]);
 
   const signOut = useCallback(async () => {
+    await cancelReminders();
     await supabase.auth.signOut();
     await supabase.removeAllChannels();
+  }, []);
+
+  const deleteAccount = useCallback(async () => {
+    const { error } = await supabase.functions.invoke('delete-account');
+    if (error) return false;
+    await cancelReminders();
+    await supabase.auth.signOut({ scope: 'local' });
+    await supabase.removeAllChannels();
+    return true;
   }, []);
 
   const value = useMemo<AuthState>(
@@ -92,8 +105,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading: !sessionReady || !profileReady,
       refreshProfile,
       signOut,
+      deleteAccount,
     }),
-    [session, profile, sessionReady, profileReady, refreshProfile, signOut],
+    [session, profile, sessionReady, profileReady, refreshProfile, signOut, deleteAccount],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

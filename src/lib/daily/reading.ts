@@ -1,7 +1,7 @@
 import { BURC_DA } from '@/lib/astro';
 import type { PlanetKey } from '@/lib/astro';
 import { DAILY, DEEP, DEEP_CATEGORIES, DO, DONT, HOUSE_THEME } from './content';
-import type { DeepCategory, LuckState } from './content';
+import type { DeepCategory, LuckState, Tone } from './content';
 import { pickN, pickWeighted, rng } from './rng';
 import type { Aspect, AspectKind, Transits } from './transits';
 
@@ -80,7 +80,7 @@ function relevance(item: (typeof DAILY)[number], tr: Transits): number {
  * Bir kullanıcının bir günkü yorumu. Tohum kullanıcı ID'si ve tarihtir, bu yüzden aynı gün
  * hep aynı metin gelir; metinler ise o günün transitlerine göre ağırlıklanarak seçilir.
  */
-export function buildReading(userId: string, dateKey: string, tr: Transits): Reading {
+export function buildReading(userId: string, dateKey: string, tr: Transits, tone: Tone = 'Dengeli'): Reading {
   const seed = `${userId}|${dateKey}`;
   const item = pickWeighted(rng(`day|${seed}`), DAILY, (d) => 1 + 3 * relevance(d, tr));
   const ay = BURC_DA[tr.moon.sign];
@@ -97,8 +97,11 @@ export function buildReading(userId: string, dateKey: string, tr: Transits): Rea
     return { k, st: final, txt: DEEP[k][final] };
   });
 
-  const body = item.b.replace('{ay}', ay);
-  const long = [body, `${item.s} ${item.x}`];
+  const base = item.b.replace('{ay}', ay);
+  // Ton yalnızca kapanış cümlesini değiştirir: Dengeli ikisini de, diğerleri kendi cümlesini söyler.
+  const closer = tone === 'Destekleyici' ? item.s : tone === 'Sert' ? item.x : `${item.s} ${item.x}`;
+  const body = tone === 'Dengeli' ? base : `${base} ${closer}`;
+  const long = [base, closer];
   if (tr.moon.house !== null && tr.sun.house !== null) {
     long.push(
       `Ay bugün haritanın ${tr.moon.house}. evinden geçiyor, bu yüzden ${HOUSE_THEME[tr.moon.house - 1]} daha çok gündeminde olabilir. Güneş ise ${tr.sun.house}. evinde ve ${HOUSE_THEME[tr.sun.house - 1]} alanını aydınlatıyor.`,

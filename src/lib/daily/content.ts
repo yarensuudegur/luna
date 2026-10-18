@@ -218,3 +218,6 @@ export const TAROT: readonly TarotCard[] = [
   ['XX', 'Uyanış', 'Bir çağrıya cevap vermek, yeniden doğuş.', 'Kendini fazla yargılamak.', 'Ertelediğin bir çağrıya kulak ver.'],
   ['XXI', 'Dünya', 'Tamamlanma, bütünlük.', 'Son adımda takılmak.', 'Bir döngüyü kutla.'],
 ];
+
+export const TONES = ['Destekleyici', 'Dengeli', 'Sert'] as const;
+export type Tone = (typeof TONES)[number];

@@ -16,18 +16,16 @@ export default function KayitScreen() {
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [info, setInfo] = useState<string | null>(null);
 
   const canSubmit = email.trim().length > 0 && password.length >= MIN_SIFRE;
 
   async function submit() {
     setBusy(true);
     setError(null);
-    setInfo(null);
     const { data, error: err } = await supabase.auth.signUp({ email: email.trim(), password });
     if (err) setError(trAuthError(err.message));
     // Oturum geldiyse yönlendirme otomatik; gelmediyse e-posta doğrulaması bekleniyor demektir.
-    else if (!data.session) setInfo('Doğrulama bağlantısını e-postana gönderdik. Dokunduktan sonra giriş yap.');
+    else if (!data.session) router.replace({ pathname: '/dogrula', params: { email: email.trim() } });
     setBusy(false);
   }
 
@@ -64,7 +62,7 @@ export default function KayitScreen() {
         autoComplete="new-password"
         textContentType="newPassword"
         onSubmitEditing={canSubmit ? submit : undefined}
-        note={error ?? info ?? `En az ${MIN_SIFRE} karakter.`}
+        note={error ?? `En az ${MIN_SIFRE} karakter.`}
       />
     </FormScreen>
   );
