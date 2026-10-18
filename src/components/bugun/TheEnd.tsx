@@ -1,9 +1,10 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
-import { AccessibilityInfo, Animated, Easing, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { AccessibilityInfo, Animated, Easing, Pressable, StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 import { useTranslation } from '@/i18n';
 import { rng } from '@/lib/daily';
 import { colors, fonts } from '@/theme';
+import { useFrameWidth } from '@/lib/use-frame-width';
 
 /** Prototipteki theEnd ile aynı çizim uzayı; SVG "xMidYMax slice" ile ekrana oturur. */
 const W = 400;
@@ -143,7 +144,7 @@ type Props = {
 
 /** "Bugünlük bu kadar." tepesi: dalgalı siyah yarım daire, yıldızlar ve yükselen parçacıklar. */
 export function TheEnd({ seed, active, onFuture }: Props) {
-  const { width } = useWindowDimensions();
+  const width = useFrameWidth();
   const { t } = useTranslation();
   const scene = useMemo(() => buildScene(seed), [seed]);
   const [reduceMotion, setReduceMotion] = useState(false);

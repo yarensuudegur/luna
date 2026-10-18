@@ -1,7 +1,7 @@
 import { locale } from '@/i18n/lang';
 import { useState } from 'react';
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
-import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Avatar } from '@/components/Avatar';
 import { ChartTable } from '@/components/sen/ChartTable';
 import { ChartWheel } from '@/components/sen/ChartWheel';
@@ -15,6 +15,7 @@ import { useAuth } from '@/lib/auth';
 import { useSettings } from '@/lib/settings';
 import { useProfileChart } from '@/lib/use-chart';
 import { colors, fonts, layout } from '@/theme';
+import { useFrameWidth } from '@/lib/use-frame-width';
 
 type Sub = 'harita' | 'ayar';
 
@@ -83,7 +84,7 @@ function HaritaSekmesi({
   houseSystem: string;
 }) {
   const { t } = useTranslation();
-  const { width } = useWindowDimensions();
+  const width = useFrameWidth();
   const [page, setPage] = useState(0);
   const { chart, rows } = data;
   const asc = chart.asc;

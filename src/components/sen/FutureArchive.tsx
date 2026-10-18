@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
-import { Modal, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from '@/i18n';
 import { locale } from '@/i18n/lang';
@@ -8,6 +8,7 @@ import { formatDayMonth, monthName } from '@/lib/date';
 import { groupByMonth } from '@/lib/future-archive';
 import type { ArchivedMessage, CalendarMonth, FutureArchive as Archive } from '@/lib/future-archive';
 import { colors, fonts, layout } from '@/theme';
+import { useFrameWidth } from '@/lib/use-frame-width';
 
 type Props = { visible: boolean; onClose: () => void; archive: Archive };
 
@@ -130,7 +131,7 @@ function MessageStory({
 }) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
+  const width = useFrameWidth();
   const scroll = useRef<ScrollView>(null);
   const [index, setIndex] = useState(0);
   const [confirming, setConfirming] = useState(false);

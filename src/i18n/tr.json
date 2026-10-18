@@ -1111,6 +1111,7 @@
     "story": {
       "preview": "STORY ÖNİZLEME",
       "head": "{{name}} · Haftanın şişesi",
+      "webShare": "Görseli kaydetmek için uygulamayı telefonda aç.",
       "noShare": "Bu cihazda paylaşım açılamıyor.",
       "noImage": "Görüntü hazırlanamadı. Tekrar dene.",
       "dialog": "Story’de paylaş"
@@ -1338,6 +1339,7 @@
       "codeFailed": "KOD ALINAMADI",
       "codeValid": "KOD 10 DAKİKA GEÇERLİ, BİR KEZ KULLANILIR",
       "retry": "TEKRAR DENE",
+      "webScan": "Kodu okutmak için Luna’yı telefonda aç.",
       "scanBtn": "Kamerayla okut",
       "sendLink": "Link gönder",
       "backToBump": "BUMP’A DÖN",

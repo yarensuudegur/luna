@@ -1,7 +1,7 @@
 import { locale } from '@/i18n/lang';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Easing, Linking, Modal, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, Linking, Modal, Platform, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/components/Button';
@@ -233,6 +233,19 @@ function Scan({ onBack, onAdded, onDone }: { onBack: () => void; onAdded: () => 
         <Text style={styles.h1}>{t('friends.add.matched', { name: matched })}</Text>
         <Text style={[styles.mute, styles.centerText]}>{t('friends.add.addedToList')}</Text>
       </View>
+    );
+  }
+
+  if (Platform.OS === 'web') {
+    return (
+      <>
+        <View style={styles.center}>
+          <Text style={[styles.h2, styles.centerText]}>{t('friends.add.webScan')}</Text>
+        </View>
+        <Pressable onPress={onBack} accessibilityRole="button" style={styles.linkWrap}>
+          <Text style={styles.link}>{t('friends.add.backToCode')}</Text>
+        </Pressable>
+      </>
     );
   }
 

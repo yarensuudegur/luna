@@ -1111,6 +1111,7 @@
     "story": {
       "preview": "STORY PREVIEW",
       "head": "{{name}} · Bottle of the week",
+      "webShare": "Open the app on your phone to save the image.",
       "noShare": "Sharing isn’t available on this device.",
       "noImage": "Couldn’t prepare the image. Try again.",
       "dialog": "Share to Story"
@@ -1338,6 +1339,7 @@
       "codeFailed": "COULDN’T GET A CODE",
       "codeValid": "CODE IS VALID FOR 10 MINUTES, ONE USE",
       "retry": "TRY AGAIN",
+      "webScan": "Open Luna on your phone to scan the code.",
       "scanBtn": "Scan with camera",
       "sendLink": "Send link",
       "backToBump": "BACK TO BUMP",
