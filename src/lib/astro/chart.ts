@@ -67,16 +67,21 @@ const UNKNOWN_TIME = '12:00';
 
 const J2000_MS = Date.UTC(2000, 0, 1, 12);
 
+/** Verilen anda 10 gezegenin tropikal ekliptik boylamları. */
+export function planetsAt(when: Date): PlanetPosition[] {
+  const time = MakeTime(when);
+  const toEcliptic = Rotation_EQJ_ECT(time);
+  return PLANETS.map<PlanetPosition>((p) => {
+    const sph = SphereFromVector(RotateVector(toEcliptic, GeoVector(p.body, time, true)));
+    return { key: p.key, glyph: p.glyph, outer: p.outer, lon: norm(sph.lon) };
+  });
+}
+
 export function computeChart(input: BirthInput): Chart {
   const timeKnown = input.time !== null;
   const when = zonedTimeToUtc(input.date, input.time ?? UNKNOWN_TIME, input.timeZone);
   const time = MakeTime(when);
-
-  const toEcliptic = Rotation_EQJ_ECT(time);
-  const planets = PLANETS.map<PlanetPosition>((p) => {
-    const sph = SphereFromVector(RotateVector(toEcliptic, GeoVector(p.body, time, true)));
-    return { key: p.key, glyph: p.glyph, outer: p.outer, lon: norm(sph.lon) };
-  });
+  const planets = planetsAt(when);
 
   if (!timeKnown) return { planets, asc: null, mc: null, timeKnown, frame: null };
 
