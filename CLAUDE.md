@@ -1,0 +1,52 @@
+# Luna (LU — NA)
+
+## Proje amacı
+
+Luna, Co–Star'dan ilham alan sosyal bir astroloji mobil uygulaması. Günlük yorum, günün tarot kartı, duygu kaydı, yapay zekâ astrolog (Void), arkadaşlar/gruplar ve doğum haritası sunar. Tasarım ve işlev referansı: `docs/luna-prototip.html` — yeni bir ekran yazmadan önce prototipte karşılığına bak.
+
+## Teknoloji seçimi
+
+- **Expo** (React Native + TypeScript) ve **expo-router** (dosya tabanlı yönlendirme)
+- **Supabase**: giriş, veritabanı, gerçek zamanlı sohbet
+- **astronomy-engine**: gezegen konumları ve doğum haritası hesapları (cihazda)
+- **Google Gemini API**: Void (günde 5 soruluk yapay zekâ astrolog)
+- Yazı tipleri `@expo-google-fonts` ile: Bodoni Moda (başlık), Space Mono (etiket), sistem sans (metin)
+
+## Klasör yapısı
+
+```
+app.json, package.json, tsconfig.json
+assets/            görseller, ikonlar
+docs/              tasarım referansı (luna-prototip.html)
+src/
+  app/             expo-router ekranları
+    _layout.tsx      kök düzen (font yükleme, splash)
+    (tabs)/          5 sekme: index (BUGÜN), arkadaslar, void, gunluk, sen
+  components/      paylaşılan UI bileşenleri (TopBar, TabBar, ...)
+  theme/           renkler, fontlar, ölçüler — stil değerleri sadece buradan
+  lib/             yardımcılar (tarih, supabase istemcisi, astroloji hesapları)
+```
+
+Yeni özellik kodu `src/` altında, ilgili ekranın yanında veya `components/` / `lib/` içinde olur. `@/` takma adı `src/` klasörünü gösterir.
+
+## Kod kuralları
+
+- TypeScript **strict**; `any` kullanma.
+- Tüm arayüz metinleri **Türkçe**. Büyük harfe çevirirken Türkçe harfleri koru (İ, Ş, Ğ, Ü, Ö, Ç).
+- **Renkli UI yok**: yalnızca siyah `#0b0b0b`, beyaz ve gri tonlar (`src/theme/colors.ts`). Renk, font ve boşluk değerlerini bileşenlerde sabit yazma; `@/theme` kullan.
+- Başlıklar Bodoni Moda, etiketler Space Mono, gövde metni sistem sans.
+- **Gizli bilgiler** (Supabase anahtarı, Gemini anahtarı) `.env` dosyasında tutulur; `.env*` asla commitlenmez (`.env.example` hariç). İstemciye açılacak değerler `EXPO_PUBLIC_` önekiyle başlar; gerçekten gizli anahtarlar uygulama paketine konmaz.
+- Yeni bağımlılıkları `npx expo install <paket>` ile ekle (SDK uyumlu sürüm için).
+- Commit öncesi `npm run typecheck` temiz olmalı.
+
+## Çalışma düzeni
+
+- `main` dalına doğrudan push yok. **Her özellik ayrı bir branch + pull request** ile gelir (örn. `feat/bugun-yorum`, `fix/tarih-formati`).
+- Bir PR tek bir özelliği kapsar; küçük ve incelenebilir tut.
+- Commit mesajları Türkçe ve kısa olabilir; ne değiştiğini açıkla.
+
+## Komutlar
+
+- `npm start` — geliştirme sunucusu (Expo Go ile telefonda aç)
+- `npm run web` — tarayıcıda hızlı önizleme
+- `npm run typecheck` — tip kontrolü
