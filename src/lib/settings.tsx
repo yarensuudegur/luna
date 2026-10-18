@@ -2,15 +2,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { HOUSE_SYSTEMS } from '@/lib/astro';
+import { DEFAULT_EVENING, EVENING_OPTIONS } from '@/lib/bottle';
 import type { HouseSystem } from '@/lib/astro';
 
 export type Settings = {
   houseSystem: HouseSystem;
   /** Açıkken Uranüs, Neptün ve Plüton gizlenir. */
   classicOnly: boolean;
+  /** Duygu kaydının açıldığı akşam saati, "21:00". */
+  eveningTime: string;
 };
 
-const DEFAULTS: Settings = { houseSystem: 'Placidus', classicOnly: false };
+const DEFAULTS: Settings = { houseSystem: 'Placidus', classicOnly: false, eveningTime: DEFAULT_EVENING };
 const KEY = 'luna.settings.v1';
 
 type SettingsState = Settings & {
@@ -28,6 +31,9 @@ function parse(raw: string | null): Settings {
         ? (v.houseSystem as HouseSystem)
         : DEFAULTS.houseSystem,
       classicOnly: typeof v.classicOnly === 'boolean' ? v.classicOnly : DEFAULTS.classicOnly,
+      eveningTime: EVENING_OPTIONS.includes(v.eveningTime as (typeof EVENING_OPTIONS)[number])
+        ? (v.eveningTime as string)
+        : DEFAULTS.eveningTime,
     };
   } catch {
     return DEFAULTS;
