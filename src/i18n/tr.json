@@ -1060,6 +1060,7 @@
   },
   "gunluk": {
     "demoPop": "PATLAMAYI GÖSTER (DEMO)",
+    "demoNoSave": "Demo haftası kaydedilmez.",
     "today": "Bugün",
     "loadError": "Duygu kayıtların yüklenemedi. Bağlantını kontrol et.",
     "comeBack": "Duygularını kaydetmek için saat {{time}}’de geri gel.",

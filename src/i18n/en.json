@@ -1060,6 +1060,7 @@
   },
   "gunluk": {
     "demoPop": "SHOW THE BURST (DEMO)",
+    "demoNoSave": "The demo week isn’t saved.",
     "today": "Today",
     "loadError": "Your mood entries couldn’t be loaded. Check your connection.",
     "comeBack": "Come back at {{time}} to log your feelings.",

@@ -25,6 +25,7 @@ import {
   weekData,
   weekInsights,
   weekKeys,
+  demoWeek,
   weekLabel,
 } from '@/lib/bottle';
 import type { MoodEntry, WeekData } from '@/lib/bottle';
@@ -41,9 +42,6 @@ const { width: BW, height: BH, mouth: MOUTH } = BOTTLE;
 /** Şişe düğmesi bölümün sağ üstünde durur (prototipteki .bottlebtn). */
 const BOTTLE_RIGHT = 26;
 const BOTTLE_TOP = 110;
-
-/** Demo patlamada şişeyi dolduran yedi sahte gün. */
-const DEMO_KEYS = Array.from({ length: 7 }, (_, i) => `demo-${i}`);
 
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
@@ -114,19 +112,30 @@ export default function GunlukScreen() {
   const summaryOpen = opened && !closed;
   /** Demo: derste göstermek için şişe sahte bir haftayla dolar ve hemen patlar. */
   const [demoPop, setDemoPop] = useState(false);
+  /** Demo patlamadan sonra sahte haftanın özeti (paylaşım dahil) gösterilir. */
+  const [demoSummary, setDemoSummary] = useState(false);
+  const demo = useMemo(() => demoWeek(weekStart), [weekStart]);
   const orbs = useMemo(
-    () => orbsFor(demoPop ? DEMO_KEYS : closed ? [] : filledDays),
-    [demoPop, closed, filledDays],
+    () => orbsFor(demoPop ? demo.days : closed ? [] : filledDays),
+    [demoPop, demo, closed, filledDays],
   );
   const evening = demoEve || isEvening(now, eveningTime);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const current = useMemo(() => weekData(weekStart, days, moods), [weekStart, days, moods, lang]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const demoCurrent = useMemo(() => weekData(weekStart, demo.days, demo.moods), [weekStart, demo, lang]);
+  const showSummary = summaryOpen || demoSummary;
 
-  const tarot = useCardMap(userId, summaryOpen || wrappedOpen);
+  const tarot = useCardMap(userId, showSummary || wrappedOpen);
   const insights = useMemo(
-    () => (summaryOpen ? weekInsights(filledDays, moods, tarot, moonSignOf) : []),
+    () =>
+      demoSummary
+        ? weekInsights(demo.days, demo.moods, tarot, moonSignOf)
+        : summaryOpen
+          ? weekInsights(filledDays, moods, tarot, moonSignOf)
+          : [],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [summaryOpen, filledDays, moods, tarot, lang],
+    [demoSummary, demo, summaryOpen, filledDays, moods, tarot, lang],
   );
   const slides = useMemo(
     () => (wrappedOpen ? monthSlides(fromDateKey(today), moods, tarot, moonSignOf, name) : []),
@@ -196,7 +205,23 @@ export default function GunlukScreen() {
     setSpray(null);
     setDemoPop(false);
     setBottleRun((n) => n + 1);
+    setDemoSummary(true);
     busy.current = false;
+    await wait(120);
+    scroll.current?.scrollTo({ y: Math.max(0, summaryY.current - 6), animated: true });
+  }
+
+  /** Demo özetinden çıkar; boş şişeye dönülür. */
+  async function endDemo() {
+    setDemoSummary(false);
+    await wait(150);
+    scroll.current?.scrollTo({ y: 0, animated: true });
+  }
+
+  async function replayDemo() {
+    setDemoSummary(false);
+    await wait(500);
+    await demoBurst();
   }
 
   /** Bu haftanın özetini kapatır; boş yeni şişe görünür ve hafta kapandı olarak işaretlenir. */
@@ -270,7 +295,22 @@ export default function GunlukScreen() {
           </Section>
         ) : null}
 
-        {!loading && !error && summaryOpen ? (
+        {!loading && !error && demoSummary ? (
+          <View onLayout={(e) => (summaryY.current = e.nativeEvent.layout.y)}>
+            <WeekSummary
+              data={demoCurrent}
+              name={name}
+              days={demo.days}
+              moods={demo.moods}
+              insights={insights}
+              saved={false}
+              onShare={() => setStory(demoCurrent)}
+              onSave={() => showToast(t('gunluk.demoNoSave'))}
+              onReplay={replayDemo}
+              onNewBottle={endDemo}
+            />
+          </View>
+        ) : !loading && !error && summaryOpen ? (
           <View onLayout={(e) => (summaryY.current = e.nativeEvent.layout.y)}>
             <WeekSummary
               data={current}
