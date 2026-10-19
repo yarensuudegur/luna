@@ -1,7 +1,8 @@
 import { locale } from '@/i18n/lang';
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type { ReactNode } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AppModal } from '@/components/AppModal';
 import { useTranslation } from '@/i18n';
 import { colors, fonts, layout } from '@/theme';
 
@@ -17,7 +18,7 @@ export function Sheet({ visible, title, onClose, children }: Props) {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+    <AppModal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose} accessibilityLabel={t('common.close')} />
       <View style={[styles.sheet, { paddingBottom: insets.bottom + 24 }]}>
         <View style={styles.head}>
@@ -28,7 +29,7 @@ export function Sheet({ visible, title, onClose, children }: Props) {
         </View>
         {children}
       </View>
-    </Modal>
+    </AppModal>
   );
 }
 

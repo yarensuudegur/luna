@@ -1,5 +1,5 @@
 import { locale } from '@/i18n/lang';
-import { Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { DeepDot } from '@/components/bugun/Dot';
 import { Label, LinkText, Section } from '@/components/Section';
@@ -14,6 +14,7 @@ import { useSavedReading } from '@/lib/saved';
 import type { DrawnCard } from '@/lib/tarot';
 import type { DeepTab } from '@/lib/today';
 import { colors, fonts, layout } from '@/theme';
+import { useShare } from '@/lib/share';
 
 const TABS: readonly DeepTab[] = ['Tümü', 'Aşk', 'Arkadaşlar', 'İş & para', 'Ev & aile'];
 
@@ -58,16 +59,17 @@ export function DeepDive({ userId, dateKey, reading, transits, tarot, tab, onTab
   const list = reading.deep.filter((d) => tab === 'Tümü' || d.k === tab);
   const card = tarot ? cards[tarot.card] : null;
 
+  const { share: shareMsg, copied } = useShare();
   const share = () =>
-    Share.share({
-      message: t('reading.shareMessage', {
+    shareMsg(
+      t('reading.shareMessage', {
         h: reading.h,
         body: reading.body,
         dos: reading.dos.join(', '),
         donts: reading.donts.join(', '),
         date: formatDayMonth(date),
       }),
-    }).catch(() => {});
+    );
 
   return (
     <View>
@@ -159,7 +161,7 @@ export function DeepDive({ userId, dateKey, reading, transits, tarot, tab, onTab
             <Text style={styles.actionText}>{saved ? t('deep.savedBtn') : t('deep.save')}</Text>
           </Pressable>
           <Pressable onPress={share} accessibilityRole="button" style={styles.action}>
-            <Text style={styles.actionText}>{t('deep.share')}</Text>
+            <Text style={styles.actionText}>{copied ? t('common.copied').toLocaleUpperCase(locale()) : t('deep.share')}</Text>
           </Pressable>
         </View>
       </Section>

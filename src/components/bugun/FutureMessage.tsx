@@ -1,5 +1,6 @@
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AppModal } from '@/components/AppModal';
 import { useTranslation } from '@/i18n';
 import { locale } from '@/i18n/lang';
 import { formatFullDate } from '@/lib/date';
@@ -31,7 +32,7 @@ export function FutureMessageView({
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   return (
-    <Modal visible={!!message} animationType="fade" onRequestClose={onClose}>
+    <AppModal visible={!!message} animationType="fade" onRequestClose={onClose}>
       <View style={[styles.root, { paddingTop: insets.top + 22, paddingBottom: insets.bottom + 22 }]}>
         <View style={styles.head}>
           <Text style={styles.label}>
@@ -48,7 +49,7 @@ export function FutureMessageView({
           <Text style={styles.archiveText}>{t('archive.seeArchive').toLocaleUpperCase(locale())}</Text>
         </Pressable>
       </View>
-    </Modal>
+    </AppModal>
   );
 }
 

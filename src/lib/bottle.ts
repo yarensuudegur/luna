@@ -158,13 +158,31 @@ export function orbsFor(keys: readonly string[]): OrbSpec[] {
         y,
         t: 4 + r() * 4,
         d: -r() * 6,
-        dx: Math.round(r() * 4 - 2),
-        dy: Math.round(r() * 4 - 2),
+        // Her top gözle görülür biçimde (2–4 px) sallanır; işaret rastgele.
+        dx: (r() < 0.5 ? -1 : 1) * (2 + r() * 2),
+        dy: (r() < 0.5 ? -1 : 1) * (2 + r() * 2),
         nth,
       });
     });
   }
   return out;
+}
+
+/**
+ * Demo için sahte bir hafta: haftanın yedi günü, her gün için 2–9 arası duygu puanları.
+ * Gerçek kayıtlara yazılmaz; yalnızca derste patlama ve özet ekranını göstermek içindir.
+ */
+export function demoWeek(weekStart: string): { days: string[]; moods: MoodMap } {
+  const start = fromDateKey(weekStart);
+  const days = Array.from({ length: 7 }, (_, i) => dateKey(addDays(start, i)));
+  const moods: MoodMap = {};
+  for (const key of days) {
+    const r = rng(`demo${key}`);
+    const values = {} as MoodValues;
+    for (const [f] of MOODS) values[f] = 2 + Math.round(r() * 7);
+    moods[key] = { values, note: '' };
+  }
+  return { days, moods };
 }
 
 /** Günün Ay burcu dizini (0 = Koç). */

@@ -52,3 +52,9 @@ Yeni özellik kodu `src/` altında, ilgili ekranın yanında veya `components/` 
 - `npm start` — geliştirme sunucusu (Expo Go ile telefonda aç)
 - `npm run web` — tarayıcıda hızlı önizleme
 - `npm run typecheck` — tip kontrolü
+
+## Web (GitHub Pages)
+
+- Ekran genişliği için `useWindowDimensions().width` yerine `useFrameWidth()` (`@/lib/use-frame-width`) kullan: masaüstü webde uygulama 430px'lik çerçevede durur.
+- Webde olmayan API'leri (ör. `Image.resolveAssetSource`, kamera, bildirim, view-shot) `Platform.OS === 'web'` kontrolüyle atla; webde çökme beyaz ekran demektir.
+- Yayın: `npm run deploy:web`. Yazı tipleri `assets/fonts` içinde durur (node_modules yolu gh-pages'te yayınlanmaz).

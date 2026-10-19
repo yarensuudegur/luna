@@ -1,7 +1,7 @@
 import { locale } from '@/i18n/lang';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
-import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Avatar } from '@/components/Avatar';
 import { ChartTable } from '@/components/sen/ChartTable';
 import { ChartWheel } from '@/components/sen/ChartWheel';
@@ -15,8 +15,11 @@ import { useAuth } from '@/lib/auth';
 import { useSettings } from '@/lib/settings';
 import { useProfileChart } from '@/lib/use-chart';
 import { colors, fonts, layout } from '@/theme';
+import { useFrameWidth } from '@/lib/use-frame-width';
 
 type Sub = 'harita' | 'ayar';
+
+const web = Platform.OS === 'web';
 
 export default function SenScreen() {
   const { t } = useTranslation();
@@ -83,8 +86,9 @@ function HaritaSekmesi({
   houseSystem: string;
 }) {
   const { t } = useTranslation();
-  const { width } = useWindowDimensions();
+  const width = useFrameWidth();
   const [page, setPage] = useState(0);
+  const pager = useRef<ScrollView>(null);
   const { chart, rows } = data;
   const asc = chart.asc;
 
@@ -101,14 +105,22 @@ function HaritaSekmesi({
     setPage(Math.round(e.nativeEvent.contentOffset.x / width));
   }
 
+  // Webde fareyle kaydırma olmaz; noktalara (ve oklara) basınca sayfa değişir.
+  function goTo(i: number) {
+    pager.current?.scrollTo({ x: i * width, animated: true });
+    setPage(i);
+  }
+
   return (
     <View>
       <ScrollView
+        ref={pager}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         onScroll={onScroll}
         scrollEventThrottle={16}
+        style={web && styles.noSelect}
       >
         <View style={{ width }}>
           <ChartTable rows={tableRows} asc={asc} />
@@ -127,9 +139,27 @@ function HaritaSekmesi({
         </View>
       </ScrollView>
       <View style={styles.dots}>
+        {web && (
+          <Pressable onPress={() => goTo(0)} disabled={page === 0} accessibilityRole="button" hitSlop={10}>
+            <Text style={[styles.arrow, page === 0 && styles.arrowOff]}>‹</Text>
+          </Pressable>
+        )}
         {[0, 1].map((i) => (
-          <View key={i} style={[styles.dot, page === i && styles.dotOn]} />
+          <Pressable
+            key={i}
+            onPress={() => goTo(i)}
+            accessibilityRole="button"
+            accessibilityLabel={t(i === 0 ? 'sen.tableA11y' : 'sen.wheelA11y')}
+            hitSlop={8}
+          >
+            <View style={[styles.dot, page === i && styles.dotOn]} />
+          </Pressable>
         ))}
+        {web && (
+          <Pressable onPress={() => goTo(1)} disabled={page === 1} accessibilityRole="button" hitSlop={10}>
+            <Text style={[styles.arrow, page === 1 && styles.arrowOff]}>›</Text>
+          </Pressable>
+        )}
       </View>
       <PlanetCards items={cards} />
     </View>
@@ -167,7 +197,10 @@ const styles = StyleSheet.create({
   wheelHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
   lbl: { fontFamily: fonts.mono, fontSize: 10, letterSpacing: 1.4, color: colors.mute },
   mono: { fontFamily: fonts.mono, fontSize: 9.5, letterSpacing: 1.3, color: colors.fg },
-  dots: { flexDirection: 'row', justifyContent: 'center', gap: 7, paddingTop: 10, paddingBottom: 4 },
+  dots: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 7, paddingTop: 10, paddingBottom: 4 },
+  arrow: { fontFamily: fonts.mono, fontSize: 16, lineHeight: 18, color: colors.fg, paddingHorizontal: 8 },
+  arrowOff: { color: colors.faint },
+  noSelect: { userSelect: 'none' },
   dot: { width: 6, height: 6, borderRadius: 3, borderWidth: 1, borderColor: colors.black },
   dotOn: { backgroundColor: colors.black },
 });

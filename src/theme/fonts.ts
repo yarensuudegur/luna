@@ -1,16 +1,11 @@
-import {
-  BodoniModa_400Regular,
-  BodoniModa_500Medium,
-  BodoniModa_400Regular_Italic,
-} from '@expo-google-fonts/bodoni-moda';
-import { SpaceMono_400Regular, SpaceMono_700Bold } from '@expo-google-fonts/space-mono';
-
+// Yazı tipi dosyaları projede (assets/fonts) tutulur: node_modules yolundan gelirse
+// GitHub Pages yayınında (gh-pages) bu klasör atlanır ve webde yazı tipleri yüklenmez.
 export const fontAssets = {
-  BodoniModa_400Regular,
-  BodoniModa_500Medium,
-  BodoniModa_400Regular_Italic,
-  SpaceMono_400Regular,
-  SpaceMono_700Bold,
+  BodoniModa_400Regular: require('../../assets/fonts/BodoniModa_400Regular.ttf'),
+  BodoniModa_500Medium: require('../../assets/fonts/BodoniModa_500Medium.ttf'),
+  BodoniModa_400Regular_Italic: require('../../assets/fonts/BodoniModa_400Regular_Italic.ttf'),
+  SpaceMono_400Regular: require('../../assets/fonts/SpaceMono_400Regular.ttf'),
+  SpaceMono_700Bold: require('../../assets/fonts/SpaceMono_700Bold.ttf'),
 };
 
 export const fonts = {

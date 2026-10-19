@@ -1,14 +1,16 @@
 import { locale } from '@/i18n/lang';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Easing, Linking, Modal, Pressable, ScrollView, Share, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AppModal } from '@/components/AppModal';
 import { Button } from '@/components/Button';
 import { useTranslation } from '@/i18n';
 import { addFriendByCode, fetchMyFriendCode } from '@/lib/friends';
 import { codeFromQr, qrValueFor } from '@/lib/relations';
 import { colors, fonts, layout } from '@/theme';
+import { useShare } from '@/lib/share';
 
 type Step = 'bump' | 'qr' | 'scan';
 
@@ -42,7 +44,7 @@ export function AddFriend({ visible, handle, arrived, onClose, onAdded }: Props)
   const title = t(step === 'bump' ? 'friends.add.titleBump' : step === 'qr' ? 'friends.add.titleQr' : 'friends.add.titleScan');
 
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
+    <AppModal visible={visible} animationType="slide" onRequestClose={onClose}>
       <View style={[styles.root, { paddingTop: insets.top + 22, paddingBottom: insets.bottom + 26 }]}>
         <View style={styles.row}>
           <Text style={styles.lbl}>{title}</Text>
@@ -60,7 +62,7 @@ export function AddFriend({ visible, handle, arrived, onClose, onAdded }: Props)
         {!arrived && step === 'qr' && <Qr handle={handle} onScan={() => setStep('scan')} onBump={() => setStep('bump')} />}
         {!arrived && step === 'scan' && <Scan onBack={() => setStep('qr')} onAdded={onAdded} onDone={onClose} />}
       </View>
-    </Modal>
+    </AppModal>
   );
 }
 
@@ -129,6 +131,7 @@ function Qr({ handle, onScan, onBump }: { handle: string; onScan: () => void; on
   const [value, setValue] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const { share, copied } = useShare();
 
   // Açılınca yeni kod alır; süresi dolunca (10 dk) yenisini alır.
   useEffect(() => {
@@ -169,15 +172,15 @@ function Qr({ handle, onScan, onBump }: { handle: string; onScan: () => void; on
         )}
         <View style={styles.buttons}>
           <View style={styles.buttonCell}>
-            <Button onPress={onScan}>{t('friends.add.scanBtn')}</Button>
+            <Button onPress={onScan}>{t(Platform.OS === 'web' ? 'friends.add.pasteBtn' : 'friends.add.scanBtn')}</Button>
           </View>
           <View style={styles.buttonCell}>
             <Button
               variant="ghost"
               disabled={!value}
-              onPress={() => value && Share.share({ message: value }).catch(() => {})}
+              onPress={() => value && share(value)}
             >
-              {t('friends.add.sendLink')}
+              {copied ? t('common.copied') : t('friends.add.sendLink')}
             </Button>
           </View>
         </View>
@@ -194,6 +197,7 @@ function Scan({ onBack, onAdded, onDone }: { onBack: () => void; onAdded: () => 
   const [permission, requestPermission] = useCameraPermissions();
   const [message, setMessage] = useState<string | null>(null);
   const [matched, setMatched] = useState<string | null>(null);
+  const [pasted, setPasted] = useState('');
   const busy = useRef(false);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -233,6 +237,36 @@ function Scan({ onBack, onAdded, onDone }: { onBack: () => void; onAdded: () => 
         <Text style={styles.h1}>{t('friends.add.matched', { name: matched })}</Text>
         <Text style={[styles.mute, styles.centerText]}>{t('friends.add.addedToList')}</Text>
       </View>
+    );
+  }
+
+  // Web'de kamera yok: arkadaşın gönderdiği link (ya da kod) yapıştırılır.
+  if (Platform.OS === 'web') {
+    return (
+      <>
+        <View style={styles.center}>
+          <Text style={[styles.h2, styles.centerText]}>{t('friends.add.webPaste')}</Text>
+          <TextInput
+            value={pasted}
+            onChangeText={setPasted}
+            onSubmitEditing={() => void onScanned(pasted)}
+            placeholder={t('friends.add.webPastePh')}
+            placeholderTextColor={colors.faint}
+            autoCapitalize="none"
+            autoCorrect={false}
+            style={styles.pasteInput}
+          />
+          <View style={styles.buttonCell}>
+            <Button disabled={!pasted.trim()} onPress={() => void onScanned(pasted)}>
+              {t('friends.add.webAdd')}
+            </Button>
+          </View>
+          {message && <Text style={[styles.mute, styles.centerText]}>{message.toLocaleUpperCase(locale())}</Text>}
+        </View>
+        <Pressable onPress={onBack} accessibilityRole="button" style={styles.linkWrap}>
+          <Text style={styles.link}>{t('friends.add.backToCode')}</Text>
+        </Pressable>
+      </>
     );
   }
 
@@ -313,6 +347,17 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   qrEmpty: { width: 190, height: 190 },
+  pasteInput: {
+    width: '100%',
+    maxWidth: 340,
+    borderBottomWidth: 1,
+    borderColor: colors.black,
+    paddingVertical: 10,
+    fontFamily: fonts.mono,
+    fontSize: 12,
+    color: colors.fg,
+    textAlign: 'center',
+  },
   qr: { padding: 10, backgroundColor: colors.bg, borderWidth: 1, borderColor: colors.black },
   handle: { fontFamily: fonts.mono, fontSize: 10.5, letterSpacing: 1.3, color: colors.fg },
   buttons: { flexDirection: 'row', gap: 8, justifyContent: 'center' },

@@ -25,6 +25,7 @@ import {
   weekData,
   weekInsights,
   weekKeys,
+  demoWeek,
   weekLabel,
 } from '@/lib/bottle';
 import type { MoodEntry, WeekData } from '@/lib/bottle';
@@ -109,16 +110,32 @@ export default function GunlukScreen() {
   /** "Yeni şişeye geç" ile kapatılan hafta: özet gizlenir, boş yeni şişe görünür. */
   const closed = closedWeeks.weeks.includes(weekStart);
   const summaryOpen = opened && !closed;
-  const orbs = useMemo(() => orbsFor(closed ? [] : filledDays), [closed, filledDays]);
+  /** Demo: derste göstermek için şişe sahte bir haftayla dolar ve hemen patlar. */
+  const [demoPop, setDemoPop] = useState(false);
+  /** Demo patlamadan sonra sahte haftanın özeti (paylaşım dahil) gösterilir. */
+  const [demoSummary, setDemoSummary] = useState(false);
+  const demo = useMemo(() => demoWeek(weekStart), [weekStart]);
+  const orbs = useMemo(
+    () => orbsFor(demoPop ? demo.days : closed ? [] : filledDays),
+    [demoPop, demo, closed, filledDays],
+  );
   const evening = demoEve || isEvening(now, eveningTime);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const current = useMemo(() => weekData(weekStart, days, moods), [weekStart, days, moods, lang]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const demoCurrent = useMemo(() => weekData(weekStart, demo.days, demo.moods), [weekStart, demo, lang]);
+  const showSummary = summaryOpen || demoSummary;
 
-  const tarot = useCardMap(userId, summaryOpen || wrappedOpen);
+  const tarot = useCardMap(userId, showSummary || wrappedOpen);
   const insights = useMemo(
-    () => (summaryOpen ? weekInsights(filledDays, moods, tarot, moonSignOf) : []),
+    () =>
+      demoSummary
+        ? weekInsights(demo.days, demo.moods, tarot, moonSignOf)
+        : summaryOpen
+          ? weekInsights(filledDays, moods, tarot, moonSignOf)
+          : [],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [summaryOpen, filledDays, moods, tarot, lang],
+    [demoSummary, demo, summaryOpen, filledDays, moods, tarot, lang],
   );
   const slides = useMemo(
     () => (wrappedOpen ? monthSlides(fromDateKey(today), moods, tarot, moonSignOf, name) : []),
@@ -174,6 +191,37 @@ export default function GunlukScreen() {
     scroll.current?.scrollTo({ y: Math.max(0, bottleY.current - 120), animated: true });
     await wait(700);
     await popBottle();
+  }
+
+  /** Hafta ya da gün beklemeden patlamayı gösterir; kayıtlara ve haftanın durumuna dokunmaz. */
+  async function demoBurst() {
+    if (busy.current) return;
+    busy.current = true;
+    setDemoPop(true);
+    await wait(150);
+    scroll.current?.scrollTo({ y: Math.max(0, bottleY.current - 120), animated: true });
+    await wait(1100);
+    await bottle.current?.pop(() => setSpray(mouthInSection(sectionW.current)));
+    setSpray(null);
+    setDemoPop(false);
+    setBottleRun((n) => n + 1);
+    setDemoSummary(true);
+    busy.current = false;
+    await wait(120);
+    scroll.current?.scrollTo({ y: Math.max(0, summaryY.current - 6), animated: true });
+  }
+
+  /** Demo özetinden çıkar; boş şişeye dönülür. */
+  async function endDemo() {
+    setDemoSummary(false);
+    await wait(150);
+    scroll.current?.scrollTo({ y: 0, animated: true });
+  }
+
+  async function replayDemo() {
+    setDemoSummary(false);
+    await wait(500);
+    await demoBurst();
   }
 
   /** Bu haftanın özetini kapatır; boş yeni şişe görünür ve hafta kapandı olarak işaretlenir. */
@@ -247,7 +295,22 @@ export default function GunlukScreen() {
           </Section>
         ) : null}
 
-        {!loading && !error && summaryOpen ? (
+        {!loading && !error && demoSummary ? (
+          <View onLayout={(e) => (summaryY.current = e.nativeEvent.layout.y)}>
+            <WeekSummary
+              data={demoCurrent}
+              name={name}
+              days={demo.days}
+              moods={demo.moods}
+              insights={insights}
+              saved={false}
+              onShare={() => setStory(demoCurrent)}
+              onSave={() => showToast(t('gunluk.demoNoSave'))}
+              onReplay={replayDemo}
+              onNewBottle={endDemo}
+            />
+          </View>
+        ) : !loading && !error && summaryOpen ? (
           <View onLayout={(e) => (summaryY.current = e.nativeEvent.layout.y)}>
             <WeekSummary
               data={current}
@@ -299,6 +362,9 @@ export default function GunlukScreen() {
                       : t('gunluk.bottleAddToday')
                     : t('gunluk.daysLeft', { n: 7 - filledDays.length })}
               </Text>
+              <Pressable onPress={demoBurst} accessibilityRole="button" hitSlop={10} style={styles.demoBtn}>
+                <Text style={styles.demoText}>{t('gunluk.demoPop')}</Text>
+              </Pressable>
             </View>
             {spray && <Spray x={spray.x} y={spray.y} />}
           </View>
@@ -413,6 +479,14 @@ const styles = StyleSheet.create({
   },
   bottleBtn: { position: 'absolute', zIndex: 3, right: BOTTLE_RIGHT, top: BOTTLE_TOP, width: BW, height: BH },
   bmeta: { position: 'absolute', left: layout.screenPadding, bottom: 26, gap: 6 },
+  demoBtn: { marginTop: 10, alignSelf: 'flex-start' },
+  demoText: {
+    fontFamily: fonts.mono,
+    fontSize: 9.5,
+    letterSpacing: 1.3,
+    color: colors.fg,
+    textDecorationLine: 'underline',
+  },
 
   li: {
     flexDirection: 'row',

@@ -1,14 +1,16 @@
 import { locale } from '@/i18n/lang';
 import * as Sharing from 'expo-sharing';
 import { useRef, useState } from 'react';
-import { Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { captureRef } from 'react-native-view-shot';
+import { AppModal } from '@/components/AppModal';
 import { Button } from '@/components/Button';
 import { StoryCard } from '@/components/gunluk/StoryCard';
 import { useTranslation } from '@/i18n';
 import type { WeekData } from '@/lib/bottle';
 import { colors, fonts, layout } from '@/theme';
+import { useFrameWidth } from '@/lib/use-frame-width';
 
 type Props = {
   data: WeekData | null;
@@ -20,7 +22,8 @@ type Props = {
 export function StorySheet({ data, name, onClose }: Props) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { width: screenW, height: screenH } = useWindowDimensions();
+  const { height: screenH } = useWindowDimensions();
+  const screenW = useFrameWidth();
   const card = useRef<View>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +52,7 @@ export function StorySheet({ data, name, onClose }: Props) {
   }
 
   return (
-    <Modal visible={!!data} animationType="slide" onRequestClose={onClose}>
+    <AppModal visible={!!data} animationType="slide" onRequestClose={onClose}>
       <View style={[styles.root, { paddingTop: insets.top + 22, paddingBottom: insets.bottom + 22 }]}>
         <View style={styles.head}>
           <Text style={styles.lbl}>{t('gunluk.story.preview')}</Text>
@@ -60,12 +63,16 @@ export function StorySheet({ data, name, onClose }: Props) {
         <View style={styles.cardWrap}>{data && <StoryCard ref={card} data={data} name={name} width={width} />}</View>
         {error && <Text style={styles.error}>{error}</Text>}
         <View style={styles.actions}>
-          <Button onPress={share} loading={busy}>
-            {t('gunluk.story.dialog')}
-          </Button>
+          {Platform.OS === 'web' ? (
+            <Text style={styles.error}>{t('gunluk.story.webShare')}</Text>
+          ) : (
+            <Button onPress={share} loading={busy}>
+              {t('gunluk.story.dialog')}
+            </Button>
+          )}
         </View>
       </View>
-    </Modal>
+    </AppModal>
   );
 }
 

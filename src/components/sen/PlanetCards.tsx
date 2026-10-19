@@ -23,8 +23,7 @@ const ART_MAX_H = 130;
 function Art({ n, first }: { n: number; first?: boolean }) {
   const art = ART[n % ART.length];
   const left = n % 2 === 1;
-  const src = Image.resolveAssetSource(art.source);
-  const height = Math.min(ART_MAX_H, (art.width * src.height) / src.width);
+  const height = Math.min(ART_MAX_H, art.width * art.ratio);
   const tilt = (left ? -1 : 1) * (((n * 7) % 9) - 4);
   return (
     <View

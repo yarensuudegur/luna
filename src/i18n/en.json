@@ -9,6 +9,7 @@
     "save": "Save",
     "saved": "Saved ✓",
     "share": "Share",
+    "copied": "Copied",
     "you": "You",
     "someone": "Someone",
     "unnamed": "Unnamed",
@@ -1058,6 +1059,8 @@
     "saveError": "Couldn’t save your birth details. Check your connection and try again."
   },
   "gunluk": {
+    "demoPop": "SHOW THE BURST (DEMO)",
+    "demoNoSave": "The demo week isn’t saved.",
     "today": "Today",
     "loadError": "Your mood entries couldn’t be loaded. Check your connection.",
     "comeBack": "Come back at {{time}} to log your feelings.",
@@ -1111,6 +1114,7 @@
     "story": {
       "preview": "STORY PREVIEW",
       "head": "{{name}} · Bottle of the week",
+      "webShare": "Open the app on your phone to save the image.",
       "noShare": "Sharing isn’t available on this device.",
       "noImage": "Couldn’t prepare the image. Try again.",
       "dialog": "Share to Story"
@@ -1152,6 +1156,8 @@
     "noBirth": "Your chart couldn’t be calculated because your birth details are incomplete.",
     "noTime": "Add your birth time and your rising sign and houses will be calculated",
     "birthChart": "BIRTH CHART",
+    "tableA11y": "Table",
+    "wheelA11y": "Birth chart wheel",
     "signsCol": "SIGNS",
     "housesCol": "HOUSES",
     "similarLink": "Add a friend",
@@ -1338,6 +1344,11 @@
       "codeFailed": "COULDN’T GET A CODE",
       "codeValid": "CODE IS VALID FOR 10 MINUTES, ONE USE",
       "retry": "TRY AGAIN",
+      "webScan": "Open Luna on your phone to scan the code.",
+      "pasteBtn": "Paste link",
+      "webPaste": "Paste the link your friend sent you.",
+      "webPastePh": "https://luna.app/f/…",
+      "webAdd": "Add",
       "scanBtn": "Scan with camera",
       "sendLink": "Send link",
       "backToBump": "BACK TO BUMP",
@@ -1527,6 +1538,8 @@
     "markFailed": "Couldn’t mark the message as opened."
   },
   "archive": {
+    "prev": "Previous message",
+    "next": "Next message",
     "title": "Archive",
     "empty": "No messages from your past yet.",
     "loadError": "The archive couldn’t be loaded. Check your connection.",

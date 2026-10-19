@@ -9,6 +9,7 @@
     "save": "Kaydet",
     "saved": "Kaydedildi ✓",
     "share": "Paylaş",
+    "copied": "Kopyalandı",
     "you": "Sen",
     "someone": "Biri",
     "unnamed": "Adsız",
@@ -1058,6 +1059,8 @@
     "saveError": "Doğum bilgileri kaydedilemedi. Bağlantını kontrol edip tekrar dene."
   },
   "gunluk": {
+    "demoPop": "PATLAMAYI GÖSTER (DEMO)",
+    "demoNoSave": "Demo haftası kaydedilmez.",
     "today": "Bugün",
     "loadError": "Duygu kayıtların yüklenemedi. Bağlantını kontrol et.",
     "comeBack": "Duygularını kaydetmek için saat {{time}}’de geri gel.",
@@ -1111,6 +1114,7 @@
     "story": {
       "preview": "STORY ÖNİZLEME",
       "head": "{{name}} · Haftanın şişesi",
+      "webShare": "Görseli kaydetmek için uygulamayı telefonda aç.",
       "noShare": "Bu cihazda paylaşım açılamıyor.",
       "noImage": "Görüntü hazırlanamadı. Tekrar dene.",
       "dialog": "Story’de paylaş"
@@ -1152,6 +1156,8 @@
     "noBirth": "Doğum bilgilerin eksik olduğu için harita hesaplanamadı.",
     "noTime": "Doğum saatini eklersen yükselenin ve evlerin hesaplanır",
     "birthChart": "DOĞUM HARİTASI",
+    "tableA11y": "Tablo",
+    "wheelA11y": "Doğum haritası çarkı",
     "signsCol": "BURÇLAR",
     "housesCol": "EVLER",
     "similarLink": "Arkadaş ekle",
@@ -1338,6 +1344,11 @@
       "codeFailed": "KOD ALINAMADI",
       "codeValid": "KOD 10 DAKİKA GEÇERLİ, BİR KEZ KULLANILIR",
       "retry": "TEKRAR DENE",
+      "webScan": "Kodu okutmak için Luna’yı telefonda aç.",
+      "pasteBtn": "Link yapıştır",
+      "webPaste": "Arkadaşının gönderdiği linki yapıştır.",
+      "webPastePh": "https://luna.app/f/…",
+      "webAdd": "Ekle",
       "scanBtn": "Kamerayla okut",
       "sendLink": "Link gönder",
       "backToBump": "BUMP’A DÖN",
@@ -1527,6 +1538,8 @@
     "markFailed": "Mesaj açıldı olarak işaretlenemedi."
   },
   "archive": {
+    "prev": "Önceki mesaj",
+    "next": "Sonraki mesaj",
     "title": "Arşiv",
     "empty": "Henüz geçmişten gelen bir mesajın yok.",
     "loadError": "Arşiv yüklenemedi. Bağlantını kontrol et.",

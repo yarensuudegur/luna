@@ -1,6 +1,7 @@
 import MaskedView from '@react-native-masked-view/masked-view';
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, Platform, StyleSheet, View } from 'react-native';
+import type { ReactNode } from 'react';
 import Animated, {
   Easing,
   interpolate,
@@ -66,19 +67,12 @@ function BottleOrb({ spec, mode, index }: { spec: OrbSpec; mode: OrbMode; index:
   const first = useRef(true);
   const target = useRef({ x: mouth[0] - 10 + Math.random() * 110, y: mouth[1] - 140 - Math.random() * 220 });
 
-  // Hafif sallanma: gecikme negatif olduğu için döngünün ortasından başlar.
+  // Hafif sallanma: 0→1 sonsuz döngü; her top döngüye farklı bir yerden (faz) başlar.
+  const phase = ((-spec.d / spec.t) % 1 + 1) % 1;
   useEffect(() => {
-    const total = spec.t * 1000;
-    const from = ((-spec.d * 1000) % total) / total;
-    bob.value = from;
-    bob.value = withSequence(
-      withTiming(1, { duration: (1 - from) * total, easing: Easing.linear }),
-      withRepeat(
-        withSequence(withTiming(0, { duration: 0 }), withTiming(1, { duration: total, easing: Easing.linear })),
-        -1,
-      ),
-    );
-  }, [bob, spec.t, spec.d]);
+    bob.value = 0;
+    bob.value = withRepeat(withTiming(1, { duration: spec.t * 1000, easing: Easing.linear }), -1, false);
+  }, [bob, spec.t]);
 
   useEffect(() => {
     if (first.current) {
@@ -104,19 +98,22 @@ function BottleOrb({ spec, mode, index }: { spec: OrbSpec; mode: OrbMode; index:
     }
   }, [mode, index, spec.nth, spec.x, spec.y, startX, startY, x, y, opacity]);
 
-  const style = useAnimatedStyle(() => ({
+  const style = useAnimatedStyle(() => {
+    const b = (bob.value + phase) % 1;
+    return {
     opacity: opacity.value,
     transform: [
       {
         translateX:
-          PAD.left + x.value + interpolate(bob.value, [0, 0.33, 0.66, 1], [0, spec.dx, spec.dx * -0.6, 0]),
+          PAD.left + x.value + interpolate(b, [0, 0.33, 0.66, 1], [0, spec.dx, spec.dx * -0.6, 0]),
       },
       {
         translateY:
-          PAD.top + y.value + interpolate(bob.value, [0, 0.33, 0.66, 1], [0, spec.dy, spec.dy * 0.5, 0]),
+          PAD.top + y.value + interpolate(b, [0, 0.33, 0.66, 1], [0, spec.dy, spec.dy * 0.5, 0]),
       },
     ],
-  }));
+    };
+  });
 
   return <Animated.View style={[styles.orb, style]} />;
 }
@@ -124,6 +121,71 @@ function BottleOrb({ spec, mode, index }: { spec: OrbSpec; mode: OrbMode; index:
 type Props = {
   orbs: readonly OrbSpec[];
 };
+
+/** Webde require() bir adres metni ya da { uri } döndürür. */
+function webUri(src: unknown): string | null {
+  if (typeof src === 'string') return src;
+  if (src && typeof src === 'object') {
+    const o = src as { uri?: unknown; default?: unknown };
+    if (typeof o.uri === 'string') return o.uri;
+    if (typeof o.default === 'string') return o.default;
+    if (o.default && typeof o.default === 'object') return webUri(o.default);
+  }
+  return null;
+}
+
+/**
+ * Topları şişenin cam şeklinde kırpar; `open` olunca (patlama) kırpma kalkar.
+ * Telefonda MaskedView, webde CSS mask-image (MaskedView webde çalışmaz, maskeyi siyah boyar).
+ */
+function OrbMask({ open, children }: { open: boolean; children: ReactNode }) {
+  const webRef = useRef<View>(null);
+  useEffect(() => {
+    if (Platform.OS !== 'web') return;
+    // Webde View'un ref'i DOM öğesidir; maske CSS'i doğrudan ona yazılır.
+    const el = webRef.current as unknown as { style?: Record<string, string> } | null;
+    const css = el?.style;
+    if (!css) return;
+    const uri = webUri(maskImg);
+    const on = !open && uri;
+    const values: Record<string, string> = {
+      maskImage: on ? `url("${uri}")` : 'none',
+      maskSize: `${W}px ${H}px`,
+      maskPosition: `${PAD.left}px ${PAD.top}px`,
+      maskRepeat: 'no-repeat',
+    };
+    for (const [k, v] of Object.entries(values)) {
+      css[k] = v;
+      css[`webkit${k[0].toUpperCase()}${k.slice(1)}`] = v;
+    }
+  }, [open]);
+
+  if (Platform.OS === 'web') {
+    return (
+      <View ref={webRef} style={styles.masked}>
+        {children}
+      </View>
+    );
+  }
+  return (
+    <MaskedView
+      style={styles.masked}
+      maskElement={
+        <View style={styles.maskRoot}>
+          {open ? (
+            <View style={StyleSheet.absoluteFill}>
+              <View style={styles.solid} />
+            </View>
+          ) : (
+            <Image source={maskImg} style={styles.maskImg} />
+          )}
+        </View>
+      }
+    >
+      {children}
+    </MaskedView>
+  );
+}
 
 /** 205×360 duygu şişesi: toplar, cam, tıpa. Prototipteki bottleHtml ile aynı yapı. */
 export const Bottle = forwardRef<BottleHandle, Props>(function Bottle({ orbs }, ref) {
@@ -206,24 +268,11 @@ export const Bottle = forwardRef<BottleHandle, Props>(function Bottle({ orbs }, 
   return (
     <Animated.View style={[styles.bottle, bottleStyle]}>
       {/* Toplar şişenin cam şeklinde kırpılır; patlayınca maske tamamen açılır. */}
-      <MaskedView
-        style={styles.masked}
-        maskElement={
-          <View style={styles.maskRoot}>
-            {popped ? (
-              <View style={StyleSheet.absoluteFill}>
-                <View style={styles.solid} />
-              </View>
-            ) : (
-              <Image source={maskImg} style={styles.maskImg} />
-            )}
-          </View>
-        }
-      >
+      <OrbMask open={popped}>
         {orbs.map((o, i) => (
           <BottleOrb key={o.key + o.field} spec={o} mode={modeOf(o)} index={i} />
         ))}
-      </MaskedView>
+      </OrbMask>
 
       <Image source={bottleImg} style={styles.glass} />
 

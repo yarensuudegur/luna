@@ -3,12 +3,13 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Intro } from '@/components/Intro';
 import { loadLanguage } from '@/i18n';
 import { AuthProvider, isProfileComplete, useAuth } from '@/lib/auth';
 import { SettingsProvider } from '@/lib/settings';
-import { fontAssets } from '@/theme';
+import { colors, fontAssets } from '@/theme';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -62,13 +63,23 @@ export default function RootLayout() {
   const [loaded, error] = useFonts(fontAssets);
 
   return (
-    <SafeAreaProvider>
-      <StatusBar style="dark" />
-      <AuthProvider>
-        <SettingsProvider>
-          <Shell fontsReady={loaded || !!error} />
-        </SettingsProvider>
-      </AuthProvider>
-    </SafeAreaProvider>
+    <View style={styles.page}>
+      <View style={styles.frame}>
+        <SafeAreaProvider>
+          <StatusBar style="dark" />
+          <AuthProvider>
+            <SettingsProvider>
+              <Shell fontsReady={loaded || !!error} />
+            </SettingsProvider>
+          </AuthProvider>
+        </SafeAreaProvider>
+      </View>
+    </View>
   );
 }
+
+/** Masaüstünde ekran telefon gibi: en çok 430px, ortada; iki yanı zemin rengi. */
+const styles = StyleSheet.create({
+  page: { flex: 1, backgroundColor: colors.bg },
+  frame: { flex: 1, width: '100%', maxWidth: 430, alignSelf: 'center', overflow: 'hidden' },
+});
