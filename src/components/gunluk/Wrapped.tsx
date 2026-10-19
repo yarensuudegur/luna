@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Modal, Pressable, Share, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AppModal } from '@/components/AppModal';
 import { useTranslation } from '@/i18n';
 import { up } from '@/lib/bottle';
 import type { MonthSlide } from '@/lib/bottle';
 import { colors, fonts, layout } from '@/theme';
+import { useShare } from '@/lib/share';
 
 type Props = {
   visible: boolean;
@@ -20,6 +22,7 @@ type Props = {
 /** Aylık özet story'si (prototipteki wrapped): dokununca ilerler, sonda paylaşılır. */
 export function Wrapped({ visible, month, name, slides, onClose }: Props) {
   const { t } = useTranslation();
+  const { share, copied } = useShare();
   const insets = useSafeAreaInsets();
   const [i, setI] = useState(0);
   const last = i === slides.length - 1;
@@ -31,7 +34,7 @@ export function Wrapped({ visible, month, name, slides, onClose }: Props) {
   }
 
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={close}>
+    <AppModal visible={visible} animationType="slide" onRequestClose={close}>
       <Pressable
         style={[styles.root, { paddingTop: insets.top + 22, paddingBottom: insets.bottom + 22 }]}
         onPress={() => setI((n) => Math.min(slides.length - 1, n + 1))}
@@ -63,14 +66,14 @@ export function Wrapped({ visible, month, name, slides, onClose }: Props) {
             <Pressable
               style={styles.share}
               accessibilityRole="button"
-              onPress={() => Share.share({ message: slides.map((s) => `${s[0]}: ${s[1]}`).join('\n') })}
+              onPress={() => share(slides.map((s) => `${s[0]}: ${s[1]}`).join('\n'))}
             >
-              <Text style={styles.mono}>{t('gunluk.wrapped.share')}</Text>
+              <Text style={styles.mono}>{copied ? up(t('common.copied')) : t('gunluk.wrapped.share')}</Text>
             </Pressable>
           )}
         </View>
       </Pressable>
-    </Modal>
+    </AppModal>
   );
 }
 

@@ -1,7 +1,8 @@
 import { locale } from '@/i18n/lang';
 import { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AppModal } from '@/components/AppModal';
 import { Button } from '@/components/Button';
 import { Initial } from '@/components/arkadaslar/Initial';
 import { useTranslation } from '@/i18n';
@@ -71,7 +72,7 @@ export function GroupEditor({ visible, group, people, onClose, onSave, onDelete 
   }
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+    <AppModal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose} accessibilityLabel={t('common.close')} />
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={[styles.panel, { paddingBottom: insets.bottom + 26 }]}>
@@ -139,7 +140,7 @@ export function GroupEditor({ visible, group, people, onClose, onSave, onDelete 
           </ScrollView>
         </View>
       </KeyboardAvoidingView>
-    </Modal>
+    </AppModal>
   );
 }
 

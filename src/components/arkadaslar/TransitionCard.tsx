@@ -1,6 +1,7 @@
 import { locale } from '@/i18n/lang';
-import { Modal, Pressable, Share, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AppModal } from '@/components/AppModal';
 import { useTranslation } from '@/i18n';
 import { relName, signName } from '@/i18n/names';
 import { sunPairLine } from '@/lib/astro';
@@ -9,6 +10,7 @@ import type { Friend } from '@/lib/friends';
 import { transitionTitle } from '@/lib/relations';
 import type { RelType } from '@/lib/relations';
 import { colors, fonts, layout } from '@/theme';
+import { useShare } from '@/lib/share';
 
 type Props = {
   friend: Friend;
@@ -29,19 +31,20 @@ export function TransitionCard({ friend, from, to, mySun, onClose }: Props) {
   const date = formatDayMonth(new Date()).toLocaleUpperCase(locale());
   const caption = [pair, signs].filter(Boolean).join(' ');
 
+  const { share: shareMsg, copied } = useShare();
   function share() {
-    Share.share({
-      message: t('friends.transition.shareMessage', {
+    shareMsg(
+      t('friends.transition.shareMessage', {
         name: friend.name,
         from: relName(from),
         to: relName(to),
         caption,
       }).trim(),
-    }).catch(() => {});
+    );
   }
 
   return (
-    <Modal visible animationType="fade" onRequestClose={onClose}>
+    <AppModal visible animationType="fade" onRequestClose={onClose}>
       <View style={[styles.root, { paddingTop: insets.top + 22, paddingBottom: insets.bottom + 26 }]}>
         <View style={styles.row}>
           <Text style={styles.mono}>{t('friends.transition.brand', { date })}</Text>
@@ -59,11 +62,11 @@ export function TransitionCard({ friend, from, to, mySun, onClose }: Props) {
         <View style={styles.row}>
           <Text style={[styles.mono, styles.dim]}>{t('friends.transition.withFriend', { name: friend.name.toLocaleUpperCase(locale()) })}</Text>
           <Pressable onPress={share} accessibilityRole="button" style={styles.share}>
-            <Text style={styles.shareText}>{t('common.share').toLocaleUpperCase(locale())}</Text>
+            <Text style={styles.shareText}>{t(copied ? 'common.copied' : 'common.share').toLocaleUpperCase(locale())}</Text>
           </Pressable>
         </View>
       </View>
-    </Modal>
+    </AppModal>
   );
 }
 

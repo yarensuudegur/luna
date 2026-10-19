@@ -1,9 +1,10 @@
 import { locale } from '@/i18n/lang';
 import * as Sharing from 'expo-sharing';
 import { useRef, useState } from 'react';
-import { Modal, Platform, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { captureRef } from 'react-native-view-shot';
+import { AppModal } from '@/components/AppModal';
 import { Button } from '@/components/Button';
 import { StoryCard } from '@/components/gunluk/StoryCard';
 import { useTranslation } from '@/i18n';
@@ -51,7 +52,7 @@ export function StorySheet({ data, name, onClose }: Props) {
   }
 
   return (
-    <Modal visible={!!data} animationType="slide" onRequestClose={onClose}>
+    <AppModal visible={!!data} animationType="slide" onRequestClose={onClose}>
       <View style={[styles.root, { paddingTop: insets.top + 22, paddingBottom: insets.bottom + 22 }]}>
         <View style={styles.head}>
           <Text style={styles.lbl}>{t('gunluk.story.preview')}</Text>
@@ -71,7 +72,7 @@ export function StorySheet({ data, name, onClose }: Props) {
           )}
         </View>
       </View>
-    </Modal>
+    </AppModal>
   );
 }
 

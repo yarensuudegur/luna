@@ -158,8 +158,9 @@ export function orbsFor(keys: readonly string[]): OrbSpec[] {
         y,
         t: 4 + r() * 4,
         d: -r() * 6,
-        dx: Math.round(r() * 4 - 2),
-        dy: Math.round(r() * 4 - 2),
+        // Her top gözle görülür biçimde (2–4 px) sallanır; işaret rastgele.
+        dx: (r() < 0.5 ? -1 : 1) * (2 + r() * 2),
+        dy: (r() < 0.5 ? -1 : 1) * (2 + r() * 2),
         nth,
       });
     });

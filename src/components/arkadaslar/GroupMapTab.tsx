@@ -1,5 +1,5 @@
 import { locale } from '@/i18n/lang';
-import { Share, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Button } from '@/components/Button';
 import { Bar } from '@/components/arkadaslar/Bar';
 import { Initial } from '@/components/arkadaslar/Initial';
@@ -8,6 +8,7 @@ import { useTranslation } from '@/i18n';
 import { elementName, roleName } from '@/i18n/names';
 import { elementOf, groupMix } from '@/lib/astro';
 import { colors, fonts, layout } from '@/theme';
+import { useShare } from '@/lib/share';
 
 export type MapPerson = { id: string; name: string; sun: number | null; me?: boolean };
 
@@ -18,11 +19,8 @@ export function GroupMapTab({ people }: { people: MapPerson[] }) {
   const mix = groupMix(known.map((p) => p.sun));
   const lowName = elementName(mix.dominant).toLocaleLowerCase(locale());
 
-  function share() {
-    Share.share({
-      message: t('friends.map.shareMessage', { percent: mix.percent, element: lowName }),
-    }).catch(() => {});
-  }
+  const { share: shareMsg, copied } = useShare();
+  const share = () => shareMsg(t('friends.map.shareMessage', { percent: mix.percent, element: lowName }));
 
   if (known.length < 2) {
     return (
@@ -71,7 +69,7 @@ export function GroupMapTab({ people }: { people: MapPerson[] }) {
         })}
         <View style={styles.share}>
           <Button variant="ghost" onPress={share}>
-            {t('friends.map.shareBtn')}
+            {copied ? t('common.copied') : t('friends.map.shareBtn')}
           </Button>
         </View>
       </Section>

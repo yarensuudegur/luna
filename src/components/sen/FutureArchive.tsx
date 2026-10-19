@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AppModal } from '@/components/AppModal';
 import { useTranslation } from '@/i18n';
 import { locale } from '@/i18n/lang';
 import { formatDayMonth, monthName } from '@/lib/date';
@@ -35,7 +36,7 @@ export function FutureArchive({ visible, onClose, archive }: Props) {
   }, [openDay, dayMessages.length]);
 
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
+    <AppModal visible={visible} animationType="slide" onRequestClose={onClose}>
       <View style={[styles.root, { paddingTop: insets.top + 14 }]}>
         <View style={styles.head}>
           <Pressable onPress={onClose} accessibilityRole="button" hitSlop={12}>
@@ -61,7 +62,7 @@ export function FutureArchive({ visible, onClose, archive }: Props) {
         onClose={() => setOpenDay(null)}
         onDelete={(m) => archive.remove(m)}
       />
-    </Modal>
+    </AppModal>
   );
 }
 
@@ -156,10 +157,22 @@ function MessageStory({
     }
   }, [messages.length, index, width]);
 
-  function onSettle(e: NativeSyntheticEvent<NativeScrollEvent>) {
-    setIndex(Math.round(e.nativeEvent.contentOffset.x / width));
+  function settleAt(i: number) {
+    if (i === index) return;
+    setIndex(i);
     setConfirming(false);
     setFailed(false);
+  }
+
+  function onSettle(e: NativeSyntheticEvent<NativeScrollEvent>) {
+    settleAt(Math.round(e.nativeEvent.contentOffset.x / width));
+  }
+
+  // Webde fareyle kaydırılamaz: Instagram'daki gibi sola/sağa dokunarak geçilir.
+  function step(dir: -1 | 1) {
+    const next = Math.max(0, Math.min(messages.length - 1, index + dir));
+    scroll.current?.scrollTo({ x: next * width, animated: true });
+    settleAt(next);
   }
 
   async function confirmDelete() {
@@ -173,7 +186,7 @@ function MessageStory({
   }
 
   return (
-    <Modal visible={visible} animationType="fade" onRequestClose={onClose}>
+    <AppModal visible={visible} animationType="fade" onRequestClose={onClose}>
       <View style={[styles.storyRoot, { paddingTop: insets.top + 14, paddingBottom: insets.bottom + 18 }]}>
         <View style={styles.bars}>
           {messages.map((m, i) => (
@@ -207,6 +220,12 @@ function MessageStory({
             </ScrollView>
           ))}
         </ScrollView>
+        {Platform.OS === 'web' && messages.length > 1 && (
+          <View style={styles.tapZones} pointerEvents="box-none">
+            <Pressable style={styles.tapZone} onPress={() => step(-1)} accessibilityRole="button" accessibilityLabel={t('archive.prev')} />
+            <Pressable style={styles.tapZone} onPress={() => step(1)} accessibilityRole="button" accessibilityLabel={t('archive.next')} />
+          </View>
+        )}
         <View style={styles.foot}>
           {failed && <Text style={styles.note}>{t('archive.deleteFailed')}</Text>}
           {confirming ? (
@@ -228,7 +247,7 @@ function MessageStory({
           )}
         </View>
       </View>
-    </Modal>
+    </AppModal>
   );
 }
 
@@ -279,6 +298,8 @@ const styles = StyleSheet.create({
   storyHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 14 },
   label: { fontFamily: fonts.mono, fontSize: 9.5, letterSpacing: 1.3, color: colors.mute },
   pager: { flex: 1, marginHorizontal: -layout.screenPadding },
+  tapZones: { position: 'absolute', top: 80, bottom: 120, left: 0, right: 0, flexDirection: 'row' },
+  tapZone: { flex: 1 },
   page: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: layout.screenPadding, paddingVertical: 30 },
   body: { fontFamily: fonts.serif, fontSize: 24, lineHeight: 34, paddingBottom: 10, color: colors.fg },
   foot: { alignItems: 'center', gap: 12, minHeight: 56, justifyContent: 'flex-end' },

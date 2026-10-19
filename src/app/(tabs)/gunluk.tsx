@@ -42,6 +42,9 @@ const { width: BW, height: BH, mouth: MOUTH } = BOTTLE;
 const BOTTLE_RIGHT = 26;
 const BOTTLE_TOP = 110;
 
+/** Demo patlamada şişeyi dolduran yedi sahte gün. */
+const DEMO_KEYS = Array.from({ length: 7 }, (_, i) => `demo-${i}`);
+
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 /** Şişe ağzının bölüm içindeki konumu: şişe merkezinden eğim kadar döndürülür. */
@@ -109,7 +112,12 @@ export default function GunlukScreen() {
   /** "Yeni şişeye geç" ile kapatılan hafta: özet gizlenir, boş yeni şişe görünür. */
   const closed = closedWeeks.weeks.includes(weekStart);
   const summaryOpen = opened && !closed;
-  const orbs = useMemo(() => orbsFor(closed ? [] : filledDays), [closed, filledDays]);
+  /** Demo: derste göstermek için şişe sahte bir haftayla dolar ve hemen patlar. */
+  const [demoPop, setDemoPop] = useState(false);
+  const orbs = useMemo(
+    () => orbsFor(demoPop ? DEMO_KEYS : closed ? [] : filledDays),
+    [demoPop, closed, filledDays],
+  );
   const evening = demoEve || isEvening(now, eveningTime);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const current = useMemo(() => weekData(weekStart, days, moods), [weekStart, days, moods, lang]);
@@ -174,6 +182,21 @@ export default function GunlukScreen() {
     scroll.current?.scrollTo({ y: Math.max(0, bottleY.current - 120), animated: true });
     await wait(700);
     await popBottle();
+  }
+
+  /** Hafta ya da gün beklemeden patlamayı gösterir; kayıtlara ve haftanın durumuna dokunmaz. */
+  async function demoBurst() {
+    if (busy.current) return;
+    busy.current = true;
+    setDemoPop(true);
+    await wait(150);
+    scroll.current?.scrollTo({ y: Math.max(0, bottleY.current - 120), animated: true });
+    await wait(1100);
+    await bottle.current?.pop(() => setSpray(mouthInSection(sectionW.current)));
+    setSpray(null);
+    setDemoPop(false);
+    setBottleRun((n) => n + 1);
+    busy.current = false;
   }
 
   /** Bu haftanın özetini kapatır; boş yeni şişe görünür ve hafta kapandı olarak işaretlenir. */
@@ -299,6 +322,9 @@ export default function GunlukScreen() {
                       : t('gunluk.bottleAddToday')
                     : t('gunluk.daysLeft', { n: 7 - filledDays.length })}
               </Text>
+              <Pressable onPress={demoBurst} accessibilityRole="button" hitSlop={10} style={styles.demoBtn}>
+                <Text style={styles.demoText}>{t('gunluk.demoPop')}</Text>
+              </Pressable>
             </View>
             {spray && <Spray x={spray.x} y={spray.y} />}
           </View>
@@ -413,6 +439,14 @@ const styles = StyleSheet.create({
   },
   bottleBtn: { position: 'absolute', zIndex: 3, right: BOTTLE_RIGHT, top: BOTTLE_TOP, width: BW, height: BH },
   bmeta: { position: 'absolute', left: layout.screenPadding, bottom: 26, gap: 6 },
+  demoBtn: { marginTop: 10, alignSelf: 'flex-start' },
+  demoText: {
+    fontFamily: fonts.mono,
+    fontSize: 9.5,
+    letterSpacing: 1.3,
+    color: colors.fg,
+    textDecorationLine: 'underline',
+  },
 
   li: {
     flexDirection: 'row',

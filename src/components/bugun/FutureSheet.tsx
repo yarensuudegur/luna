@@ -3,7 +3,6 @@ import {
   Animated,
   Easing,
   Keyboard,
-  Modal,
   Platform,
   Pressable,
   StyleSheet,
@@ -13,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AppModal } from '@/components/AppModal';
 import { useTranslation } from '@/i18n';
 import { locale } from '@/i18n/lang';
 import { MAX_FUTURE_MESSAGE, canSendFuture } from '@/lib/future-plan';
@@ -76,7 +76,7 @@ export function FutureSheet({ visible, onClose, onSend }: Props) {
   }
 
   return (
-    <Modal visible={shown} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
+    <AppModal visible={shown} transparent animationType="none" onRequestClose={onClose} statusBarTranslucent>
       <Animated.View style={[styles.backdrop, { opacity: progress }]}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel={t('future.discard')} />
       </Animated.View>
@@ -118,7 +118,7 @@ export function FutureSheet({ visible, onClose, onSend }: Props) {
           </View>
         </Animated.View>
       </View>
-    </Modal>
+    </AppModal>
   );
 }
 

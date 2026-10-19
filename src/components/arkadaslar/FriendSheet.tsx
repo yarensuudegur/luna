@@ -1,7 +1,8 @@
 import { locale } from '@/i18n/lang';
 import { useEffect, useMemo, useState } from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AppModal } from '@/components/AppModal';
 import { Bar } from '@/components/arkadaslar/Bar';
 import { Initial } from '@/components/arkadaslar/Initial';
 import { useTranslation } from '@/i18n';
@@ -72,7 +73,7 @@ export function FriendSheet({ friend, today, myChart, onClose, onRelChange, onRe
   }
 
   return (
-    <Modal visible={friend !== null} transparent animationType="slide" onRequestClose={onClose}>
+    <AppModal visible={friend !== null} transparent animationType="slide" onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose} accessibilityLabel={t('common.close')} />
       {friend && day && (
         <View style={[styles.panel, { paddingBottom: insets.bottom + 26 }]}>
@@ -177,7 +178,7 @@ export function FriendSheet({ friend, today, myChart, onClose, onRelChange, onRe
           </ScrollView>
         </View>
       )}
-    </Modal>
+    </AppModal>
   );
 }
 

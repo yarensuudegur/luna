@@ -17,7 +17,10 @@ import { TAROT_EN, TAROT_TR } from './tarot.ts';
 type Lang = 'tr' | 'en';
 
 const LIMIT = 5;
-const MODEL = 'gemini-flash-latest';
+// Asıl model yoğunsa (503/429) ya da geç kalırsa sıradaki denenir.
+const MODELS = ['gemini-flash-latest', 'gemini-flash-lite-latest'];
+/** Bir modele tanınan süre; iki deneme de Edge Function süresine sığar. */
+const MODEL_TIMEOUT_MS = 25_000;
 const TZ = 'Europe/Istanbul';
 const MAX_QUESTION = 600;
 
@@ -393,54 +396,64 @@ Deno.serve(async (req) => {
   ];
 
   // Gemini
+  const requestBody = JSON.stringify({
+    systemInstruction: { parts: [{ text: rules(context, lang) }] },
+    contents,
+    generationConfig: {
+      temperature: 0.9,
+      // Düşünen modellerde düşünme de bu bütçeden yer; cevap kesilmesin.
+      maxOutputTokens: 8192,
+      // Cevap yalnızca JSON alanında gelir; modelin kural kontrol notları cevaba karışmaz.
+      responseMimeType: 'application/json',
+      responseSchema: {
+        type: 'OBJECT',
+        properties: { answer: { type: 'STRING', description: lang === 'en' ? 'The answer to show the user, in English, plain text.' : 'Kullanıcıya gösterilecek Türkçe cevap, düz metin.' } },
+        required: ['answer'],
+      },
+    },
+  });
+
   let answer = '';
-  try {
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': geminiKey },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: rules(context, lang) }] },
-        contents,
-        generationConfig: {
-          temperature: 0.9,
-          // Düşünen modellerde düşünme de bu bütçeden yer; cevap kesilmesin.
-          maxOutputTokens: 8192,
-          // Cevap yalnızca JSON alanında gelir; modelin kural kontrol notları cevaba karışmaz.
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: 'OBJECT',
-            properties: { answer: { type: 'STRING', description: lang === 'en' ? 'The answer to show the user, in English, plain text.' : 'Kullanıcıya gösterilecek Türkçe cevap, düz metin.' } },
-            required: ['answer'],
-          },
-        },
-      }),
-      signal: AbortSignal.timeout(45_000),
-    });
-    if (!res.ok) {
-      console.error('gemini_http', res.status, await res.text());
-      return json(502, { error: 'gemini_error' });
-    }
-    const data = (await res.json()) as {
-      candidates?: { content?: { parts?: { text?: string; thought?: boolean }[] } }[];
-    };
-    const raw = (data.candidates?.[0]?.content?.parts ?? [])
-      .filter((p) => !p.thought)
-      .map((p) => p.text ?? '')
-      .join('')
-      .trim();
+  let lastError = 'gemini_error';
+  for (const model of MODELS) {
     try {
-      const parsed = JSON.parse(raw) as { answer?: unknown };
-      answer = typeof parsed.answer === 'string' ? parsed.answer : '';
-    } catch {
-      console.error('gemini_json', raw.slice(0, 500));
-      answer = '';
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': geminiKey },
+        body: requestBody,
+        signal: AbortSignal.timeout(MODEL_TIMEOUT_MS),
+      });
+      if (!res.ok) {
+        console.error('gemini_http', model, res.status, await res.text());
+        lastError = 'gemini_error';
+        // Yoğunluk ya da geçici hata: sıradaki modele geç. Diğer hatalarda tekrar denemenin anlamı yok.
+        if (res.status === 429 || res.status >= 500) continue;
+        break;
+      }
+      const data = (await res.json()) as {
+        candidates?: { content?: { parts?: { text?: string; thought?: boolean }[] } }[];
+      };
+      const raw = (data.candidates?.[0]?.content?.parts ?? [])
+        .filter((p) => !p.thought)
+        .map((p) => p.text ?? '')
+        .join('')
+        .trim();
+      try {
+        const parsed = JSON.parse(raw) as { answer?: unknown };
+        answer = typeof parsed.answer === 'string' ? parsed.answer : '';
+      } catch {
+        console.error('gemini_json', model, raw.slice(0, 500));
+        answer = '';
+      }
+      answer = answer.replaceAll('—', ',').trim();
+      if (answer) break;
+      lastError = 'gemini_empty';
+    } catch (e) {
+      console.error('gemini_fetch', model, e);
+      lastError = 'gemini_error';
     }
-    answer = answer.replaceAll('—', ',').trim();
-  } catch (e) {
-    console.error('gemini_fetch', e);
-    return json(502, { error: 'gemini_error' });
   }
-  if (!answer) return json(502, { error: 'gemini_empty' });
+  if (!answer) return json(502, { error: lastError });
 
   // Soru ve cevap birlikte yazılır; Gemini hata verdiyse buraya gelinmez (hak harcanmaz).
   const { error: insertError } = await admin.from('void_messages').insert([
