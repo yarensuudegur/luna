@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { Button } from '@/components/Button';
 import { MoodSlider } from '@/components/gunluk/MoodSlider';
@@ -15,50 +15,15 @@ type Props = {
   /** Örn. "PAZ 18 EKİ". */
   dateLabel: string;
   onSave: (entry: MoodEntry) => Promise<boolean>;
-  /** Demo: kaydırıcılar bu değerlere kendiliğinden gider, not yazılır ve form gönderilir. */
-  autoplay?: MoodEntry;
 };
 
-const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
-
 /** Akşam duygu kaydı: 6 duygu için 0–10 puan ve kısa not. */
-export function MoodForm({ dateLabel, onSave, autoplay }: Props) {
+export function MoodForm({ dateLabel, onSave }: Props) {
   const { t } = useTranslation();
   const [values, setValues] = useState<MoodValues>(initial);
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
   const [failed, setFailed] = useState(false);
-
-  const submitRef = useRef<() => void>(() => {});
-
-  // Demo: duygular tek tek ayarlanır, not harf harf yazılır, sonra "Şişeye koy" basılır.
-  useEffect(() => {
-    if (!autoplay) return;
-    let alive = true;
-    void (async () => {
-      await sleep(800);
-      for (const [f] of MOODS) {
-        const target = autoplay.values[f];
-        let v = initial[f];
-        while (alive && v !== target) {
-          v += target > v ? 1 : -1;
-          const next = v;
-          setValues((s) => ({ ...s, [f]: next }));
-          await sleep(70);
-        }
-        await sleep(160);
-      }
-      for (let i = 1; alive && i <= autoplay.note.length; i++) {
-        setNote(autoplay.note.slice(0, i));
-        await sleep(35);
-      }
-      await sleep(700);
-      if (alive) submitRef.current();
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [autoplay]);
 
   async function submit() {
     setSaving(true);
@@ -70,8 +35,6 @@ export function MoodForm({ dateLabel, onSave, autoplay }: Props) {
       setSaving(false);
     }
   }
-
-  submitRef.current = () => void submit();
 
   return (
     <Section>
