@@ -111,12 +111,12 @@ export default function GunlukScreen() {
   const closed = closedWeeks.weeks.includes(weekStart);
   const summaryOpen = opened && !closed;
   /**
-   * Tam demo (derste göstermek için): form kendiliğinden doldurulur → toplar şişeye düşer →
-   * şişe patlar → haftanın özeti ve story paylaşımı açılır. Gerçek kayıtlara yazılmaz.
-   * form: duygular giriliyor (şişede önceki 6 günün topları) · drop/pop: 7. günün topları
-   * şişeye düşüyor ve şişe patlıyor · summary: sahte haftanın özeti.
+   * Demo (derste göstermek için), hepsi elle: duygular girilip "Şişeye koy"a basılır → toplar
+   * şişeye düşer → şişeye dokununca patlar → haftanın özeti ve story paylaşımı. Kayıt yapılmaz.
+   * form: duygular giriliyor (şişede önceki 6 günün topları) · drop: 7. günün topları düşüyor ·
+   * ready: şişe dolu, dokunmayı bekliyor · summary: sahte haftanın özeti.
    */
-  const [demoPhase, setDemoPhase] = useState<'form' | 'drop' | 'summary' | null>(null);
+  const [demoPhase, setDemoPhase] = useState<'form' | 'drop' | 'ready' | 'summary' | null>(null);
   const [demoRun, setDemoRun] = useState(0);
   const [demoEntry, setDemoEntry] = useState<MoodEntry | null>(null);
   const demoActive = demoPhase !== null;
@@ -126,12 +126,6 @@ export default function GunlukScreen() {
   const demoMoods = useMemo(
     () => (demoEntry ? { ...demo.moods, [demoDay]: demoEntry } : demo.moods),
     [demo, demoDay, demoEntry],
-  );
-  /** Formun kendiliğinden gideceği değerler ve not; her demoda aynı. */
-  const demoAutoplay = useMemo<MoodEntry>(
-    () => ({ values: demo.moods[demoDay].values, note: t('gunluk.demoNote') }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [demo, demoDay, lang],
   );
   const orbs = useMemo(
     () =>
@@ -152,9 +146,6 @@ export default function GunlukScreen() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const demoCurrent = useMemo(() => weekData(weekStart, demo.days, demoMoods), [weekStart, demo, demoMoods, lang]);
   const showSummary = summaryOpen || demoSummary;
-  // Demo sonunda story, o anki (girilen değerlerle hesaplanmış) özetle açılır.
-  const demoCurrentRef = useRef(demoCurrent);
-  demoCurrentRef.current = demoCurrent;
 
   const tarot = useCardMap(userId, showSummary || wrappedOpen);
   const insights = useMemo(
@@ -223,7 +214,7 @@ export default function GunlukScreen() {
     await popBottle();
   }
 
-  /** Tam demoyu baştan başlatır: sayfa başına gidilir ve form kendiliğinden dolmaya başlar. */
+  /** Demoyu baştan başlatır: sayfa başına gidilir, boş duygu formu açılır. */
   function startDemo() {
     if (busy.current) return;
     setStory(null);
@@ -234,7 +225,7 @@ export default function GunlukScreen() {
     scroll.current?.scrollTo({ y: 0, animated: true });
   }
 
-  /** Demo formu gönderildi: kayıt yerine toplar şişeye düşer, şişe patlar, özet ve story açılır. */
+  /** Demo formu gönderildi: kayıt yerine bugünün topları şişeye düşer; şişe dokunulmayı bekler. */
   async function onDemoSave(entry: MoodEntry): Promise<boolean> {
     if (busy.current) return false;
     busy.current = true;
@@ -245,7 +236,15 @@ export default function GunlukScreen() {
     scroll.current?.scrollTo({ y: Math.max(0, bottleY.current - 120), animated: true });
     await wait(400);
     await bottle.current?.drop();
-    await wait(900);
+    setDemoPhase('ready');
+    busy.current = false;
+    return true;
+  }
+
+  /** Demo: dolu şişeye dokunulunca patlar ve haftanın özeti gelir. */
+  async function demoOpen() {
+    if (busy.current) return;
+    busy.current = true;
     await bottle.current?.pop(() => setSpray(mouthInSection(sectionW.current)));
     setSpray(null);
     setBottleRun((n) => n + 1);
@@ -253,9 +252,6 @@ export default function GunlukScreen() {
     busy.current = false;
     await wait(120);
     scroll.current?.scrollTo({ y: Math.max(0, summaryY.current - 6), animated: true });
-    await wait(1800);
-    setStory(demoCurrentRef.current);
-    return true;
   }
 
   /** Demodan çıkar; sayfa gerçek haline döner. */
@@ -277,6 +273,8 @@ export default function GunlukScreen() {
 
   function onBottlePress() {
     if (busy.current) return;
+    if (demoPhase === 'ready') return void demoOpen();
+    if (demoActive) return;
     if (closed) showToast(t('gunluk.toastNewBottle'));
     else if (sunday && todayDone) popBottle();
     else showToast(sunday ? t('gunluk.toastSundayWait') : t('gunluk.toastSundayOnly'));
@@ -302,8 +300,8 @@ export default function GunlukScreen() {
           </View>
         )}
         {demoPhase === 'form' ? (
-          <MoodForm key={demoRun} dateLabel={formatTopDate(now)} onSave={onDemoSave} autoplay={demoAutoplay} />
-        ) : demoPhase === 'drop' ? (
+          <MoodForm key={demoRun} dateLabel={formatTopDate(now)} onSave={onDemoSave} />
+        ) : demoPhase === 'drop' || demoPhase === 'ready' ? (
           <Section style={styles.center}>
             <Label>{t('gunluk.today')}</Label>
             <Text style={[styles.h1, styles.centerText]}>{t('gunluk.inBottle')}</Text>
@@ -407,7 +405,9 @@ export default function GunlukScreen() {
             </Pressable>
             <View style={[styles.bmeta, styles.above]}>
               <Text style={styles.mono}>
-                {closed
+                {demoActive
+                  ? t(demoPhase === 'form' ? 'gunluk.bottleTonight' : 'gunluk.bottleFull')
+                  : closed
                   ? t('gunluk.bottleNew')
                   : sunday
                     ? todayDone
@@ -416,7 +416,9 @@ export default function GunlukScreen() {
                     : t('gunluk.bottleOpensSunday')}
               </Text>
               <Text style={[styles.mono, styles.mute]}>
-                {closed
+                {demoActive
+                  ? t(demoPhase === 'form' ? 'gunluk.bottleAddToday' : 'gunluk.bottleTapOpen')
+                  : closed
                   ? t('gunluk.bottleNewSub')
                   : sunday
                     ? todayDone
