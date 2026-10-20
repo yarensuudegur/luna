@@ -1,7 +1,7 @@
 -- Luna: gelecekteki kendine mesaj — demo gönderimi (derste göstermek için)
 -- Supabase panelinde SQL Editor'a yapıştırıp çalıştır (0010'dan sonra).
 --
--- Demo mesajı 28 gün beklemez, 10 saniye sonra teslim edilir. Gerçek mesajlarla aynı
+-- Demo mesajı 28 gün beklemez, 10 saniye içinde (8 sn sonra) teslim edilir. Gerçek mesajlarla aynı
 -- tabloda durur, arşivde görünür ve silinebilir; yalnızca "demo" işaretlidir.
 
 alter table public.future_messages add column demo boolean not null default false;
@@ -26,7 +26,7 @@ alter table public.future_messages
   add constraint future_messages_deliver_check
   check (demo or deliver_at >= created_at + interval '28 days');
 
--- Demo mesajı bırakır: 10 saniye sonra teslim. Bekleyen demo mesajı en çok 5.
+-- Demo mesajı bırakır: 8 saniye sonra teslim (bildirim 10 saniye içinde düşer). Bekleyen demo mesajı en çok 5.
 create function public.send_future_message_demo(p_body text)
 returns timestamptz
 language plpgsql
@@ -36,7 +36,7 @@ as $$
 declare
   me uuid := auth.uid();
   clean text := btrim(coalesce(p_body, ''));
-  deliver timestamptz := now() + interval '10 seconds';
+  deliver timestamptz := now() + interval '8 seconds';
 begin
   if me is null then
     raise exception 'oturum_yok' using errcode = '28000';

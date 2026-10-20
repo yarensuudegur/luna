@@ -1,7 +1,7 @@
 import { locale } from '@/i18n/lang';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Avatar } from '@/components/Avatar';
 import { Button } from '@/components/Button';
 import { CosmicBanner } from '@/components/bugun/CosmicBanner';
@@ -72,7 +72,7 @@ export default function BugunScreen() {
         void archive.reload();
         pushNotice(t('future.banner'), { kind: 'future' });
       },
-      Math.max(0, at.getTime() - Date.now()) + 800,
+      Math.max(0, at.getTime() - Date.now()) + 300,
     );
     return true;
   }
@@ -88,12 +88,13 @@ export default function BugunScreen() {
   useEffect(() => {
     if (!openPending || future.messages.length === 0) return;
     setOpenPending(false);
-    openFuture();
+    // Bildirimdeki mesaj en son teslim edilendir.
+    openFuture(future.messages[future.messages.length - 1]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openPending, future.messages]);
 
-  function openFuture() {
-    const next = future.messages[0];
+  function openFuture(message?: FutureMessage) {
+    const next = message ?? future.messages[0];
     if (!next) return;
     setReading(next);
     void future.markOpened(next.id);
@@ -121,8 +122,13 @@ export default function BugunScreen() {
 
   return (
     <View style={styles.root}>
-    <ScrollView ref={scroll} style={styles.root} contentContainerStyle={styles.content}>
-      {future.messages.length > 0 && !deepOpen && <FutureBanner onPress={openFuture} />}
+    <ScrollView
+      ref={scroll}
+      // Webde sayfa sonundan aşağı çekince görünen alan siyah olsun (içerik kendi zeminini taşır).
+      style={[styles.root, Platform.OS === 'web' && !deepOpen && styles.rootWeb]}
+      contentContainerStyle={[styles.content, Platform.OS === 'web' && styles.contentWeb]}
+    >
+      {future.messages.length > 0 && !deepOpen && <FutureBanner onPress={() => openFuture()} />}
       {!daily || !profile ? (
         <Section last>
           <Text style={styles.body}>{t('today.missingBirth')}</Text>
@@ -182,7 +188,7 @@ export default function BugunScreen() {
 
           <TheEnd seed={selected} active={focused} onFuture={() => setComposing(true)} />
           {/* Sayfa sonundan aşağı çekince (iOS esnemesi) beyaz değil siyah görünsün. */}
-          <View style={styles.underEnd} pointerEvents="none" />
+          {Platform.OS !== 'web' && <View style={styles.underEnd} pointerEvents="none" />}
         </>
       )}
     </ScrollView>
@@ -213,6 +219,8 @@ export default function BugunScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   content: { flexGrow: 1 },
+  rootWeb: { backgroundColor: colors.black },
+  contentWeb: { backgroundColor: colors.bg },
   underEnd: { position: 'absolute', left: 0, right: 0, bottom: -1000, height: 1000, backgroundColor: colors.black },
   bust: { alignSelf: 'flex-end', marginTop: 6, marginBottom: 22 },
   h1: { fontFamily: fonts.serif, fontSize: 34, lineHeight: 44, letterSpacing: -0.34, color: colors.fg },

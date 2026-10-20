@@ -12,10 +12,12 @@ type Props = {
   onPress: () => void;
   /** Bant kendiliğinden kapanınca ya da dokunulunca (çıkış animasyonu bittikten sonra). */
   onDone: () => void;
+  /** Bandın ekranda kalma süresi (ms); varsayılan 4 sn. */
+  duration?: number;
 };
 
 /** Ekranın üstünden kayarak inen siyah bildirim bandı; 4 saniye sonra kendiliğinden kapanır. */
-export function NotificationBanner({ text, onPress, onDone }: Props) {
+export function NotificationBanner({ text, onPress, onDone, duration = VISIBLE_MS }: Props) {
   const insets = useSafeAreaInsets();
   const slide = useRef(new Animated.Value(0)).current;
   const closed = useRef(false);
@@ -35,7 +37,7 @@ export function NotificationBanner({ text, onPress, onDone }: Props) {
 
   useEffect(() => {
     Animated.timing(slide, { toValue: 1, duration: SLIDE_MS, easing: Easing.out(Easing.quad), useNativeDriver: true }).start();
-    const timer = setTimeout(() => close(), VISIBLE_MS - SLIDE_MS * 2);
+    const timer = setTimeout(() => close(), duration - SLIDE_MS * 2);
     return () => clearTimeout(timer);
   }, []);
 

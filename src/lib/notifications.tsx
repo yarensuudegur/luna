@@ -20,6 +20,9 @@ export type NoticeTarget =
 
 type Notice = { id: number; text: string; target: NoticeTarget };
 
+/** Geçmişten gelen mesaj bildirimi daha uzun kalır (dokunup açmaya vakit olsun). */
+const FUTURE_NOTICE_MS = 7000;
+
 export type LiveMessage = { id: string; roomId: string; sender: string | null; body: string; createdAt: string };
 
 /** Uygulamadaki tek Realtime bağlantısından dağıtılan olaylar. */
@@ -347,6 +350,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
         <NotificationBanner
           key={current.id}
           text={current.text}
+          duration={current.target.kind === 'future' ? FUTURE_NOTICE_MS : undefined}
           onPress={() => {
             setIntent(current.target);
             router.navigate(current.target.kind === 'future' ? '/' : '/arkadaslar');
