@@ -8,6 +8,7 @@ import { useRoom } from '@/lib/rooms';
 import type { RoomMessage } from '@/lib/rooms';
 import { MAX_MESSAGE, cleanMessage } from '@/lib/room-utils';
 import { colors, fonts, layout } from '@/theme';
+import { systemText } from '@/lib/system-message';
 
 type Props = {
   roomId: string;
@@ -122,7 +123,7 @@ export function RoomView({ roomId, title, right, group, userId, showMembers, int
         {messages.map((m) =>
           m.sender === null ? (
             <Text key={m.id} style={styles.sys}>
-              {m.body.toLocaleUpperCase(locale())}
+              {systemText(m.body).toLocaleUpperCase(locale())}
             </Text>
           ) : (
             <View key={m.id} style={styles.msg}>

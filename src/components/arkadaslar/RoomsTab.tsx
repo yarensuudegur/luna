@@ -94,7 +94,7 @@ export function RoomsTab({
             accessibilityRole="button"
             style={[styles.room, styles.light]}
           >
-            <Text style={[styles.monoS, styles.mute]}>{t('friends.rooms.groupMeta', { n: g.memberIds.length })}</Text>
+            <Text style={[styles.monoS, styles.mute]}>{t(g.memberIds.length === 1 ? 'friends.rooms.groupMetaOne' : 'friends.rooms.groupMeta', { n: g.memberIds.length })}</Text>
             <View style={styles.titleRow}>
               <Text style={[styles.groupTitle, styles.flex]}>{g.name}</Text>
               {unread.has(g.id) && <View style={styles.dot} accessibilityLabel={t('friends.rooms.unread')} />}

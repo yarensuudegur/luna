@@ -15,7 +15,8 @@
     "unnamed": "Adsız",
     "member": "Üye",
     "saveFailed": "Kaydedilemedi, tekrar dene.",
-    "peopleCount": "{{n}} KİŞİ"
+    "peopleCount": "{{n}} KİŞİ",
+    "peopleCountOne": "{{n}} KİŞİ"
   },
   "tabs": {
     "index": "BUGÜN",
@@ -1373,10 +1374,13 @@
       "loadError": "Gruplar yüklenemedi.",
       "none": "Henüz grubun yok.",
       "groupMeta": "GRUP · {{n}} KİŞİ",
+      "groupMetaOne": "GRUP · {{n}} KİŞİ",
       "unread": "Okunmamış mesaj",
       "noMessages": "Henüz mesaj yok"
     },
     "room": {
+      "sysAdded": "{{name}} gruba eklendi",
+      "sysRemoved": "{{name}} gruptan çıkarıldı",
       "back": "← GERİ",
       "edit": "DÜZENLE",
       "loading": "YÜKLENİYOR",
