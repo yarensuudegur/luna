@@ -1265,6 +1265,12 @@
     "archive": "Archive"
   },
   "void": {
+    "history": "HISTORY",
+    "historyA11y": "Past chats",
+    "today": "TODAY",
+    "lastDays": "LAST 7 DAYS",
+    "historyEmpty": "No past chats yet. Today’s chat moves here at midnight.",
+    "backToday": "BACK TO TODAY",
     "welcome": "WELCOME TO VOID",
     "leftA11y": "Questions left: {{n}}",
     "loadError": "Your history couldn’t be loaded. Check your connection.",
@@ -1535,6 +1541,9 @@
     "hint": "You write the message. We send it back to you when the stars align.",
     "discard": "DISCARD",
     "submit": "SUBMIT",
+    "demo": "Demo",
+    "demoA11y": "Send as demo: the message comes back within 10 seconds",
+    "demoSent": "Demo: your message will come back in 10 seconds.",
     "sent": "Your message is in the stars.",
     "error": "Couldn’t send the message. Check your connection and try again.",
     "inputA11y": "Message to your future self",

@@ -46,15 +46,16 @@ export function LuckList({ deep, onOpen }: Props) {
 const styles = StyleSheet.create({
   sec: { paddingTop: 6, paddingBottom: 6 },
   item: {
-    gap: 8,
-    paddingVertical: 20,
+    gap: 10,
+    paddingVertical: 24,
     borderBottomWidth: layout.hairline,
     borderBottomColor: colors.line,
   },
   itemLast: { borderBottomWidth: 0 },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   title: { flexDirection: 'row', alignItems: 'center', gap: 10, flexShrink: 1 },
-  titleText: { fontFamily: fonts.serif, fontSize: 18, color: colors.fg, flexShrink: 1 },
+  // Co–Star'daki gibi küçük başlık (Bodoni: satır yüksekliği en az 1,3 kat).
+  titleText: { fontFamily: fonts.serif, fontSize: 16, lineHeight: 21, color: colors.fg, flexShrink: 1 },
   arrow: { fontFamily: fonts.mono, fontSize: 12, color: colors.fg },
-  text: { fontSize: 13.5, lineHeight: 21.6, color: colors.body },
+  text: { fontSize: 13.5, lineHeight: 23, color: colors.body },
 });

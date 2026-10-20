@@ -14,9 +14,14 @@ import { supabase } from '@/lib/supabase';
 export type NoticeTarget =
   | { kind: 'group'; groupId: string }
   | { kind: 'groups' }
-  | { kind: 'friend'; friendId: string };
+  | { kind: 'friend'; friendId: string }
+  /** Gelecekteki kendine mesaj teslim edildi; Bugün'de açılır. */
+  | { kind: 'future' };
 
 type Notice = { id: number; text: string; target: NoticeTarget };
+
+/** Geçmişten gelen mesaj bildirimi daha uzun kalır (dokunup açmaya vakit olsun). */
+const FUTURE_NOTICE_MS = 7000;
 
 export type LiveMessage = { id: string; roomId: string; sender: string | null; body: string; createdAt: string };
 
@@ -42,6 +47,8 @@ type NotificationsState = {
   /** Kendi sildiğim grubun "çıkarıldın" bildirimini bastırır; silmeden önce çağır. */
   ignoreRemoval: (groupId: string) => void;
   addListener: (listener: Listener) => () => void;
+  /** Sosyal olmayan uygulama içi bildirim (ör. geçmişten gelen mesaj). */
+  pushNotice: (text: string, target: NoticeTarget) => void;
 };
 
 const Ctx = createContext<NotificationsState | null>(null);
@@ -331,8 +338,9 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
       setAddingFriend,
       ignoreRemoval,
       addListener,
+      pushNotice: (text: string, target: NoticeTarget) => notify(text, target, false),
     }),
-    [unread, fresh, intent, setActiveRoom, setTabFocused, setAddingFriend, ignoreRemoval, addListener],
+    [unread, fresh, intent, setActiveRoom, setTabFocused, setAddingFriend, ignoreRemoval, addListener, notify],
   );
 
   return (
@@ -342,9 +350,10 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
         <NotificationBanner
           key={current.id}
           text={current.text}
+          duration={current.target.kind === 'future' ? FUTURE_NOTICE_MS : undefined}
           onPress={() => {
             setIntent(current.target);
-            router.navigate('/arkadaslar');
+            router.navigate(current.target.kind === 'future' ? '/' : '/arkadaslar');
           }}
           onDone={() => shift(current.id)}
         />

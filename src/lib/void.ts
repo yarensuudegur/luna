@@ -40,6 +40,36 @@ type Row = { id: string; role: 'user' | 'assistant'; body: string; created_at: s
 
 const fromRow = (r: Row): VoidMessage => ({ id: r.id, role: r.role, body: r.body, createdAt: r.created_at });
 
+/** Geçmiş panelinde kaç gün tutulur (bugün hariç). */
+export const VOID_HISTORY_DAYS = 7;
+
+/** Geçmiş günlerden birinin sohbeti. */
+export type VoidDay = {
+  /** O günün İstanbul gece yarısı (ms); anahtar olarak da kullanılır. */
+  dayStart: number;
+  messages: VoidMessage[];
+  /** İlk soru; panelde önizleme. */
+  preview: string;
+};
+
+/** Mesajları İstanbul günlerine ayırır; en yeni gün önce. */
+export function groupByDay(messages: readonly VoidMessage[]): VoidDay[] {
+  const days = new Map<number, VoidMessage[]>();
+  for (const m of messages) {
+    const key = istanbulDayStart(Date.parse(m.createdAt));
+    const list = days.get(key);
+    if (list) list.push(m);
+    else days.set(key, [m]);
+  }
+  return [...days.entries()]
+    .sort((a, b) => b[0] - a[0])
+    .map(([dayStart, list]) => ({
+      dayStart,
+      messages: list,
+      preview: list.find((m) => m.role === 'user')?.body ?? '',
+    }));
+}
+
 /** Cevabın dilini ve bağlamını belirleyen ayarlar. */
 export type VoidPrefs = { lang: Lang; relationship: string; lifeStage: string };
 
@@ -65,12 +95,15 @@ export function useVoid(userId: string | undefined, prefs: VoidPrefs) {
     let alive = true;
     setLoading(true);
     setLoadError(false);
+    // Bugün ve son 7 günün sohbetleri (geçmiş paneli için).
+    const from = new Date(istanbulDayStart(Date.now()) - VOID_HISTORY_DAYS * DAY).toISOString();
     supabase
       .from('void_messages')
       .select('id, role, body, created_at')
       .eq('user_id', userId)
+      .gte('created_at', from)
       .order('created_at', { ascending: false })
-      .limit(100)
+      .limit(400)
       .then(({ data, error }) => {
         if (!alive) return;
         if (error) setLoadError(true);
@@ -91,9 +124,17 @@ export function useVoid(userId: string | undefined, prefs: VoidPrefs) {
   );
   const left = limitDay === dayStart ? 0 : Math.max(0, VOID_LIMIT - used);
 
+  // Ekranda yalnızca bugünün sohbeti; gün dönünce önceki sohbet geçmiş paneline geçer.
+  const todayIso = new Date(dayStart).toISOString();
+  const start = since && since > todayIso ? since : todayIso;
   const visible = useMemo(
-    () => (since ? messages.filter((m) => m.createdAt >= since) : messages),
-    [messages, since],
+    () => messages.filter((m) => Date.parse(m.createdAt) >= Date.parse(start)),
+    [messages, start],
+  );
+  const history = useMemo(
+    () =>
+      groupByDay(messages.filter((m) => !m.err && Date.parse(m.createdAt) < dayStart)).slice(0, VOID_HISTORY_DAYS),
+    [messages, dayStart],
   );
 
   /** Soruyu gönderir; başarısız olursa soru "failed" işaretlenir ve hata balonu eklenir. */
@@ -112,7 +153,8 @@ export function useVoid(userId: string | undefined, prefs: VoidPrefs) {
         ]);
       try {
         const { data, error } = await supabase.functions.invoke<{ answer?: string }>('void', {
-          body: { question: q, since, ...prefs },
+          // Void yalnızca bugünün sohbetini (ya da "Yeni sohbet"ten sonrasını) hatırlar.
+          body: { question: q, since: start, ...prefs },
         });
         if (error) {
           const status = error instanceof FunctionsHttpError ? error.context.status : 0;
@@ -135,10 +177,10 @@ export function useVoid(userId: string | undefined, prefs: VoidPrefs) {
         setAsking(false);
       }
     },
-    [asking, since, prefs.lang, prefs.relationship, prefs.lifeStage],
+    [asking, start, prefs.lang, prefs.relationship, prefs.lifeStage],
   );
 
   const newChat = useCallback(() => setSince(new Date().toISOString()), []);
 
-  return { messages: visible, loading, loadError, reload, asking, left, ask, newChat };
+  return { messages: visible, history, loading, loadError, reload, asking, left, ask, newChat };
 }

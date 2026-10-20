@@ -7,6 +7,7 @@ import { ChartTable } from '@/components/sen/ChartTable';
 import { ChartWheel } from '@/components/sen/ChartWheel';
 import { PlanetCards } from '@/components/sen/PlanetCards';
 import type { CardItem } from '@/components/sen/PlanetCards';
+import { SavedPanel } from '@/components/sen/SavedPanel';
 import { SettingsPanel } from '@/components/sen/SettingsPanel';
 import { useTranslation } from '@/i18n';
 import { signName } from '@/i18n/names';
@@ -17,7 +18,7 @@ import { useProfileChart } from '@/lib/use-chart';
 import { colors, fonts, layout } from '@/theme';
 import { useFrameWidth } from '@/lib/use-frame-width';
 
-type Sub = 'harita' | 'ayar';
+type Sub = 'harita' | 'kayit' | 'ayar';
 
 const web = Platform.OS === 'web';
 
@@ -51,6 +52,7 @@ export default function SenScreen() {
         {(
           [
             ['harita', t('sen.chart')],
+            ['kayit', t('gunluk.savedTitle')],
             ['ayar', t('sen.settings')],
           ] as const
         ).map(([key, label]) => (
@@ -69,6 +71,8 @@ export default function SenScreen() {
 
       {sub === 'ayar' ? (
         <SettingsPanel />
+      ) : sub === 'kayit' ? (
+        <SavedPanel userId={profile?.id} />
       ) : data ? (
         <HaritaSekmesi data={data} houseSystem={houseSystem} />
       ) : (

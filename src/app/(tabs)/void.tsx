@@ -16,6 +16,7 @@ import {
 import type { ImageSourcePropType } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stars } from '@/components/void/Stars';
+import { VoidHistory, dayLabel } from '@/components/void/VoidHistory';
 import { useLang, useTranslation } from '@/i18n';
 import { useAuth } from '@/lib/auth';
 import { up } from '@/lib/bottle';
@@ -38,13 +39,18 @@ export default function VoidScreen() {
   const { profile } = useAuth();
   const { relationship, lifeStage } = useSettings();
   // Void, seçili dilde cevap verir; dil de isteğe eklenir.
-  const { messages, loading, loadError, reload, asking, left, ask, newChat } = useVoid(profile?.id, {
+  const { messages: todayMessages, history, loading, loadError, reload, asking, left, ask, newChat } = useVoid(profile?.id, {
     lang,
     relationship,
     lifeStage,
   });
   const [cat, setCat] = useState<VoidCategory>('Ben');
   const [text, setText] = useState('');
+  /** Geçmiş paneli ve panelden açılan gün (null = bugün). */
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [viewDay, setViewDay] = useState<number | null>(null);
+  const pastDay = viewDay === null ? null : (history.find((d) => d.dayStart === viewDay) ?? null);
+  const messages = pastDay ? pastDay.messages : todayMessages;
   const scroll = useRef<ScrollView>(null);
 
   // Siyah zeminde durum çubuğu açık renk olmalı; sekmeden çıkınca geri alınır.
@@ -55,7 +61,7 @@ export default function VoidScreen() {
     }, []),
   );
 
-  const empty = messages.length === 0 && !asking;
+  const empty = !pastDay && messages.length === 0 && !asking;
   const canAsk = left > 0 && !asking && !loading && text.trim().length > 0;
 
   useEffect(() => {
@@ -76,8 +82,18 @@ export default function VoidScreen() {
       <Stars />
 
       <View style={[styles.head, { paddingTop: insets.top + 14 }]}>
-        <View style={styles.headSide} />
-        <Text style={styles.headTitle}>{t('void.welcome')}</Text>
+        <Pressable
+          onPress={() => setPanelOpen(true)}
+          accessibilityRole="button"
+          accessibilityLabel={t('void.historyA11y')}
+          hitSlop={12}
+          style={styles.headSide}
+        >
+          <View style={styles.burger} />
+          <View style={styles.burger} />
+          <View style={[styles.burger, styles.burgerShort]} />
+        </Pressable>
+        <Text style={styles.headTitle}>{pastDay ? dayLabel(pastDay.dayStart) : t('void.welcome')}</Text>
         <View style={styles.count} accessibilityLabel={t('void.leftA11y', { n: left })}>
           <Text style={styles.countText}>{left}</Text>
         </View>
@@ -156,38 +172,54 @@ export default function VoidScreen() {
         )}
       </ScrollView>
 
-      <View style={styles.comp}>
-        <View style={styles.form}>
-          <TextInput
-            value={text}
-            onChangeText={setText}
-            editable={left > 0 && !asking}
-            maxLength={MAX_QUESTION}
-            multiline
-            placeholder={left > 0 ? t('void.placeholder') : t('void.placeholderLimit')}
-            placeholderTextColor={colors.spacePlaceholder}
-            style={styles.input}
-            accessibilityLabel={t('void.question')}
-          />
-          <Pressable
-            onPress={() => send(text)}
-            disabled={!canAsk}
-            accessibilityRole="button"
-            accessibilityState={{ disabled: !canAsk }}
-            style={[styles.askBtn, !canAsk && styles.askOff]}
-          >
-            <Text style={styles.askText}>{t('void.ask')}</Text>
+      {pastDay ? (
+        <View style={styles.comp}>
+          <Pressable onPress={() => setViewDay(null)} accessibilityRole="button" style={styles.backToday}>
+            <Text style={[styles.metaText, styles.underline]}>{t('void.backToday')}</Text>
           </Pressable>
         </View>
-        <View style={styles.meta}>
-          <Text style={styles.metaText}>{t('void.meta', { n: left })}</Text>
-          {messages.length > 0 && (
-            <Pressable onPress={newChat} accessibilityRole="button" hitSlop={8}>
-              <Text style={[styles.metaText, styles.underline]}>{t('void.newChat')}</Text>
+      ) : (
+        <View style={styles.comp}>
+          <View style={styles.form}>
+            <TextInput
+              value={text}
+              onChangeText={setText}
+              editable={left > 0 && !asking}
+              maxLength={MAX_QUESTION}
+              multiline
+              placeholder={left > 0 ? t('void.placeholder') : t('void.placeholderLimit')}
+              placeholderTextColor={colors.spacePlaceholder}
+              style={styles.input}
+              accessibilityLabel={t('void.question')}
+            />
+            <Pressable
+              onPress={() => send(text)}
+              disabled={!canAsk}
+              accessibilityRole="button"
+              accessibilityState={{ disabled: !canAsk }}
+              style={[styles.askBtn, !canAsk && styles.askOff]}
+            >
+              <Text style={styles.askText}>{t('void.ask')}</Text>
             </Pressable>
-          )}
+          </View>
+          <View style={styles.meta}>
+            <Text style={styles.metaText}>{t('void.meta', { n: left })}</Text>
+            {messages.length > 0 && (
+              <Pressable onPress={newChat} accessibilityRole="button" hitSlop={8}>
+                <Text style={[styles.metaText, styles.underline]}>{t('void.newChat')}</Text>
+              </Pressable>
+            )}
+          </View>
         </View>
-      </View>
+      )}
+
+      <VoidHistory
+        open={panelOpen}
+        days={history}
+        selected={pastDay ? pastDay.dayStart : null}
+        onSelect={setViewDay}
+        onClose={() => setPanelOpen(false)}
+      />
     </KeyboardAvoidingView>
   );
 }
@@ -204,7 +236,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: layout.screenPadding,
     paddingBottom: 14,
   },
-  headSide: { width: 30 },
+  headSide: { width: 30, height: 28, justifyContent: 'center', gap: 5 },
+  burger: { width: 18, height: 1, backgroundColor: colors.white },
+  burgerShort: { width: 11 },
+  backToday: { alignItems: 'center', paddingVertical: 10 },
   headTitle: { fontFamily: fonts.mono, fontSize: 10.5, letterSpacing: 2.1, color: colors.white, textAlign: 'center' },
   count: {
     width: 28,

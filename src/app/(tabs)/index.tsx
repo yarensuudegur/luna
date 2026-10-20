@@ -1,7 +1,7 @@
 import { locale } from '@/i18n/lang';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Avatar } from '@/components/Avatar';
 import { Button } from '@/components/Button';
 import { CosmicBanner } from '@/components/bugun/CosmicBanner';
@@ -18,7 +18,8 @@ import { nextMoonEvent } from '@/lib/astro';
 import { useAuth } from '@/lib/auth';
 import { dayName, formatDayMonth, fromDateKey } from '@/lib/date';
 import { FutureArchive } from '@/components/sen/FutureArchive';
-import { sendFutureMessage, useDueFutureMessages } from '@/lib/future';
+import { sendFutureDemo, sendFutureMessage, useDueFutureMessages } from '@/lib/future';
+import { useNotifications } from '@/lib/notifications';
 import { useFutureArchive } from '@/lib/future-archive';
 import type { FutureMessage } from '@/lib/future';
 import { useDailyTarot } from '@/lib/tarot';
@@ -52,8 +53,48 @@ export default function BugunScreen() {
     return true;
   }
 
-  function openFuture() {
-    const next = future.messages[0];
+  const { pushNotice, intent, clearIntent } = useNotifications();
+  const demoTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(demoTimer.current), []);
+
+  /** Demo: mesaj 10 saniye sonra teslim edilir, uygulama içi bildirim düşer ve arşive girer. */
+  async function sendFutureDemoMessage(body: string) {
+    const at = await sendFutureDemo(body);
+    if (!at) return false;
+    setComposing(false);
+    setToast(t('future.demoSent'));
+    clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 2600);
+    clearTimeout(demoTimer.current);
+    demoTimer.current = setTimeout(
+      () => {
+        void future.reload();
+        void archive.reload();
+        pushNotice(t('future.banner'), { kind: 'future' });
+      },
+      Math.max(0, at.getTime() - Date.now()) + 300,
+    );
+    return true;
+  }
+
+  // Bildirime dokunulunca: mesajlar yenilenir ve sıradaki açılır.
+  const [openPending, setOpenPending] = useState(false);
+  useEffect(() => {
+    if (intent?.kind !== 'future') return;
+    clearIntent();
+    closeDeep();
+    void future.reload().then(() => setOpenPending(true));
+  }, [intent, clearIntent, closeDeep, future.reload]);
+  useEffect(() => {
+    if (!openPending || future.messages.length === 0) return;
+    setOpenPending(false);
+    // Bildirimdeki mesaj en son teslim edilendir.
+    openFuture(future.messages[future.messages.length - 1]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openPending, future.messages]);
+
+  function openFuture(message?: FutureMessage) {
+    const next = message ?? future.messages[0];
     if (!next) return;
     setReading(next);
     void future.markOpened(next.id);
@@ -81,8 +122,13 @@ export default function BugunScreen() {
 
   return (
     <View style={styles.root}>
-    <ScrollView ref={scroll} style={styles.root} contentContainerStyle={styles.content}>
-      {future.messages.length > 0 && !deepOpen && <FutureBanner onPress={openFuture} />}
+    <ScrollView
+      ref={scroll}
+      // Webde sayfa sonundan aşağı çekince görünen alan siyah olsun (içerik kendi zeminini taşır).
+      style={[styles.root, Platform.OS === 'web' && !deepOpen && styles.rootWeb]}
+      contentContainerStyle={[styles.content, Platform.OS === 'web' && styles.contentWeb]}
+    >
+      {future.messages.length > 0 && !deepOpen && <FutureBanner onPress={() => openFuture()} />}
       {!daily || !profile ? (
         <Section last>
           <Text style={styles.body}>{t('today.missingBirth')}</Text>
@@ -141,10 +187,17 @@ export default function BugunScreen() {
           {isToday && <TarotSection tarot={tarot} />}
 
           <TheEnd seed={selected} active={focused} onFuture={() => setComposing(true)} />
+          {/* Sayfa sonundan aşağı çekince (iOS esnemesi) beyaz değil siyah görünsün. */}
+          {Platform.OS !== 'web' && <View style={styles.underEnd} pointerEvents="none" />}
         </>
       )}
     </ScrollView>
-    <FutureSheet visible={composing} onClose={() => setComposing(false)} onSend={sendFuture} />
+    <FutureSheet
+      visible={composing}
+      onClose={() => setComposing(false)}
+      onSend={sendFuture}
+      onSendDemo={sendFutureDemoMessage}
+    />
     <FutureMessageView
       message={reading}
       onClose={() => setReading(null)}
@@ -166,6 +219,9 @@ export default function BugunScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   content: { flexGrow: 1 },
+  rootWeb: { backgroundColor: colors.black },
+  contentWeb: { backgroundColor: colors.bg },
+  underEnd: { position: 'absolute', left: 0, right: 0, bottom: -1000, height: 1000, backgroundColor: colors.black },
   bust: { alignSelf: 'flex-end', marginTop: 6, marginBottom: 22 },
   h1: { fontFamily: fonts.serif, fontSize: 34, lineHeight: 44, letterSpacing: -0.34, color: colors.fg },
   body: { fontSize: 14, lineHeight: 22.7, color: colors.body },

@@ -23,10 +23,12 @@ type Props = {
   onClose: () => void;
   /** Mesajı gönderir; gönderilemezse false. */
   onSend: (body: string) => Promise<boolean>;
+  /** Demo: mesaj 10 saniye içinde geri gelir; gönderilemezse false. */
+  onSendDemo?: (body: string) => Promise<boolean>;
 };
 
 /** Gelecekteki kendine mesaj: arka plan kararır, alttan beyaz bir pencere kayar. */
-export function FutureSheet({ visible, onClose, onSend }: Props) {
+export function FutureSheet({ visible, onClose, onSend, onSendDemo }: Props) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
@@ -66,11 +68,12 @@ export function FutureSheet({ visible, onClose, onSend }: Props) {
     };
   }, []);
 
-  async function submit() {
+  async function submit(demo = false) {
     if (!canSend) return;
+    const send = demo && onSendDemo ? onSendDemo : onSend;
     setBusy(true);
     setFailed(false);
-    const ok = await onSend(text.trim());
+    const ok = await send(text.trim());
     setBusy(false);
     if (!ok) setFailed(true);
   }
@@ -106,15 +109,31 @@ export function FutureSheet({ visible, onClose, onSend }: Props) {
             <Pressable onPress={onClose} disabled={busy} accessibilityRole="button" hitSlop={10}>
               <Text style={styles.action}>{t('future.discard')}</Text>
             </Pressable>
-            <Pressable
-              onPress={submit}
-              disabled={!canSend}
-              accessibilityRole="button"
-              accessibilityState={{ disabled: !canSend }}
-              hitSlop={10}
-            >
-              <Text style={[styles.action, !canSend && styles.off]}>{t('future.submit').toLocaleUpperCase(locale())}</Text>
-            </Pressable>
+            <View style={styles.sendRow}>
+              {onSendDemo && (
+                <Pressable
+                  onPress={() => void submit(true)}
+                  disabled={!canSend}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('future.demoA11y')}
+                  accessibilityState={{ disabled: !canSend }}
+                  hitSlop={10}
+                >
+                  <Text style={[styles.action, styles.demo, !canSend && styles.off]}>
+                    ({t('future.demo').toLocaleUpperCase(locale())})
+                  </Text>
+                </Pressable>
+              )}
+              <Pressable
+                onPress={() => void submit()}
+                disabled={!canSend}
+                accessibilityRole="button"
+                accessibilityState={{ disabled: !canSend }}
+                hitSlop={10}
+              >
+                <Text style={[styles.action, !canSend && styles.off]}>{t('future.submit').toLocaleUpperCase(locale())}</Text>
+              </Pressable>
+            </View>
           </View>
         </Animated.View>
       </View>
@@ -145,4 +164,6 @@ const styles = StyleSheet.create({
   actions: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 18 },
   action: { fontFamily: fonts.mono, fontSize: 10.5, letterSpacing: 1.5, color: colors.fg },
   off: { color: colors.faint },
+  sendRow: { flexDirection: 'row', alignItems: 'center', gap: 18 },
+  demo: { color: colors.mute },
 });
