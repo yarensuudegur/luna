@@ -128,7 +128,7 @@ export default function ArkadaslarScreen() {
   // Bildirime dokunulunca ilgili yere git. Grup henüz listede yoksa gelene kadar bekle.
   const [pendingRoom, setPendingRoom] = useState<string | null>(null);
   useEffect(() => {
-    if (!intent) return;
+    if (!intent || intent.kind === 'future') return;
     clearIntent();
     setAdding(false);
     if (intent.kind === 'friend') {

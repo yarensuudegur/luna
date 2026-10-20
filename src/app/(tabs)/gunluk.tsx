@@ -1,4 +1,3 @@
-import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { BOTTLE_TILT, Bottle } from '@/components/gunluk/Bottle';
@@ -32,7 +31,6 @@ import type { MoodEntry, WeekData } from '@/lib/bottle';
 import { formatTopDate, fromDateKey } from '@/lib/date';
 import { moonSignOf, useBottleArchive, useClosedWeeks, useMoods, useOpenedWeeks } from '@/lib/moods';
 import { useReminders } from '@/lib/reminders';
-import { useSavedList } from '@/lib/saved';
 import { useSettings } from '@/lib/settings';
 import { useCardMap } from '@/lib/tarot';
 import { useToday } from '@/lib/today';
@@ -57,19 +55,17 @@ function mouthInSection(sectionWidth: number) {
 }
 
 export default function GunlukScreen() {
-  const router = useRouter();
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
   const { profile } = useAuth();
   const userId = profile?.id;
   const name = profile?.name ?? '';
-  const { today, select, openDeep } = useToday();
+  const { today } = useToday();
   const { eveningTime } = useSettings();
   const { moods, loading, error, reload, save } = useMoods(userId);
   const archive = useBottleArchive(userId);
   const openedWeeks = useOpenedWeeks(userId);
   const closedWeeks = useClosedWeeks(userId);
-  const saved = useSavedList(userId);
   const { noteMoodSaved } = useReminders();
 
   const [now, setNow] = useState(() => new Date());
@@ -280,12 +276,6 @@ export default function GunlukScreen() {
     else showToast(sunday ? t('gunluk.toastSundayWait') : t('gunluk.toastSundayOnly'));
   }
 
-  function openSaved(key: string) {
-    select(key);
-    openDeep();
-    router.navigate('/');
-  }
-
   const countdown = eveningCountdown(now, eveningTime);
 
   return (
@@ -450,23 +440,6 @@ export default function GunlukScreen() {
             ))}
           </Section>
         )}
-
-        <Section>
-          <Label>{t('gunluk.savedTitle')}</Label>
-          {saved.length > 0 ? (
-            saved.map((s) => (
-              <Pressable key={s.key} style={styles.li} onPress={() => openSaved(s.key)} accessibilityRole="button">
-                <View style={styles.grow}>
-                  <Text style={[styles.mono, styles.mute]}>{formatTopDate(fromDateKey(s.key))}</Text>
-                  <Text style={styles.liTitle}>{s.h}</Text>
-                </View>
-                <Text style={styles.arrow}>→</Text>
-              </Pressable>
-            ))
-          ) : (
-            <Text style={[styles.body, styles.mute]}>{t('gunluk.savedEmpty')}</Text>
-          )}
-        </Section>
 
         <Section last>
           <Pressable style={styles.room} onPress={() => setWrappedOpen(true)} accessibilityRole="button">

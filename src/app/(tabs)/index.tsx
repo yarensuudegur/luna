@@ -18,7 +18,8 @@ import { nextMoonEvent } from '@/lib/astro';
 import { useAuth } from '@/lib/auth';
 import { dayName, formatDayMonth, fromDateKey } from '@/lib/date';
 import { FutureArchive } from '@/components/sen/FutureArchive';
-import { sendFutureMessage, useDueFutureMessages } from '@/lib/future';
+import { sendFutureDemo, sendFutureMessage, useDueFutureMessages } from '@/lib/future';
+import { useNotifications } from '@/lib/notifications';
 import { useFutureArchive } from '@/lib/future-archive';
 import type { FutureMessage } from '@/lib/future';
 import { useDailyTarot } from '@/lib/tarot';
@@ -51,6 +52,45 @@ export default function BugunScreen() {
     toastTimer.current = setTimeout(() => setToast(null), 2600);
     return true;
   }
+
+  const { pushNotice, intent, clearIntent } = useNotifications();
+  const demoTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(demoTimer.current), []);
+
+  /** Demo: mesaj 10 saniye sonra teslim edilir, uygulama içi bildirim düşer ve arşive girer. */
+  async function sendFutureDemoMessage(body: string) {
+    const at = await sendFutureDemo(body);
+    if (!at) return false;
+    setComposing(false);
+    setToast(t('future.demoSent'));
+    clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 2600);
+    clearTimeout(demoTimer.current);
+    demoTimer.current = setTimeout(
+      () => {
+        void future.reload();
+        void archive.reload();
+        pushNotice(t('future.banner'), { kind: 'future' });
+      },
+      Math.max(0, at.getTime() - Date.now()) + 800,
+    );
+    return true;
+  }
+
+  // Bildirime dokunulunca: mesajlar yenilenir ve sıradaki açılır.
+  const [openPending, setOpenPending] = useState(false);
+  useEffect(() => {
+    if (intent?.kind !== 'future') return;
+    clearIntent();
+    closeDeep();
+    void future.reload().then(() => setOpenPending(true));
+  }, [intent, clearIntent, closeDeep, future.reload]);
+  useEffect(() => {
+    if (!openPending || future.messages.length === 0) return;
+    setOpenPending(false);
+    openFuture();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openPending, future.messages]);
 
   function openFuture() {
     const next = future.messages[0];
@@ -141,10 +181,17 @@ export default function BugunScreen() {
           {isToday && <TarotSection tarot={tarot} />}
 
           <TheEnd seed={selected} active={focused} onFuture={() => setComposing(true)} />
+          {/* Sayfa sonundan aşağı çekince (iOS esnemesi) beyaz değil siyah görünsün. */}
+          <View style={styles.underEnd} pointerEvents="none" />
         </>
       )}
     </ScrollView>
-    <FutureSheet visible={composing} onClose={() => setComposing(false)} onSend={sendFuture} />
+    <FutureSheet
+      visible={composing}
+      onClose={() => setComposing(false)}
+      onSend={sendFuture}
+      onSendDemo={sendFutureDemoMessage}
+    />
     <FutureMessageView
       message={reading}
       onClose={() => setReading(null)}
@@ -166,6 +213,7 @@ export default function BugunScreen() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   content: { flexGrow: 1 },
+  underEnd: { position: 'absolute', left: 0, right: 0, bottom: -1000, height: 1000, backgroundColor: colors.black },
   bust: { alignSelf: 'flex-end', marginTop: 6, marginBottom: 22 },
   h1: { fontFamily: fonts.serif, fontSize: 34, lineHeight: 44, letterSpacing: -0.34, color: colors.fg },
   body: { fontSize: 14, lineHeight: 22.7, color: colors.body },

@@ -2,6 +2,8 @@ import { locale } from '@/i18n/lang';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { ReactNode } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LangSwitch } from '@/components/LangSwitch';
+import { isProfileComplete, useAuth } from '@/lib/auth';
 import { colors, fonts, layout } from '@/theme';
 
 type Props = {
@@ -18,9 +20,15 @@ type Props = {
 
 export function FormScreen({ title, subtitle, eyebrow, children, footer, scroll = true }: Props) {
   const insets = useSafeAreaInsets();
+  // Dil seçimi yalnızca kayıt/giriş ve ilk kurulumda; uygulamanın içinde Ayarlar'dan değişir.
+  const { profile } = useAuth();
+  const showLang = !isProfileComplete(profile);
   const head = (
     <View>
-      <Text style={styles.eyebrow}>{(eyebrow ?? 'LU — NA').toLocaleUpperCase(locale())}</Text>
+      <View style={styles.headRow}>
+        <Text style={styles.eyebrow}>{(eyebrow ?? 'LU — NA').toLocaleUpperCase(locale())}</Text>
+        {showLang && <LangSwitch />}
+      </View>
       <Text style={styles.title}>{title}</Text>
       {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
     </View>
@@ -54,6 +62,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   flex: { flex: 1 },
   content: { paddingHorizontal: layout.screenPadding, paddingBottom: 24 },
+  headRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   eyebrow: { fontFamily: fonts.mono, fontSize: 10.5, letterSpacing: 2.4, color: colors.mute },
   title: { marginTop: 14, fontFamily: fonts.serif, fontSize: 34, lineHeight: 40, color: colors.fg },
   subtitle: { marginTop: 10, fontSize: 15, lineHeight: 22, color: colors.body },

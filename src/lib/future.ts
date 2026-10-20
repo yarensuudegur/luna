@@ -21,6 +21,16 @@ export async function sendFutureMessage(body: string): Promise<boolean> {
   return true;
 }
 
+/**
+ * Demo (derste göstermek için): mesaj 28 gün değil 10 saniye sonra teslim edilir.
+ * Teslim anını döndürür; gönderilemezse null.
+ */
+export async function sendFutureDemo(body: string): Promise<Date | null> {
+  const { data, error } = await supabase.rpc('send_future_message_demo', { p_body: body.trim() });
+  if (error || typeof data !== 'string') return null;
+  return new Date(data);
+}
+
 type Row = { id: string; body: string; created_at: string };
 
 /** Vakti gelmiş ve henüz açılmamış mesajlar (RLS vakti gelmeyenleri zaten göstermez), eskiden yeniye. */

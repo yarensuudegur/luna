@@ -1265,6 +1265,12 @@
     "archive": "Arşiv"
   },
   "void": {
+    "history": "GEÇMİŞ",
+    "historyA11y": "Geçmiş sohbetler",
+    "today": "BUGÜN",
+    "lastDays": "SON 7 GÜN",
+    "historyEmpty": "Henüz geçmiş bir sohbetin yok. Günün sohbeti gece yarısı buraya geçer.",
+    "backToday": "BUGÜNE DÖN",
     "welcome": "VOID’E HOŞ GELDİN",
     "leftA11y": "Kalan soru: {{n}}",
     "loadError": "Geçmişin yüklenemedi. Bağlantını kontrol et.",
@@ -1535,6 +1541,9 @@
     "hint": "Mesajı sen yaz. Yıldızlar hizalandığında sana geri gönderelim.",
     "discard": "VAZGEÇ",
     "submit": "GÖNDER",
+    "demo": "Demo",
+    "demoA11y": "Demo olarak gönder: mesaj 10 saniye içinde geri gelir",
+    "demoSent": "Demo: mesajın 10 saniye içinde geri gelecek.",
     "sent": "Mesajın yıldızlara emanet.",
     "error": "Mesaj gönderilemedi. Bağlantını kontrol edip tekrar dene.",
     "inputA11y": "Gelecekteki kendine mesaj",

@@ -14,7 +14,9 @@ import { supabase } from '@/lib/supabase';
 export type NoticeTarget =
   | { kind: 'group'; groupId: string }
   | { kind: 'groups' }
-  | { kind: 'friend'; friendId: string };
+  | { kind: 'friend'; friendId: string }
+  /** Gelecekteki kendine mesaj teslim edildi; Bugün'de açılır. */
+  | { kind: 'future' };
 
 type Notice = { id: number; text: string; target: NoticeTarget };
 
@@ -42,6 +44,8 @@ type NotificationsState = {
   /** Kendi sildiğim grubun "çıkarıldın" bildirimini bastırır; silmeden önce çağır. */
   ignoreRemoval: (groupId: string) => void;
   addListener: (listener: Listener) => () => void;
+  /** Sosyal olmayan uygulama içi bildirim (ör. geçmişten gelen mesaj). */
+  pushNotice: (text: string, target: NoticeTarget) => void;
 };
 
 const Ctx = createContext<NotificationsState | null>(null);
@@ -331,8 +335,9 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
       setAddingFriend,
       ignoreRemoval,
       addListener,
+      pushNotice: (text: string, target: NoticeTarget) => notify(text, target, false),
     }),
-    [unread, fresh, intent, setActiveRoom, setTabFocused, setAddingFriend, ignoreRemoval, addListener],
+    [unread, fresh, intent, setActiveRoom, setTabFocused, setAddingFriend, ignoreRemoval, addListener, notify],
   );
 
   return (
@@ -344,7 +349,7 @@ export function NotificationsProvider({ children }: { children: ReactNode }) {
           text={current.text}
           onPress={() => {
             setIntent(current.target);
-            router.navigate('/arkadaslar');
+            router.navigate(current.target.kind === 'future' ? '/' : '/arkadaslar');
           }}
           onDone={() => shift(current.id)}
         />

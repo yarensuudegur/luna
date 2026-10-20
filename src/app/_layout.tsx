@@ -2,8 +2,8 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { AppState, Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Intro } from '@/components/Intro';
 import { loadLanguage } from '@/i18n';
@@ -51,10 +51,25 @@ function Shell({ fontsReady }: { fontsReady: boolean }) {
 
   const ready = fontsReady && langReady && !loading;
 
+  // Uygulama arka plandan geri açıldığında da giriş animasyonu baştan oynar.
+  const [introRun, setIntroRun] = useState(0);
+  const wasBackground = useRef(false);
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'background') wasBackground.current = true;
+      else if (state === 'active' && wasBackground.current) {
+        wasBackground.current = false;
+        setIntroRun((n) => n + 1);
+      }
+    });
+    return () => sub.remove();
+  }, []);
+
   return (
     <>
       {fontsReady && <Routes />}
-      <Intro ready={ready} onShown={hideSplash} />
+      <Intro key={introRun} ready={ready} onShown={hideSplash} />
     </>
   );
 }
