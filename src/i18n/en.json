@@ -15,7 +15,8 @@
     "unnamed": "Unnamed",
     "member": "Member",
     "saveFailed": "Couldn’t save, try again.",
-    "peopleCount": "{{n}} PEOPLE"
+    "peopleCount": "{{n}} PEOPLE",
+    "peopleCountOne": "1 PERSON"
   },
   "tabs": {
     "index": "TODAY",
@@ -1373,10 +1374,13 @@
       "loadError": "Groups couldn’t be loaded.",
       "none": "You have no groups yet.",
       "groupMeta": "GROUP · {{n}} PEOPLE",
+      "groupMetaOne": "GROUP · 1 PERSON",
       "unread": "Unread message",
       "noMessages": "No messages yet"
     },
     "room": {
+      "sysAdded": "{{name}} was added to the group",
+      "sysRemoved": "{{name}} was removed from the group",
       "back": "← BACK",
       "edit": "EDIT",
       "loading": "LOADING",

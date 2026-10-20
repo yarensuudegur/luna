@@ -6,6 +6,7 @@ import type { MemberInfo } from '@/lib/members';
 import { useRealtime } from '@/lib/notifications';
 import { subscribeChanges } from '@/lib/realtime';
 import { supabase } from '@/lib/supabase';
+import { systemText } from '@/lib/system-message';
 
 export type { MemberInfo };
 
@@ -107,7 +108,7 @@ export function useGroups(userId: string | undefined): GroupsState {
       const preview: Record<string, string> = {};
       for (const m of (msgs.data ?? []) as { room_id: string; sender: string | null; body: string }[]) {
         if (preview[m.room_id] !== undefined) continue;
-        preview[m.room_id] = m.sender ? `${names.get(m.sender) ?? t('common.someone')}: ${m.body}` : m.body;
+        preview[m.room_id] = m.sender ? `${names.get(m.sender) ?? t('common.someone')}: ${m.body}` : systemText(m.body);
       }
       setLast(preview);
       setLoading(false);

@@ -47,7 +47,7 @@ export function PeopleTab({ friends, loading, error, onRetry, onAdd, onOpen }: P
           <Text style={styles.body}>{t('friends.empty')}</Text>
         ) : (
           <>
-            <Label>{t('common.peopleCount', { n: friends.length })}</Label>
+            <Label>{t(friends.length === 1 ? 'common.peopleCountOne' : 'common.peopleCount', { n: friends.length })}</Label>
             {friends.map((f, i) => (
               <Pressable
                 key={f.id}
