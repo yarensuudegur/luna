@@ -4,9 +4,10 @@ import { planetsAt, signIndex } from '@/lib/astro';
 import { MOODS } from '@/lib/bottle';
 import type { MoodEntry, MoodMap, MoodValues, WeekData } from '@/lib/bottle';
 import { transitMoment } from '@/lib/daily';
+import { parseSong } from '@/lib/song-utils';
 import { supabase } from '@/lib/supabase';
 
-type MoodRow = { date: string; values: Partial<Record<string, unknown>>; note: string | null };
+type MoodRow = { date: string; values: Partial<Record<string, unknown>>; note: string | null; song: unknown };
 
 function parseValues(raw: MoodRow['values']): MoodValues | null {
   const v = {} as MoodValues;
@@ -21,14 +22,14 @@ function parseValues(raw: MoodRow['values']): MoodValues | null {
 export async function fetchMoods(userId: string): Promise<MoodMap> {
   const { data, error } = await supabase
     .from('moods')
-    .select('date, values, note')
+    .select('date, values, note, song')
     .eq('user_id', userId)
     .order('date');
   if (error) throw error;
   const map: MoodMap = {};
   for (const row of (data ?? []) as MoodRow[]) {
     const values = parseValues(row.values);
-    if (values) map[row.date] = { values, note: row.note ?? '' };
+    if (values) map[row.date] = { values, note: row.note ?? '', song: parseSong(row.song) };
   }
   return map;
 }
@@ -37,7 +38,13 @@ export async function saveMood(userId: string, date: string, entry: MoodEntry): 
   const { error } = await supabase
     .from('moods')
     .upsert(
-      { user_id: userId, date, values: entry.values, note: entry.note.trim().slice(0, 280) || null },
+      {
+        user_id: userId,
+        date,
+        values: entry.values,
+        note: entry.note.trim().slice(0, 280) || null,
+        song: entry.song ?? null,
+      },
       { onConflict: 'user_id,date' },
     );
   return !error;

@@ -3,9 +3,15 @@ import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppModal } from '@/components/AppModal';
+import { SongArt } from '@/components/music/SongArt';
+import { SongLinks } from '@/components/music/SongLinks';
 import { useTranslation } from '@/i18n';
 import { locale } from '@/i18n/lang';
-import { formatDayMonth, monthName } from '@/lib/date';
+import { useAuth } from '@/lib/auth';
+import { up, weekLabel, weekStartKey } from '@/lib/bottle';
+import { formatDayMonth, fromDateKey, monthName } from '@/lib/date';
+import { useSongDays, weekSong } from '@/lib/songs';
+import type { Song, SongDay } from '@/lib/songs';
 import { groupByMonth } from '@/lib/future-archive';
 import type { ArchivedMessage, CalendarMonth, FutureArchive as Archive } from '@/lib/future-archive';
 import { colors, fonts, layout } from '@/theme';
@@ -15,25 +21,61 @@ type Props = { visible: boolean; onClose: () => void; archive: Archive };
 
 const CELL = 44;
 
-/** Mesaj arşivi: aylara ayrılmış takvim; mesajın teslim edildiği günler dolu siyah daire. */
+/** Bir günün story sayfası: o günün şarkısı ya da teslim edilen bir mesaj. */
+type Page = { kind: 'song'; id: string; song: Song; date: Date } | { kind: 'msg'; id: string; m: ArchivedMessage };
+
+/** Haftalara göre "haftanın şarkısı" (her hafta o haftanın şarkılarından sistemin seçtiği), en yeni önce. */
+function weeklyPicks(days: readonly SongDay[]): { weekStart: string; pick: SongDay }[] {
+  const byWeek = new Map<string, SongDay[]>();
+  for (const d of days) {
+    const w = weekStartKey(d.date);
+    byWeek.set(w, [...(byWeek.get(w) ?? []), d]);
+  }
+  return [...byWeek.entries()]
+    .sort((a, b) => b[0].localeCompare(a[0]))
+    .flatMap(([weekStart, list]) => {
+      const pick = weekSong(weekStart, list);
+      return pick ? [{ weekStart, pick }] : [];
+    });
+}
+
+/**
+ * Arşiv: aylara ayrılmış takvim. Mesajın teslim edildiği günler dolu siyah daire, günlüğe şarkı
+ * eklenen günler o şarkının kapağı. Üstte her haftanın şarkısı bir raf gibi dizilir.
+ */
 export function FutureArchive({ visible, onClose, archive }: Props) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
+  const { profile } = useAuth();
+  const songDays = useSongDays(profile?.id, visible);
   const [openDay, setOpenDay] = useState<{ year: number; month: number; day: number } | null>(null);
-  const months = groupByMonth(archive.messages);
+  const months = groupByMonth(archive.messages, songDays);
+  const shelf = weeklyPicks(songDays);
 
   const { reload } = archive;
   useEffect(() => {
     if (visible) void reload();
   }, [visible, reload]);
 
-  // Açık günün mesajları canlı listeden okunur; silince kendiliğinden güncellenir.
-  const dayMessages = openDay
-    ? (months.find((m) => m.year === openDay.year && m.month === openDay.month)?.byDay.get(openDay.day) ?? [])
+  // Açık günün sayfaları canlı listeden okunur; mesaj silinince kendiliğinden güncellenir.
+  const openMonth = openDay ? months.find((m) => m.year === openDay.year && m.month === openDay.month) : undefined;
+  const daySong = openDay ? openMonth?.songs.get(openDay.day) : undefined;
+  const pages: Page[] = openDay
+    ? [
+        ...(daySong
+          ? [{ kind: 'song' as const, id: `song-${openDay.day}`, song: daySong, date: new Date(openDay.year, openDay.month, openDay.day) }]
+          : []),
+        ...(openMonth?.byDay.get(openDay.day) ?? []).map((m) => ({ kind: 'msg' as const, id: m.id, m })),
+      ]
     : [];
   useEffect(() => {
-    if (openDay && dayMessages.length === 0) setOpenDay(null);
-  }, [openDay, dayMessages.length]);
+    if (openDay && pages.length === 0) setOpenDay(null);
+  }, [openDay, pages.length]);
+
+  function openDate(key: string) {
+    const d = fromDateKey(key);
+    setOpenDay({ year: d.getFullYear(), month: d.getMonth(), day: d.getDate() });
+  }
 
   return (
     <AppModal visible={visible} animationType="slide" onRequestClose={onClose}>
@@ -51,14 +93,45 @@ export function FutureArchive({ visible, onClose, archive }: Props) {
           ) : !archive.loading && months.length === 0 ? (
             <Text style={styles.empty}>{t('archive.empty')}</Text>
           ) : (
-            months.map((m) => (
-              <MonthGrid key={`${m.year}-${m.month}`} month={m} onPick={(day) => setOpenDay({ year: m.year, month: m.month, day })} />
-            ))
+            <>
+              {shelf.length > 0 && (
+                <View style={styles.shelfWrap}>
+                  <Text style={styles.shelfLbl}>{t('music.shelf')}</Text>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.shelf}>
+                    {shelf.map(({ weekStart, pick }) => (
+                      <Pressable
+                        key={weekStart}
+                        onPress={() => openDate(pick.date)}
+                        accessibilityRole="button"
+                        accessibilityLabel={`${weekLabel(weekStart)}: ${pick.song.title}, ${pick.song.artist}`}
+                        style={styles.record}
+                      >
+                        <SongArt song={pick.song} size={118} />
+                        <Text style={styles.recordWeek}>{up(weekLabel(weekStart))}</Text>
+                        <Text style={styles.recordTitle} numberOfLines={1}>
+                          {pick.song.title}
+                        </Text>
+                        <Text style={styles.recordArtist} numberOfLines={1}>
+                          {pick.song.artist}
+                        </Text>
+                      </Pressable>
+                    ))}
+                  </ScrollView>
+                </View>
+              )}
+              {months.map((m) => (
+                <MonthGrid
+                  key={`${m.year}-${m.month}`}
+                  month={m}
+                  onPick={(day) => setOpenDay({ year: m.year, month: m.month, day })}
+                />
+              ))}
+            </>
           )}
         </ScrollView>
       </View>
       <MessageStory
-        messages={dayMessages}
+        messages={pages}
         onClose={() => setOpenDay(null)}
         onDelete={(m) => archive.remove(m)}
       />
@@ -95,7 +168,25 @@ function MonthGrid({ month, onPick }: { month: CalendarMonth; onPick: (day: numb
           {row.map((day, c) => {
             if (day === null) return <View key={c} style={styles.cell} />;
             const has = month.byDay.has(day);
+            const song = month.songs.get(day);
             const label = formatDayMonth(new Date(month.year, month.month, day));
+            if (song && !has) {
+              return (
+                <Pressable
+                  key={c}
+                  onPress={() => onPick(day)}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('archive.songDayA11y', { date: label, title: song.title })}
+                  style={styles.cell}
+                >
+                  <View style={styles.songCell}>
+                    <SongArt song={song} size={36} round />
+                    <View style={styles.songShade} />
+                    <Text style={styles.dotText}>{day}</Text>
+                  </View>
+                </Pressable>
+              );
+            }
             return has ? (
               <Pressable
                 key={c}
@@ -106,6 +197,7 @@ function MonthGrid({ month, onPick }: { month: CalendarMonth; onPick: (day: numb
               >
                 <View style={styles.dot}>
                   <Text style={styles.dotText}>{day}</Text>
+                  {song && <Text style={styles.note8}>♪</Text>}
                 </View>
               </Pressable>
             ) : (
@@ -120,13 +212,13 @@ function MonthGrid({ month, onPick }: { month: CalendarMonth; onPick: (day: numb
   );
 }
 
-/** Bir günün mesajları tam ekran: yatay kaydırma, üstte ilerleme çizgileri, altta Sil. */
+/** Bir günün şarkısı ve mesajları tam ekran: yatay kaydırma, üstte ilerleme çizgileri, mesajda Sil. */
 function MessageStory({
   messages,
   onClose,
   onDelete,
 }: {
-  messages: ArchivedMessage[];
+  messages: Page[];
   onClose: () => void;
   onDelete: (m: ArchivedMessage) => Promise<boolean>;
 }) {
@@ -176,10 +268,10 @@ function MessageStory({
   }
 
   async function confirmDelete() {
-    if (!current) return;
+    if (!current || current.kind !== 'msg') return;
     setBusy(true);
     setFailed(false);
-    const ok = await onDelete(current);
+    const ok = await onDelete(current.m);
     setBusy(false);
     if (ok) setConfirming(false);
     else setFailed(true);
@@ -195,12 +287,14 @@ function MessageStory({
         </View>
         <View style={styles.storyHead}>
           <Text style={styles.label}>
-            {current
-              ? t('archive.writtenOn', {
-                  day: current.createdAt.getDate(),
-                  month: t(`date.monthLocative.${current.createdAt.getMonth()}`),
-                })
-              : ''}
+            {!current
+              ? ''
+              : current.kind === 'song'
+                ? t('archive.songOn', { date: up(formatDayMonth(current.date)) })
+                : t('archive.writtenOn', {
+                    day: current.m.createdAt.getDate(),
+                    month: t(`date.monthLocative.${current.m.createdAt.getMonth()}`),
+                  })}
           </Text>
           <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel={t('common.close')} hitSlop={12}>
             <Text style={styles.label}>✕</Text>
@@ -214,11 +308,20 @@ function MessageStory({
           onMomentumScrollEnd={onSettle}
           style={styles.pager}
         >
-          {messages.map((m) => (
-            <ScrollView key={m.id} style={{ width }} contentContainerStyle={styles.page}>
-              <Text style={styles.body}>{m.body}</Text>
-            </ScrollView>
-          ))}
+          {messages.map((p) =>
+            p.kind === 'song' ? (
+              <View key={p.id} style={[styles.songPage, { width }]}>
+                <SongArt song={p.song} size={Math.min(250, width - 100)} />
+                <Text style={styles.songTitle}>{p.song.title}</Text>
+                <Text style={styles.label}>{up(p.song.artist)}</Text>
+                <SongLinks song={p.song} style={styles.songLinks} />
+              </View>
+            ) : (
+              <ScrollView key={p.id} style={{ width }} contentContainerStyle={styles.page}>
+                <Text style={styles.body}>{p.m.body}</Text>
+              </ScrollView>
+            ),
+          )}
         </ScrollView>
         {Platform.OS === 'web' && messages.length > 1 && (
           <View style={styles.tapZones} pointerEvents="box-none">
@@ -228,7 +331,9 @@ function MessageStory({
         )}
         <View style={styles.foot}>
           {failed && <Text style={styles.note}>{t('archive.deleteFailed')}</Text>}
-          {confirming ? (
+          {current?.kind === 'song' ? (
+            <Text style={styles.note}>{t('archive.songNote')}</Text>
+          ) : confirming ? (
             <>
               <Text style={styles.note}>{t('archive.deleteAsk')}</Text>
               <View style={styles.confirmRow}>
@@ -306,6 +411,19 @@ const styles = StyleSheet.create({
   note: { fontSize: 13, lineHeight: 19, color: colors.body, textAlign: 'center' },
   confirmRow: { flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'stretch' },
   deleteBtn: { paddingVertical: 8 },
+  songPage: { alignItems: 'center', justifyContent: 'center', paddingHorizontal: layout.screenPadding, gap: 6 },
+  songTitle: { fontFamily: fonts.serif, fontSize: 28, lineHeight: 36, color: colors.fg, textAlign: 'center', marginTop: 22 },
+  songLinks: { marginTop: 18 },
+  songCell: { width: 36, height: 36, borderRadius: 18, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
+  songShade: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: colors.backdropStrong },
+  note8: { position: 'absolute', right: 5, top: 1, fontSize: 8, color: colors.white },
+  shelfWrap: { marginTop: 18, marginHorizontal: -layout.screenPadding, paddingBottom: 8, borderBottomWidth: layout.hairline, borderBottomColor: colors.line },
+  shelfLbl: { fontFamily: fonts.mono, fontSize: 10, letterSpacing: 1.4, color: colors.mute, paddingHorizontal: layout.screenPadding, marginBottom: 12 },
+  shelf: { paddingHorizontal: layout.screenPadding, gap: 16, paddingBottom: 14 },
+  record: { width: 118 },
+  recordWeek: { fontFamily: fonts.mono, fontSize: 8.5, letterSpacing: 1, color: colors.mute, marginTop: 10 },
+  recordTitle: { fontFamily: fonts.serif, fontSize: 15, lineHeight: 20, color: colors.fg, marginTop: 4 },
+  recordArtist: { fontSize: 12, color: colors.body },
   action: { fontFamily: fonts.mono, fontSize: 10.5, letterSpacing: 1.5, color: colors.fg },
   off: { color: colors.faint },
 });
