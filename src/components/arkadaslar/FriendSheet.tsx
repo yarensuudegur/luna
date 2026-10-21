@@ -1,10 +1,13 @@
 import { locale } from '@/i18n/lang';
 import { useEffect, useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppModal } from '@/components/AppModal';
 import { Bar } from '@/components/arkadaslar/Bar';
 import { Initial } from '@/components/arkadaslar/Initial';
+import { useAgo } from '@/components/music/NowPlaying';
+import { SongArt } from '@/components/music/SongArt';
+import { SongLinks } from '@/components/music/SongLinks';
 import { useTranslation } from '@/i18n';
 import { relName, signName } from '@/i18n/names';
 import { compatibility } from '@/lib/astro';
@@ -13,10 +16,14 @@ import { formatDayMonth, fromDateKey } from '@/lib/date';
 import type { Friend } from '@/lib/friends';
 import { REL_TYPES, friendDay } from '@/lib/relations';
 import type { RelType } from '@/lib/relations';
+import { replyToSong } from '@/lib/songs';
+import type { NowPlaying } from '@/lib/songs';
 import { colors, fonts, layout } from '@/theme';
 
 type Props = {
   friend: Friend | null;
+  /** Arkadaşın son 24 saatte koyduğu şarkı. */
+  song?: NowPlaying | null;
   /** Bugünün anahtarı (YYYY-AA-GG). */
   today: string;
   myChart: Chart | null;
@@ -38,19 +45,32 @@ export function signsLine(f: Pick<Friend, 'sun' | 'moon' | 'asc'>): string {
 }
 
 /** Arkadaş profili: ilişki türü, bugünün cümlesi ve iki haritadan uyum çubukları. */
-export function FriendSheet({ friend, today, myChart, onClose, onRelChange, onRemove }: Props) {
+export function FriendSheet({ friend, song = null, today, myChart, onClose, onRelChange, onRemove }: Props) {
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
   const [picking, setPicking] = useState(false);
   const [failed, setFailed] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const [removeFailed, setRemoveFailed] = useState(false);
+  const [reply, setReply] = useState('');
+  const [replyState, setReplyState] = useState<'idle' | 'sending' | 'sent' | 'failed'>('idle');
+  const ago = useAgo();
 
   useEffect(() => {
     setConfirming(false);
     setRemoveFailed(false);
     setPicking(false);
+    setReply('');
+    setReplyState('idle');
   }, [friend?.id]);
+
+  async function sendReply() {
+    if (!friend || !reply.trim() || replyState === 'sending') return;
+    setReplyState('sending');
+    const ok = await replyToSong(friend.id, reply);
+    setReplyState(ok ? 'sent' : 'failed');
+    if (ok) setReply('');
+  }
 
   async function remove() {
     if (!friend) return;
@@ -133,6 +153,48 @@ export function FriendSheet({ friend, today, myChart, onClose, onRelChange, onRe
               )}
             </View>
 
+            {song && (
+              <>
+                <Text style={[styles.lbl, styles.section]}>
+                  {t('music.listening', { ago: ago(song.setAt) }).toLocaleUpperCase(locale())}
+                </Text>
+                <View style={styles.songRow}>
+                  <SongArt song={song.song} size={60} />
+                  <View style={styles.songText}>
+                    <Text style={styles.songTitle}>{song.song.title}</Text>
+                    <Text style={styles.signs}>{song.song.artist.toLocaleUpperCase(locale())}</Text>
+                  </View>
+                </View>
+                <SongLinks song={song.song} style={styles.songLinks} />
+                <View style={styles.replyRow}>
+                  <TextInput
+                    value={reply}
+                    onChangeText={(v) => {
+                      setReply(v);
+                      if (replyState !== 'sending') setReplyState('idle');
+                    }}
+                    placeholder={t('music.replyPlaceholder')}
+                    placeholderTextColor={colors.faint}
+                    selectionColor={colors.black}
+                    maxLength={200}
+                    onSubmitEditing={() => void sendReply()}
+                    returnKeyType="send"
+                    style={styles.replyInput}
+                  />
+                  <Pressable
+                    onPress={() => void sendReply()}
+                    disabled={!reply.trim() || replyState === 'sending'}
+                    accessibilityRole="button"
+                    hitSlop={8}
+                  >
+                    <Text style={[styles.removeText, !reply.trim() && styles.off]}>{t('music.send')}</Text>
+                  </Pressable>
+                </View>
+                {replyState === 'sent' && <Text style={styles.note}>{t('music.sent')}</Text>}
+                {replyState === 'failed' && <Text style={styles.note}>{t('music.sendFailed')}</Text>}
+              </>
+            )}
+
             <Text style={[styles.lbl, styles.section]}>{t('friends.sheet.today')}</Text>
             <Text style={styles.blurb}>{day.blurb}</Text>
             <View style={styles.chips}>
@@ -199,6 +261,20 @@ const styles = StyleSheet.create({
   xText: { fontFamily: fonts.mono, fontSize: 11, color: colors.fg },
   head: { flexDirection: 'row', alignItems: 'center', gap: 16, marginTop: 18 },
   headText: { flex: 1 },
+  songRow: { flexDirection: 'row', alignItems: 'center', gap: 14 },
+  songText: { flex: 1 },
+  songTitle: { fontFamily: fonts.serif, fontSize: 20, lineHeight: 26, color: colors.fg },
+  songLinks: { marginTop: 14 },
+  replyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginTop: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.black,
+  },
+  replyInput: { flex: 1, paddingVertical: 10, fontSize: 14, color: colors.fg },
+  off: { color: colors.faint },
   name: { fontFamily: fonts.serif, fontSize: 24, lineHeight: 32, color: colors.fg },
   signs: { fontFamily: fonts.mono, fontSize: 10, letterSpacing: 0.8, color: colors.mute, marginTop: 3 },
   set: { marginTop: 18 },

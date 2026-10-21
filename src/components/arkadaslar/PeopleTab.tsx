@@ -7,6 +7,7 @@ import { Label, Section } from '@/components/Section';
 import { useTranslation } from '@/i18n';
 import { relName } from '@/i18n/names';
 import type { Friend } from '@/lib/friends';
+import type { NowPlaying } from '@/lib/songs';
 import { colors, fonts, layout } from '@/theme';
 
 type Props = {
@@ -16,10 +17,12 @@ type Props = {
   onRetry: () => void;
   onAdd: () => void;
   onOpen: (friend: Friend) => void;
+  /** Arkadaş id → son 24 saatte koyduğu şarkı. */
+  songs?: Record<string, NowPlaying>;
 };
 
 /** Kişiler alt sekmesi: "Ekle +" ve arkadaş listesi. */
-export function PeopleTab({ friends, loading, error, onRetry, onAdd, onOpen }: Props) {
+export function PeopleTab({ friends, loading, error, onRetry, onAdd, onOpen, songs = {} }: Props) {
   const { t } = useTranslation();
   return (
     <>
@@ -60,6 +63,11 @@ export function PeopleTab({ friends, loading, error, onRetry, onAdd, onOpen }: P
                 <View style={styles.grow}>
                   <Text style={styles.name}>{f.name}</Text>
                   {signsLine(f) !== '' && <Text style={styles.signs}>{signsLine(f)}</Text>}
+                  {songs[f.id] && (
+                    <Text style={styles.song} numberOfLines={1}>
+                      ♫ {songs[f.id].song.title} · {songs[f.id].song.artist}
+                    </Text>
+                  )}
                 </View>
                 <View style={styles.chip}>
                   <Text style={styles.chipText}>{relName(f.rel).toLocaleUpperCase(locale())}</Text>
@@ -100,6 +108,7 @@ const styles = StyleSheet.create({
   grow: { flex: 1 },
   name: { fontFamily: fonts.serif, fontSize: 18, lineHeight: 24, color: colors.fg },
   signs: { fontFamily: fonts.mono, fontSize: 10, letterSpacing: 0.8, color: colors.mute, marginTop: 3 },
+  song: { fontSize: 12, lineHeight: 17, color: colors.body, marginTop: 4 },
   chip: { borderWidth: 1, borderColor: colors.black, paddingVertical: 5, paddingHorizontal: 8 },
   chipText: { fontFamily: fonts.mono, fontSize: 9.5, letterSpacing: 1.1, color: colors.fg },
 });

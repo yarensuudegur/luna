@@ -5,6 +5,8 @@ import { moodName } from '@/i18n/names';
 import { contentFor } from '@/lib/daily/content';
 import { rng } from '@/lib/daily/rng';
 import { addDays, dateKey, dayName, formatDayMonth, fromDateKey, monthName } from '@/lib/date';
+import { DEMO_SONGS } from '@/lib/song-utils';
+import type { Song } from '@/lib/song-utils';
 
 export const MOODS = [
   ['mutluluk', 'Mutluluk'],
@@ -17,7 +19,8 @@ export const MOODS = [
 
 export type MoodField = (typeof MOODS)[number][0];
 export type MoodValues = Record<MoodField, number>;
-export type MoodEntry = { values: MoodValues; note: string };
+/** Günün kaydı; şarkı isteğe bağlıdır. */
+export type MoodEntry = { values: MoodValues; note: string; song?: Song | null };
 /** "YYYY-MM-DD" anahtarlı duygu kayıtları. */
 export type MoodMap = Record<string, MoodEntry>;
 
@@ -180,7 +183,7 @@ export function demoWeek(weekStart: string): { days: string[]; moods: MoodMap } 
     const r = rng(`demo${key}`);
     const values = {} as MoodValues;
     for (const [f] of MOODS) values[f] = 2 + Math.round(r() * 7);
-    moods[key] = { values, note: '' };
+    moods[key] = { values, note: '', song: DEMO_SONGS[days.indexOf(key)] ?? null };
   }
   return { days, moods };
 }
@@ -228,6 +231,63 @@ export function weekInsights(
     let bk = tk[0];
     for (const k of tk) if (moods[k].values.mutluluk > moods[bk].values.mutluluk) bk = k;
     out.push(t('gunluk.insights.card', { card: contentFor(currentLang()).tarot[tarot[bk]][1] }));
+  }
+  return out;
+}
+
+/** Element dizini (0 ateş, 1 toprak, 2 hava, 3 su) ile en uyumlu duygular. */
+const ELEMENT_MOODS: readonly MoodField[][] = [
+  ['enerji', 'motivasyon'],
+  ['huzur', 'motivasyon'],
+  ['mutluluk', 'enerji'],
+  ['sevgi', 'huzur'],
+];
+
+/**
+ * Haftanın kısa analizi (hazır kalıplarla): haftanın genel duygusu, Ay'ın haftayı en çok
+ * geçirdiği element ve ikisinin bağı; kaygı yüksekse en zor günün Ay burcu.
+ * Örn. "Bu hafta genel olarak enerjiktin. Ay haftanın çoğunu ateş burçlarında geçirdi…"
+ */
+export function weekAnalysis(filledKeys: readonly string[], moods: MoodMap, moonSignOf: MoonSignOf): string[] {
+  if (filledKeys.length === 0) return [];
+  const out: string[] = [];
+
+  // 1) Haftanın duygusu (kaygı dışında en yüksek ortalama).
+  let field: MoodField = 'mutluluk';
+  let fv = -1;
+  for (const [f] of MOODS) {
+    if (f === 'kaygi') continue;
+    const a = avgOf(filledKeys, moods, f);
+    if (a != null && a > fv) {
+      fv = a;
+      field = f;
+    }
+  }
+  out.push(t(fv >= 5 ? `analysis.mood.${field}` : 'analysis.moodLow'));
+
+  // 2) Ay'ın haftayı en çok geçirdiği element (kayıtlı günlere göre).
+  const count = [0, 0, 0, 0];
+  for (const k of filledKeys) count[moonSignOf(k) % 4]++;
+  const el = count.indexOf(Math.max(...count));
+  out.push(t(`analysis.moon.${el}`));
+
+  // 3) İkisinin bağı.
+  if (fv >= 5) {
+    out.push(
+      t(ELEMENT_MOODS[el].includes(field) ? 'analysis.match' : 'analysis.mismatch', {
+        mood: low(moodName(field)),
+      }),
+    );
+  }
+
+  // 4) Kaygı yüksekse en kaygılı gün.
+  const anx = avgOf(filledKeys, moods, 'kaygi');
+  if (anx != null && anx >= 6) {
+    let hk = filledKeys[0];
+    for (const k of filledKeys) if (moods[k].values.kaygi > moods[hk].values.kaygi) hk = k;
+    out.push(t('analysis.anxious', { day: low(weekdayName(hk)), sign: t(`signs.in.${moonSignOf(hk)}`) }));
+  } else if (anx != null && anx <= 3) {
+    out.push(t('analysis.calm'));
   }
   return out;
 }

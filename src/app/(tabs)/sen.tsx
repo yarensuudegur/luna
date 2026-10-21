@@ -3,6 +3,7 @@ import { useRef, useState } from 'react';
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Avatar } from '@/components/Avatar';
+import { NowPlayingSheet, SongBubble } from '@/components/music/NowPlaying';
 import { ChartTable } from '@/components/sen/ChartTable';
 import { ChartWheel } from '@/components/sen/ChartWheel';
 import { PlanetCards } from '@/components/sen/PlanetCards';
@@ -14,6 +15,7 @@ import { signName } from '@/i18n/names';
 import { signIndex } from '@/lib/astro';
 import { useAuth } from '@/lib/auth';
 import { useSettings } from '@/lib/settings';
+import { useNowPlaying, useSongReplies } from '@/lib/songs';
 import { useProfileChart } from '@/lib/use-chart';
 import { colors, fonts, layout } from '@/theme';
 import { useFrameWidth } from '@/lib/use-frame-width';
@@ -28,6 +30,15 @@ export default function SenScreen() {
   const { houseSystem } = useSettings();
   const data = useProfileChart(profile);
   const [sub, setSub] = useState<Sub>('harita');
+  const nowPlaying = useNowPlaying(profile?.id);
+  const replies = useSongReplies(profile?.id);
+  const [songOpen, setSongOpen] = useState(false);
+
+  function openSong() {
+    setSongOpen(true);
+    replies.reload();
+    void replies.markRead();
+  }
 
   const sun = data?.chart.planets.find((p) => p.key === 'Güneş');
   const moon = data?.chart.planets.find((p) => p.key === 'Ay');
@@ -42,6 +53,12 @@ export default function SenScreen() {
   return (
     <ScrollView style={styles.root} contentContainerStyle={styles.content}>
       <View style={styles.head}>
+        <SongBubble
+          song={nowPlaying.current?.song ?? null}
+          unread={replies.unread}
+          onPress={openSong}
+          placeholder={t('music.bubbleEmpty')}
+        />
         <Avatar avatar={profile?.avatar} size={104} />
         <Text style={styles.name}>{profile?.name ?? ''}</Text>
         <Text style={styles.handle}>{profile?.handle ? `@${profile.handle}` : ''}</Text>
@@ -78,6 +95,13 @@ export default function SenScreen() {
       ) : (
         <Text style={styles.empty}>{t('sen.noBirth')}</Text>
       )}
+      <NowPlayingSheet
+        visible={songOpen}
+        current={nowPlaying.current}
+        replies={replies.replies}
+        onSet={nowPlaying.set}
+        onClose={() => setSongOpen(false)}
+      />
     </ScrollView>
   );
 }
@@ -173,7 +197,7 @@ function HaritaSekmesi({
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   content: { paddingBottom: 32 },
-  head: { alignItems: 'center', paddingTop: 28, paddingBottom: 18, paddingHorizontal: layout.screenPadding },
+  head: { alignItems: 'center', paddingTop: 18, paddingBottom: 18, paddingHorizontal: layout.screenPadding },
   name: { fontFamily: fonts.serif, fontSize: 24, lineHeight: 29, color: colors.fg, marginTop: 10 },
   handle: { fontFamily: fonts.mono, fontSize: 10, letterSpacing: 0.8, color: colors.mute, marginTop: 3 },
   signs: { fontFamily: fonts.mono, fontSize: 10.5, letterSpacing: 1.3, color: colors.fg, marginTop: 8 },

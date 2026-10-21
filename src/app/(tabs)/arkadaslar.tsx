@@ -26,6 +26,7 @@ import { useGroups } from '@/lib/rooms';
 import type { Group, MemberInfo } from '@/lib/rooms';
 import { useToday } from '@/lib/today';
 import { useProfileChart } from '@/lib/use-chart';
+import { useFriendSongs } from '@/lib/songs';
 import { colors, fonts, layout } from '@/theme';
 
 type Sub = 'kisiler' | 'odalar' | 'grup';
@@ -50,6 +51,8 @@ export default function ArkadaslarScreen() {
   const focused = useIsFocused();
   const friends = useFriends(userId);
   const groups = useGroups(userId);
+  // Sekmeye her dönüldüğünde arkadaşların şarkıları yenilenir.
+  const friendSongs = useFriendSongs(userId, focused ? 1 : 0);
 
   const notif = useNotifications();
   const { intent, clearIntent, setActiveRoom, setTabFocused, setAddingFriend, ignoreRemoval } = notif;
@@ -275,6 +278,7 @@ export default function ArkadaslarScreen() {
 
           {sub === 'kisiler' && (
             <PeopleTab
+              songs={friendSongs}
               friends={friends.friends}
               loading={friends.loading}
               error={friends.error}
@@ -322,6 +326,7 @@ export default function ArkadaslarScreen() {
       />
       <FriendSheet
         friend={transition ? null : openFriend}
+        song={openFriend ? (friendSongs[openFriend.id] ?? null) : null}
         today={today}
         myChart={myChart}
         onClose={() => setOpenFriendId(null)}

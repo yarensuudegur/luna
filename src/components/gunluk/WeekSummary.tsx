@@ -4,10 +4,15 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import Svg, { Line, Path } from 'react-native-svg';
 import { Button } from '@/components/Button';
 import { StoryCard } from '@/components/gunluk/StoryCard';
+import { SongArt } from '@/components/music/SongArt';
+import { SongLinks } from '@/components/music/SongLinks';
 import { Label, LinkText, Section } from '@/components/Section';
 import { useTranslation } from '@/i18n';
 import { moodName } from '@/i18n/names';
-import { MOODS, low, moodLabel } from '@/lib/bottle';
+import { MOODS, low, moodLabel, up, weekdayName } from '@/lib/bottle';
+import { fromDateKey } from '@/lib/date';
+import { weekSong } from '@/lib/song-utils';
+import type { SongDay } from '@/lib/song-utils';
 import type { MoodMap, WeekData } from '@/lib/bottle';
 import { colors, fonts } from '@/theme';
 
@@ -59,6 +64,12 @@ type Props = {
   days: readonly string[];
   moods: MoodMap;
   insights: readonly string[];
+  /** Haftanın kısa analizi (hazır kalıplar). */
+  analysis: readonly string[];
+  /** Haftanın pazartesisi; haftanın şarkısını seçmek için tohum. */
+  weekStart: string;
+  /** Bu hafta eklenen şarkılar. */
+  songs: readonly SongDay[];
   saved: boolean;
   onShare: () => void;
   onSave: () => void;
@@ -68,8 +79,24 @@ type Props = {
 };
 
 /** Şişe patladıktan sonra gelen haftalık özet (prototipteki weekSummary). */
-export function WeekSummary({ data, name, days, moods, insights, saved, onShare, onSave, onReplay, onNewBottle }: Props) {
+export function WeekSummary({
+  data,
+  name,
+  days,
+  moods,
+  insights,
+  analysis,
+  weekStart,
+  songs,
+  saved,
+  onShare,
+  onSave,
+  onReplay,
+  onNewBottle,
+}: Props) {
   const { t } = useTranslation();
+  const pick = weekSong(weekStart, songs);
+  const dows = t('date.dowShort', { returnObjects: true }) as unknown as string[];
   return (
     <>
       <Animated.View entering={FadeIn.duration(500)}>
@@ -97,6 +124,20 @@ export function WeekSummary({ data, name, days, moods, insights, saved, onShare,
         </Section>
       </Animated.View>
 
+      {analysis.length > 0 && (
+        <Animated.View entering={FadeIn.duration(500)}>
+          <Section>
+            <Label>{t('analysis.title')}</Label>
+            <Text style={styles.lead}>{analysis[0]}</Text>
+            {analysis.slice(1).map((line) => (
+              <Text key={line} style={styles.para}>
+                {line}
+              </Text>
+            ))}
+          </Section>
+        </Animated.View>
+      )}
+
       <Animated.View entering={FadeIn.duration(500)}>
         <Section>
           {MOODS.map(([f]) => (
@@ -104,6 +145,47 @@ export function WeekSummary({ data, name, days, moods, insights, saved, onShare,
           ))}
         </Section>
       </Animated.View>
+
+      {pick && (
+        <Animated.View entering={FadeIn.duration(500)}>
+          <Section>
+            <View style={styles.weekSong}>
+              <Text style={[styles.mono, styles.onDark]}>{t('music.weekSong')}</Text>
+              <View style={styles.weekSongBody}>
+                <SongArt song={pick.song} size={92} />
+                <View style={styles.grow}>
+                  <Text style={styles.weekSongTitle} numberOfLines={2}>
+                    {pick.song.title}
+                  </Text>
+                  <Text style={[styles.mono, styles.onDarkMute]} numberOfLines={1}>
+                    {up(pick.song.artist)}
+                  </Text>
+                  <Text style={[styles.mono, styles.onDarkMute, styles.picked]}>
+                    {t('music.pickedFrom', { day: low(weekdayName(pick.date)) })}
+                  </Text>
+                </View>
+              </View>
+              <SongLinks song={pick.song} light style={styles.weekLinks} />
+            </View>
+
+            <Label style={styles.listLabel}>{t('music.weekSongs')}</Label>
+            {songs.map((d) => (
+              <View key={d.date} style={styles.songRow}>
+                <Text style={[styles.mono, styles.mute, styles.songDay]}>{up(dows[fromDateKey(d.date).getDay()] ?? '')}</Text>
+                <SongArt song={d.song} size={38} />
+                <View style={styles.grow}>
+                  <Text style={styles.songTitle} numberOfLines={1}>
+                    {d.song.title}
+                  </Text>
+                  <Text style={[styles.mono, styles.mute]} numberOfLines={1}>
+                    {up(d.song.artist)}
+                  </Text>
+                </View>
+              </View>
+            ))}
+          </Section>
+        </Animated.View>
+      )}
 
       {insights.length > 0 && (
         <Animated.View entering={FadeIn.duration(500)}>
@@ -146,5 +228,28 @@ const styles = StyleSheet.create({
   sparkChart: { flex: 1, height: SPARK_H },
   sparkVal: { width: 32, fontFamily: fonts.mono, fontSize: 11, textAlign: 'right', color: colors.fg },
   stack: { gap: 14 },
+  lead: { fontFamily: fonts.serif, fontSize: 24, lineHeight: 32, color: colors.fg },
+  para: { fontSize: 14.5, lineHeight: 23, color: colors.body, marginTop: 10 },
+  grow: { flex: 1 },
+  mono: { fontFamily: fonts.mono, fontSize: 9.5, letterSpacing: 1.3, color: colors.fg },
+  mute: { color: colors.mute },
+  onDark: { color: colors.white },
+  onDarkMute: { color: colors.spaceMute, marginTop: 6 },
+  weekSong: { backgroundColor: colors.black, padding: 22 },
+  weekSongBody: { flexDirection: 'row', alignItems: 'center', gap: 16, marginTop: 16 },
+  weekSongTitle: { fontFamily: fonts.serif, fontSize: 24, lineHeight: 31, color: colors.white },
+  picked: { marginTop: 10 },
+  weekLinks: { marginTop: 18 },
+  listLabel: { marginTop: 26 },
+  songRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.line,
+  },
+  songDay: { width: 34 },
+  songTitle: { fontFamily: fonts.serif, fontSize: 16, lineHeight: 21, color: colors.fg },
   insight: { fontFamily: fonts.serif, fontSize: 19, lineHeight: 26, color: colors.fg },
 });

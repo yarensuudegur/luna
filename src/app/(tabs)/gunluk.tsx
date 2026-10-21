@@ -22,12 +22,14 @@ import {
   orbsFor,
   up,
   weekData,
+  weekAnalysis,
   weekInsights,
   weekKeys,
   demoWeek,
   weekLabel,
 } from '@/lib/bottle';
-import type { MoodEntry, WeekData } from '@/lib/bottle';
+import type { MoodEntry, MoodMap, WeekData } from '@/lib/bottle';
+import type { SongDay } from '@/lib/song-utils';
 import { formatTopDate, fromDateKey } from '@/lib/date';
 import { moonSignOf, useBottleArchive, useClosedWeeks, useMoods, useOpenedWeeks } from '@/lib/moods';
 import { useReminders } from '@/lib/reminders';
@@ -40,6 +42,14 @@ const { width: BW, height: BH, mouth: MOUTH } = BOTTLE;
 /** Şişe düğmesi bölümün sağ üstünde durur (prototipteki .bottlebtn). */
 const BOTTLE_RIGHT = 26;
 const BOTTLE_TOP = 110;
+
+/** Günlerin şarkıları (şarkı eklenmemiş günler atlanır). */
+function songsOf(keys: readonly string[], moods: MoodMap): SongDay[] {
+  return keys.flatMap((date) => {
+    const song = moods[date]?.song;
+    return song ? [{ date, song }] : [];
+  });
+}
 
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
@@ -69,7 +79,6 @@ export default function GunlukScreen() {
   const { noteMoodSaved } = useReminders();
 
   const [now, setNow] = useState(() => new Date());
-  const [demoEve, setDemoEve] = useState(false);
   const [spray, setSpray] = useState<{ x: number; y: number } | null>(null);
   const [story, setStory] = useState<WeekData | null>(null);
   const [wrappedOpen, setWrappedOpen] = useState(false);
@@ -136,7 +145,7 @@ export default function GunlukScreen() {
       ),
     [demoPhase, demoActive, demo, closed, filledDays],
   );
-  const evening = demoEve || isEvening(now, eveningTime);
+  const evening = isEvening(now, eveningTime);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const current = useMemo(() => weekData(weekStart, days, moods), [weekStart, days, moods, lang]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -154,6 +163,18 @@ export default function GunlukScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [demoSummary, demo, demoMoods, summaryOpen, filledDays, moods, tarot, lang],
   );
+  const analysis = useMemo(
+    () =>
+      demoSummary
+        ? weekAnalysis(demo.days, demoMoods, moonSignOf)
+        : summaryOpen
+          ? weekAnalysis(filledDays, moods, moonSignOf)
+          : [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [demoSummary, demo, demoMoods, summaryOpen, filledDays, moods, lang],
+  );
+  const demoSongs = useMemo(() => songsOf(demo.days, demoMoods), [demo, demoMoods]);
+  const weekSongs = useMemo(() => songsOf(filledDays, moods), [filledDays, moods]);
   const slides = useMemo(
     () => (wrappedOpen ? monthSlides(fromDateKey(today), moods, tarot, moonSignOf, name) : []),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -318,11 +339,6 @@ export default function GunlukScreen() {
               <Label>{t('gunluk.today')}</Label>
               <Text style={[styles.h1, styles.centerText]}>{t('gunluk.comeBack', { time: eveningTime })}</Text>
               {!!countdown && <Text style={styles.count}>{t('gunluk.countdown', { time: countdown })}</Text>}
-              {__DEV__ && (
-                <LinkText onPress={() => setDemoEve(true)} accessibilityRole="button" style={styles.demo}>
-                  {t('gunluk.tryNow')}
-                </LinkText>
-              )}
             </Section>
           )
         ) : closed ? (
@@ -351,6 +367,9 @@ export default function GunlukScreen() {
               days={demo.days}
               moods={demoMoods}
               insights={insights}
+              analysis={analysis}
+              weekStart={weekStart}
+              songs={demoSongs}
               saved={false}
               onShare={() => setStory(demoCurrent)}
               onSave={() => showToast(t('gunluk.demoNoSave'))}
@@ -366,6 +385,9 @@ export default function GunlukScreen() {
               days={days}
               moods={moods}
               insights={insights}
+              analysis={analysis}
+              weekStart={weekStart}
+              songs={weekSongs}
               saved={archived}
               onShare={() => setStory(current)}
               onSave={onSaveBottle}
@@ -485,7 +507,6 @@ const styles = StyleSheet.create({
     marginTop: 14,
     fontVariant: ['tabular-nums'],
   },
-  demo: { marginTop: 18, color: colors.faint },
   retry: { marginTop: 14 },
   mono: { fontFamily: fonts.mono, fontSize: 9.5, letterSpacing: 1.3, color: colors.fg },
   lbl: { fontFamily: fonts.mono, fontSize: 10, letterSpacing: 1.4, color: colors.mute },
