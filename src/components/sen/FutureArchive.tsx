@@ -180,7 +180,7 @@ function MonthGrid({ month, onPick }: { month: CalendarMonth; onPick: (day: numb
                   style={styles.cell}
                 >
                   <View style={styles.songCell}>
-                    <SongArt song={song} size={36} round />
+                    <SongArt song={song} size={36} round style={styles.songArt} />
                     <View style={styles.songShade} />
                     <Text style={styles.dotText}>{day}</Text>
                   </View>
@@ -415,6 +415,7 @@ const styles = StyleSheet.create({
   songTitle: { fontFamily: fonts.serif, fontSize: 28, lineHeight: 36, color: colors.fg, textAlign: 'center', marginTop: 22 },
   songLinks: { marginTop: 18 },
   songCell: { width: 36, height: 36, borderRadius: 18, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
+  songArt: { position: 'absolute', top: 0, left: 0 },
   songShade: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: colors.backdropStrong },
   note8: { position: 'absolute', right: 5, top: 1, fontSize: 8, color: colors.white },
   shelfWrap: { marginTop: 18, marginHorizontal: -layout.screenPadding, paddingBottom: 8, borderBottomWidth: layout.hairline, borderBottomColor: colors.line },
