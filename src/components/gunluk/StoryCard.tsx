@@ -1,5 +1,6 @@
 import { forwardRef, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import type { HostInstance } from 'react-native';
 import { Bottle } from '@/components/gunluk/Bottle';
 import { useTranslation } from '@/i18n';
 import { moodName } from '@/i18n/names';
@@ -18,7 +19,7 @@ type Props = {
 };
 
 /** 9:16 story kartı (prototipteki storyCard). Paylaşılan görüntü bu görünümden alınır. */
-export const StoryCard = forwardRef<View, Props>(function StoryCard({ data, name, width }, ref) {
+export const StoryCard = forwardRef<HostInstance, Props>(function StoryCard({ data, name, width }, ref) {
   const { t } = useTranslation();
   const f = width / BASE;
   const orbs = useMemo(() => orbsFor(data.keys), [data.keys]);

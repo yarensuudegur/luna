@@ -1,6 +1,7 @@
-import MaskedView from '@react-native-masked-view/masked-view';
+import MaskedViewBase from '@react-native-masked-view/masked-view';
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Image, Platform, StyleSheet, View } from 'react-native';
+import type { HostInstance, StyleProp, ViewStyle } from 'react-native';
 import type { ReactNode } from 'react';
 import Animated, {
   Easing,
@@ -15,6 +16,9 @@ import Animated, {
 import { BOTTLE } from '@/lib/bottle';
 import type { OrbSpec } from '@/lib/bottle';
 import { colors } from '@/theme';
+
+/** Paketin sınıf tipi React 19 tipleriyle uyuşmuyor; kullandığımız proplarla yeniden tiplenir. */
+const MaskedView = MaskedViewBase as unknown as (props: { style?: StyleProp<ViewStyle>; maskElement: ReactNode; children?: ReactNode }) => ReactNode;
 
 const bottleImg = require('../../../assets/bottle/bottle.png');
 const corkImg = require('../../../assets/bottle/cork.png');
@@ -139,7 +143,7 @@ function webUri(src: unknown): string | null {
  * Telefonda MaskedView, webde CSS mask-image (MaskedView webde çalışmaz, maskeyi siyah boyar).
  */
 function OrbMask({ open, children }: { open: boolean; children: ReactNode }) {
-  const webRef = useRef<View>(null);
+  const webRef = useRef<HostInstance>(null);
   useEffect(() => {
     if (Platform.OS !== 'web') return;
     // Webde View'un ref'i DOM öğesidir; maske CSS'i doğrudan ona yazılır.

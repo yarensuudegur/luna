@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import type { ScrollViewInstance } from 'react-native';
 import { useTranslation } from '@/i18n';
 import { addDays, dateKey, dayShort, fromDateKey } from '@/lib/date';
 import { colors, fonts, layout } from '@/theme';
@@ -17,7 +18,7 @@ type Props = {
 /** Bugünden ±7 gün; seçili günün altında ince çizgi. */
 export function DayStrip({ today, selected, onSelect }: Props) {
   const { t } = useTranslation();
-  const scroll = useRef<ScrollView>(null);
+  const scroll = useRef<ScrollViewInstance>(null);
   const width = useRef(0);
   const base = fromDateKey(today);
   const days = Array.from({ length: 15 }, (_, i) => addDays(base, i - 7));

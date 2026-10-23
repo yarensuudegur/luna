@@ -2,6 +2,7 @@ import { locale } from '@/i18n/lang';
 import { useRef, useState } from 'react';
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import type { ScrollViewInstance } from 'react-native';
 import { Avatar } from '@/components/Avatar';
 import { NowPlayingSheet, SongBubble } from '@/components/music/NowPlaying';
 import { ChartTable } from '@/components/sen/ChartTable';
@@ -116,7 +117,7 @@ function HaritaSekmesi({
   const { t } = useTranslation();
   const width = useFrameWidth();
   const [page, setPage] = useState(0);
-  const pager = useRef<ScrollView>(null);
+  const pager = useRef<ScrollViewInstance>(null);
   const { chart, rows } = data;
   const asc = chart.asc;
 

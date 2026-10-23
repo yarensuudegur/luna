@@ -2,6 +2,7 @@ import { locale } from '@/i18n/lang';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import type { ScrollViewInstance } from 'react-native';
 import { Avatar } from '@/components/Avatar';
 import { Button } from '@/components/Button';
 import { CosmicBanner } from '@/components/bugun/CosmicBanner';
@@ -99,7 +100,7 @@ export default function BugunScreen() {
     setReading(next);
     void future.markOpened(next.id);
   }
-  const scroll = useRef<ScrollView>(null);
+  const scroll = useRef<ScrollViewInstance>(null);
 
   // Sekmeden çıkınca Derine in kapanır ve animasyonlar durur.
   useFocusEffect(
