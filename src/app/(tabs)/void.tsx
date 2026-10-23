@@ -13,6 +13,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import type { ScrollViewInstance } from 'react-native';
 import type { ImageSourcePropType } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Stars } from '@/components/void/Stars';
@@ -51,7 +52,7 @@ export default function VoidScreen() {
   const [viewDay, setViewDay] = useState<number | null>(null);
   const pastDay = viewDay === null ? null : (history.find((d) => d.dayStart === viewDay) ?? null);
   const messages = pastDay ? pastDay.messages : todayMessages;
-  const scroll = useRef<ScrollView>(null);
+  const scroll = useRef<ScrollViewInstance>(null);
 
   // Siyah zeminde durum çubuğu açık renk olmalı; sekmeden çıkınca geri alınır.
   useFocusEffect(

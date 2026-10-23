@@ -1,6 +1,7 @@
 import { locale } from '@/i18n/lang';
 import { useEffect, useRef, useState } from 'react';
 import { Keyboard, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import type { ScrollViewInstance } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Initial } from '@/components/arkadaslar/Initial';
 import { useTranslation } from '@/i18n';
@@ -41,7 +42,7 @@ export function RoomView({ roomId, title, right, group, userId, showMembers, int
   const [sending, setSending] = useState(false);
   const [failed, setFailed] = useState(false);
   const [keyboard, setKeyboard] = useState(0);
-  const scroll = useRef<ScrollView>(null);
+  const scroll = useRef<ScrollViewInstance>(null);
   const lastSystem = useRef<string | null>(null);
 
   // iOS'ta klavye sekme çubuğunun da üstüne biner; yalnızca fazlası kadar boşluk bırak.

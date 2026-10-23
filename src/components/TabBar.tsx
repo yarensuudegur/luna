@@ -4,7 +4,7 @@ import { useTranslation } from '@/i18n';
 import { useNotifications } from '@/lib/notifications';
 import { colors, fonts, layout } from '@/theme';
 
-export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarProps) {
+export function TabBar({ state, descriptors, emitter, navigateToTab, insets }: BottomTabBarProps) {
   const { badge } = useNotifications();
   const { t } = useTranslation();
   const dark = state.routes[state.index]?.name === 'void';
@@ -14,17 +14,17 @@ export function TabBar({ state, descriptors, navigation, insets }: BottomTabBarP
         const focused = state.index === index;
         const label = t(`tabs.${route.name}`, { defaultValue: descriptors[route.key].options.title ?? route.name });
         const onPress = () => {
-          const event = navigation.emit({
+          const event = emitter.emit({
             type: 'tabPress',
             target: route.key,
             canPreventDefault: true,
           });
           if (!focused && !event.defaultPrevented) {
-            navigation.navigate(route.name, route.params);
+            navigateToTab(route.key);
           }
         };
         const onLongPress = () => {
-          navigation.emit({ type: 'tabLongPress', target: route.key });
+          emitter.emit({ type: 'tabLongPress', target: route.key });
         };
         return (
           <Pressable

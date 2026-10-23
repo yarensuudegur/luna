@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import type { ScrollViewInstance } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppModal } from '@/components/AppModal';
 import { SongArt } from '@/components/music/SongArt';
@@ -225,7 +226,7 @@ function MessageStory({
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const width = useFrameWidth();
-  const scroll = useRef<ScrollView>(null);
+  const scroll = useRef<ScrollViewInstance>(null);
   const [index, setIndex] = useState(0);
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);

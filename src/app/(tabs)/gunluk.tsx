@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import type { ScrollViewInstance } from 'react-native';
 import { BOTTLE_TILT, Bottle } from '@/components/gunluk/Bottle';
 import type { BottleHandle } from '@/components/gunluk/Bottle';
 import { MoodForm } from '@/components/gunluk/MoodForm';
@@ -86,7 +87,7 @@ export default function GunlukScreen() {
   /** Patlamayı tekrar izlemek için şişeyi baştan kurar. */
   const [bottleRun, setBottleRun] = useState(0);
 
-  const scroll = useRef<ScrollView>(null);
+  const scroll = useRef<ScrollViewInstance>(null);
   const bottle = useRef<BottleHandle>(null);
   const bottleY = useRef(0);
   const summaryY = useRef(0);

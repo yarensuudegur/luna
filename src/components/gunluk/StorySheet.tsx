@@ -2,6 +2,7 @@ import { locale } from '@/i18n/lang';
 import * as Sharing from 'expo-sharing';
 import { useRef, useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import type { HostInstance } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { captureRef } from 'react-native-view-shot';
 import { AppModal } from '@/components/AppModal';
@@ -24,7 +25,7 @@ export function StorySheet({ data, name, onClose }: Props) {
   const insets = useSafeAreaInsets();
   const { height: screenH } = useWindowDimensions();
   const screenW = useFrameWidth();
-  const card = useRef<View>(null);
+  const card = useRef<HostInstance>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
